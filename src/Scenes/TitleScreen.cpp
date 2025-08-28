@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:39:14 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/27 18:18:30 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 21:59:34 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,7 @@
 #include "ShaderManager.hpp"
 #include "FrameBuffer.hpp"
 #include "Skybox.hpp"
-
-extern Skybox			*SKYBOX;
-extern ShaderManager	*SHADER_MANAGER;
-extern SceneManager		*SCENE_MANAGER;
+#include "Engine.hpp"
 
 void	closeWindow(ButtonInfo);
 
@@ -81,9 +78,9 @@ static void	_frameKeyHook(Scene *scene)
 	(void)scene;
 }
 
-static void	_updateShaders(ShaderManager *shaders)
+static void	_updateShaders(void)
 {
-	Shader	*textShader = shaders->get("text");
+	Shader	*textShader = Engine::Shaders->get("text");
 
 	textShader->use();
 	textShader->setFloat("time", glfwGetTime());
@@ -104,9 +101,6 @@ static void	_charHookFunc(Scene *scene, uint key)
 void	TitleScreen::build(Scene *scene)
 {
 	_buildInterface(scene);
-	scene->getCamera()->pos = glm::vec3(0, 0, 0);
-	scene->getCamera()->pitch = 0;
-	scene->getCamera()->yaw = 0;
 	scene->setKeyHook(_keyHookFunc);
 	scene->setCharHook(_charHookFunc);
 	scene->getInterfaceManager()->use("main");
@@ -120,7 +114,7 @@ void	TitleScreen::destructor(Scene *scene)
 void	TitleScreen::render(Scene *scene)
 {
     glDisable(GL_DEPTH_TEST);
-	FrameBuffer::drawFrame(SHADER_MANAGER->get("title_bg"), TEXTURE_MANAGER->get(MBATTY_TEXTURE_PATH)->getID());
+	FrameBuffer::drawFrame(Engine::Shaders->get("title_bg"), Engine::Textures->get(MBATTY_TEXTURE_PATH)->getID());
 	scene->getInterfaceManager()->draw();
     glEnable(GL_DEPTH_TEST);
 }
@@ -129,7 +123,7 @@ void	TitleScreen::update(Scene *scene)
 {
 	_frameKeyHook(scene);
 	scene->getInterfaceManager()->update();
-	_updateShaders(SHADER_MANAGER);
+	_updateShaders();
 }
 
 void	TitleScreen::close(Scene *scene)

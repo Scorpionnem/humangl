@@ -26,12 +26,22 @@ CPP_FILES :=	main \
 				Texture/Texture \
 				Texture/Skybox \
 				FrameBuffer/FrameBuffer \
+				UI/Interfaces/Interface \
+				UI/Interfaces/InterfaceManager \
 				UI/UIElement \
 				Terminal/Terminal \
 				Terminal/Commands \
 				Managers/ShaderManager \
 				Managers/TextureManager \
-				Scenes/TitleScreen
+				Scenes/TitleScreen \
+				Scenes/SceneManager \
+				UI/Elements/Button\
+				UI/Elements/Image\
+				UI/Elements/Slider\
+				UI/Elements/Text\
+				UI/Elements/TextBox\
+				UI/Elements/Toggle\
+				Engine
 
 CPP_FILES := $(addsuffix .cpp, $(CPP_FILES))
 

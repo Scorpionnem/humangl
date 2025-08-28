@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 12:42:04 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/15 16:26:14 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:33:44 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,11 @@
 # define UIELEMENT_HPP
 
 # include "libs.hpp"
-# include "TextureManager.hpp"
-# include "ShaderManager.hpp"
-# include "Window.hpp"
-# include "Font.hpp"
+# include "Shader.hpp"
+# include "Texture.hpp"
 
-extern Window	*WINDOW;
+extern float	SCREEN_WIDTH;
+extern float	SCREEN_HEIGHT;
 
 extern unsigned int	UIquadVAO;
 extern unsigned int	UIquadVBO;
@@ -56,11 +55,7 @@ enum UIElementType
 class	UIElement
 {
 	public:
-		UIElement()
-		{
-			type = UIElementType::UITYPE_UNSET;
-			this->_shader = SHADER_MANAGER->get("gui");
-		}
+		UIElement();
 		virtual ~UIElement(){}
 		virtual void	draw() = 0;
 		/*

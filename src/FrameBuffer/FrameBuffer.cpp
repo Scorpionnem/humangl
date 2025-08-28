@@ -6,11 +6,12 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 11:28:56 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/16 10:55:30 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 21:59:16 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "FrameBuffer.hpp"
+#include "Engine.hpp"
 
 float quadVertices[] = {
     // positions     // texCoords
@@ -29,7 +30,7 @@ unsigned int FBquadVBO = 0;
 FrameBuffer::FrameBuffer()
 {
 	if (DEBUG)
-		consoleLog("Creating frame buffer", NORMAL);
+		Engine::log("Creating frame buffer", NORMAL);
 	
 	glGenFramebuffers(1, &frameBufferID);
 	glBindFramebuffer(GL_FRAMEBUFFER, frameBufferID);
@@ -92,7 +93,7 @@ void	FrameBuffer::resize(float width, float height)
 void	FrameBuffer::resizeToWindow()
 {
 	int	width,height;
-	glfwGetWindowSize(WINDOW->getWindowData(), &width, &height);
+	glfwGetWindowSize(Engine::Window->getWindowData(), &width, &height);
 	this->resize(width, height);
 }
 
@@ -135,7 +136,7 @@ void	FrameBuffer::loadQuadModel()
 void	FrameBuffer::reset()
 {
 	int	width,height;
-	glfwGetWindowSize(WINDOW->getWindowData(), &width, &height);
+	glfwGetWindowSize(Engine::Window->getWindowData(), &width, &height);
 	SCREEN_WIDTH = width;
 	SCREEN_HEIGHT = height;
 	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);

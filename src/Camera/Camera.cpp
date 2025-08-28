@@ -6,12 +6,13 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:54:38 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/28 23:25:20 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 21:59:16 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libs.hpp"
 #include "Camera.hpp"
+#include "Engine.hpp"
 
 Camera::Camera()
 {
@@ -33,7 +34,7 @@ void	Camera::update()
 	right = glm::normalize(glm::cross(front, worldUp));
 	up = glm::normalize(glm::cross(right, front));
 
-	speed = glm::length(pos - lastPos) / WINDOW->getDeltaTime();
+	speed = glm::length(pos - lastPos) / Engine::Window->getDeltaTime();
 	lastPos = pos;
 }
 

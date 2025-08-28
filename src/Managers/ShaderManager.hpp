@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/03 12:17:41 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/25 22:25:20 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:55:55 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,9 @@ struct	ShaderInfos
 class	ShaderManager
 {
 	public:
-		ShaderManager() {}
+		ShaderManager();
 		~ShaderManager();
+		void	setup();
 
 		/*
 			Erases a shader from the manager, freing all its data

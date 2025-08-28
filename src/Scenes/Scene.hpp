@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:38:02 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/26 13:36:48 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:39:22 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 # include "libs.hpp"
 # include "Camera.hpp"
 # include "InterfaceManager.hpp"
-
-extern Camera			*CAMERA;
-extern InterfaceManager	*INTERFACE_MANAGER;
 
 class	Scene
 {
@@ -30,7 +27,6 @@ class	Scene
 			this->_destructor = destructor;
 			this->_onRender = onRender;
 			this->_onUpdate = onUpdate;
-			_camera = new Camera();
 			_interfaceManager = new InterfaceManager();
 			build(this);
 		}
@@ -38,12 +34,10 @@ class	Scene
 		{
 			if (_destructor)
 				_destructor(this);
-			delete _camera;
 			delete _interfaceManager;
 		}
 		void	use()
 		{
-			CAMERA = _camera;
 			if (_onOpen)
 				_onOpen(this);
 		}
@@ -98,7 +92,6 @@ class	Scene
 		//Sets function called whenever the scene is opened (Switching from another scene)
 		void	setOpen(std::function<void(Scene*)> onOpen) {this->_onOpen = onOpen;}
 		InterfaceManager	*getInterfaceManager() {return (this->_interfaceManager);}
-		Camera				*getCamera() {return (this->_camera);}
 	private:
 		std::function<void(Scene*)>					_destructor = NULL; //Called whenever the scene gets destroyeds
 		std::function<void(Scene*)>					_onRender = NULL; //Called to render a frame
@@ -109,8 +102,7 @@ class	Scene
 		std::function<void(Scene*, uint)>			_charHook = NULL; //uint key
 		std::function<void(Scene*, double, double)>	_moveMouseHook = NULL; //uint key
 		std::function<void(Scene*, int, int, int)>	_mouseBtnHookFunc = NULL; // button, action, mod(useless)
-		std::function<void(Scene*, double, double)>			_mouseScrollHookFunc = NULL;
-		Camera										*_camera = NULL;
+		std::function<void(Scene*, double, double)>	_mouseScrollHookFunc = NULL;
 		InterfaceManager							*_interfaceManager = NULL;
 };
 

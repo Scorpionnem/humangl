@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SceneManager.hpp                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 11:05:13 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/18 15:01:49 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:01:27 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,37 +66,9 @@ class	SceneManager
 			_current->close();
 			_current = NULL;
 		}
-		bool	erase(const std::string &name)
-		{
-			std::unordered_map<std::string, Scene *>::iterator	finder;
-			finder = _scenes.find(name);
-			if (finder == _scenes.end())
-			{
-				consoleLog("WARNING Tried to unload a scene thats not loaded: " + name, LogSeverity::WARNING);
-				return (0);
-			}
-			_scenes.erase(finder);
-			return (1);
-		}
-		Scene	*load(std::string name, std::function<void(Scene *)> build, std::function<void(Scene *)> destructor, std::function<void(Scene*)> onRender, std::function<void(Scene*)> onUpdate)
-		{
-			if (_scenes.find(name) != _scenes.end())
-			{
-				consoleLog("WARNING Tried to load a scene thats already loaded (will be using the existing scene): " + name, LogSeverity::WARNING);
-				return (this->get(name));
-			}
-			return (_scenes.insert(std::make_pair(name, new Scene(build, destructor, onRender, onUpdate))).first->second);
-		}
-		Scene	*get(const std::string &name)
-		{
-			std::unordered_map<std::string, Scene *>::iterator	finder = _scenes.find(name);
-			if (finder == _scenes.end())
-			{
-				consoleLog("ERROR Tried to access a scene thats not loaded, might cause a crash: " + name, LogSeverity::ERROR);
-				return (NULL);
-			}
-			return (finder->second);
-		}
+		bool	erase(const std::string &name);
+		Scene	*load(std::string name, std::function<void(Scene *)> build, std::function<void(Scene *)> destructor, std::function<void(Scene*)> onRender, std::function<void(Scene*)> onUpdate);
+		Scene	*get(const std::string &name);
 		Scene	*operator[](const std::string &name)
 		{
 			return (this->get(name));

@@ -6,18 +6,19 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 13:49:15 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/14 12:39:52 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:22:46 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Texture.hpp"
+#include "Engine.hpp"
 
 Texture::~Texture()
 {
 	if (ID > 0)
 	{
 		if (DEBUG)
-			consoleLog("Destroying texture: " + std::string(path), LogSeverity::NORMAL);
+			Engine::log("Destroying texture: " + std::string(path), LogSeverity::NORMAL);
 		glDeleteTextures(1, &ID);
 	}
 }
@@ -109,7 +110,7 @@ void	Texture::LoadImage(const char *path)
 Texture::Texture(const char *path)
 {
 	if (DEBUG)
-		consoleLog("Loading texture: " + std::string(path), LogSeverity::NORMAL);
+		Engine::log("Loading texture: " + std::string(path), LogSeverity::NORMAL);
 	this->LoadImage(path);
 	glGenTextures(1, &this->ID);
 	glBindTexture(GL_TEXTURE_2D, this->ID);

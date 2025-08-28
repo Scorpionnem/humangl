@@ -3,17 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   Skybox.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 15:22:58 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/26 20:44:35 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/08/28 21:59:34 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Skybox.hpp"
-
-#include "Window.hpp"
-extern Window	*WINDOW;
+#include "Engine.hpp"
 
 float skyboxVertices[] = {
     -1.0f, -1.0f, -1.0f,
@@ -62,7 +60,7 @@ float skyboxVertices[] = {
 Skybox::~Skybox()
 {
     if (DEBUG)
-        consoleLog("Destroying skybox", NORMAL);
+        Engine::log("Destroying skybox", NORMAL);
     glDeleteTextures(1, &ID);
     glDeleteBuffers(1, &VBO);
     glDeleteVertexArrays(1, &VAO);
@@ -70,10 +68,10 @@ Skybox::~Skybox()
 
 Skybox::Skybox(const std::vector<std::string> &faces)
 {
-    _shader = SHADER_MANAGER->get("skybox");
+    _shader = Engine::Shaders->get("skybox");
     model = glm::mat4(1);
     if (DEBUG)
-	    consoleLog("Loading skybox", NORMAL);
+	    Engine::log("Loading skybox", NORMAL);
 
     glGenTextures(1, &ID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, ID);
@@ -122,7 +120,7 @@ void	Skybox::draw(Camera &camera)
 
     glDisable(GL_CULL_FACE);
 
-    Shader  *sunShader = SHADER_MANAGER->get("sun");
+    Shader  *sunShader = Engine::Shaders->get("sun");
 
     glm::mat4   sunModel = glm::mat4(1);
     _sunPos = glm::vec3(std::cos((_time / 1000.0f) * (M_PI * 2.0f)) * 7, std::cos((_time / 1000.0f) * (M_PI * 2.0f)) * 12, std::sin((_time / 1000.0f) * (M_PI * 2.0f)) * 12);
@@ -134,7 +132,7 @@ void	Skybox::draw(Camera &camera)
     sunShader->setMat4("model", sunModel);
     sunShader->setMat4("view", view);
 
-	Texture::use("tex", TEXTURE_MANAGER->get("assets/textures/skybox/sun.bmp")->getID(), 1, sunShader);
+	Texture::use("tex", Engine::Textures->get("assets/textures/skybox/sun.bmp")->getID(), 1, sunShader);
     glBindVertexArray(UIElement::getQuadVAO());
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
@@ -146,12 +144,12 @@ void	Skybox::draw(Camera &camera)
     sunShader->use();
     sunShader->setMat4("model", moonModel);
 
-    Texture::use("tex", TEXTURE_MANAGER->get("assets/textures/skybox/moon.bmp")->getID(), 1, sunShader);
+    Texture::use("tex", Engine::Textures->get("assets/textures/skybox/moon.bmp")->getID(), 1, sunShader);
     glBindVertexArray(UIElement::getQuadVAO());
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 
-	_time += WINDOW->getDeltaTime() * 8.3333333335;
+	_time += Engine::Window->getDeltaTime() * 8.3333333335;
 	if (_time > 1000)
 		_time -= 1000;
 

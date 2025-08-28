@@ -6,15 +6,14 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:11:45 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/26 13:41:10 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 21:59:23 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Window.hpp"
 #include "Camera.hpp"
 #include "FrameBuffer.hpp"
-
-extern FrameBuffer	*MAIN_FRAME_BUFFER;
+#include "Engine.hpp"
 
 static void resize_hook(GLFWwindow* window, int width, int height)
 {
@@ -22,7 +21,7 @@ static void resize_hook(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 	SCREEN_WIDTH = width;
 	SCREEN_HEIGHT = height;
-	MAIN_FRAME_BUFFER->resize(width, height);
+	Engine::FrameBuffer->resize(width, height);
 }
 
 void	key_hook(GLFWwindow *window, int key, int scancode, int action, int mods);
@@ -33,7 +32,7 @@ void	scroll_callback(GLFWwindow *, double xoffset, double yoffset);
 
 Window::Window() : _lastFrame(0)
 {
-	consoleLog("Creating window...", LogSeverity::NORMAL);
+	Engine::log("Creating window...", LogSeverity::NORMAL);
 	//Inits GLFW settings
 	if (!glfwInit())
 		throw std::runtime_error("Failed to initialize glfw");
@@ -81,7 +80,7 @@ Window::Window() : _lastFrame(0)
 
 	this->center();
 	this->setIcon(MBATTY_TEXTURE_PATH);
-	consoleLog("Creating window, done.", LogSeverity::SUCCESS);
+	Engine::log("Creating window, done.", LogSeverity::SUCCESS);
 }
 
 Window::~Window()

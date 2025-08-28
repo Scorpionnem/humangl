@@ -6,11 +6,12 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:35:00 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/29 18:22:10 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 21:59:42 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Terminal.hpp"
+#include "Engine.hpp"
 
 bool	Terminal::specialInput(int key, int action)
 {
@@ -49,7 +50,7 @@ bool	Terminal::specialInput(int key, int action)
 		if (key == GLFW_KEY_SLASH)
 			_input = "/";
 		_cursor = _input.end();
-		glfwSetInputMode(WINDOW->getWindowData(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetInputMode(Engine::Window->getWindowData(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 	return (false);
 }
@@ -96,7 +97,7 @@ void	Terminal::_drawLine(std::string line, float offset)
 	pos.x = 0;
 	pos.y = SCREEN_HEIGHT - (offset * 16);
 
-	FONT->putString(line, pos, {1, 1}, glm::vec3(1), true, false);
+	Engine::Font->putString(line, pos, {1, 1}, glm::vec3(1), true, false);
 }
 
 void	Terminal::_deleteOne()
@@ -115,7 +116,7 @@ void	Terminal::_clear()
 	_active = false;
 	_historyCursor = _history.end();
 	_input.clear();
-	WINDOW->setDefaultMousePos();
+	Engine::Window->setDefaultMousePos();
 }
 
 void	Terminal::_execute()
@@ -124,7 +125,7 @@ void	Terminal::_execute()
 	_addToHistory(_input, _commands.execute(_input));
 	_historyCursor = _history.end();
 	_input.clear();
-	WINDOW->setDefaultMousePos();
+	Engine::Window->setDefaultMousePos();
 }
 
 void	Terminal::_moveLeft()
@@ -132,7 +133,7 @@ void	Terminal::_moveLeft()
 	if (_cursor == _input.begin())
 		return ;
 	_cursor--;
-	if (glfwGetKey(WINDOW->getWindowData(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	if (glfwGetKey(Engine::Window->getWindowData(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		while (_cursor != _input.begin() && std::isalnum(*_cursor))
 			_cursor--;
@@ -145,7 +146,7 @@ void	Terminal::_moveRight()
 		return ;
 
 	_cursor++;
-	if (glfwGetKey(WINDOW->getWindowData(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	if (glfwGetKey(Engine::Window->getWindowData(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		while (_cursor != _input.end() && std::isalnum(*_cursor))
 			_cursor++;

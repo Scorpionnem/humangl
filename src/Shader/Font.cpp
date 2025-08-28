@@ -6,12 +6,12 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 14:48:45 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/29 18:21:09 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 21:59:34 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Font.hpp"
-
+#include "Engine.hpp"
 #include "TextureManager.hpp"
 
 GLuint fontVAO = 0;
@@ -22,7 +22,7 @@ Font::~Font()
     if (fontVAO != 0)
     {
         if (DEBUG)
-            consoleLog("Destroying font quad", LogSeverity::NORMAL);
+            Engine::log("Destroying font quad", LogSeverity::NORMAL);
         glDeleteBuffers(1, &fontVBO);
         glDeleteVertexArrays(1, &fontVAO);
         fontVBO = 0;
@@ -32,8 +32,8 @@ Font::~Font()
 
 Font::Font()
 {
-    this->_shader = SHADER_MANAGER->get("text");
-    this->_atlas = TEXTURE_MANAGER->get(ASCII_FONT_TEXTURE_PATH);
+    this->_shader = Engine::Shaders->get("text");
+    this->_atlas = Engine::Textures->get(ASCII_FONT_TEXTURE_PATH);
 }
 
 void	Font::putString(std::string str, glm::vec2 pos, glm::vec2 scale, glm::vec3 color, bool background, bool shadow)
@@ -82,7 +82,7 @@ void	Font::putString(std::string str, glm::vec2 pos, glm::vec2 scale, glm::vec3 
         if (shadow)
         {
             glm::mat4   shadowModel = glm::translate(charModel, glm::vec3(0.125, 0.125, 0.0));
-            SHADER_MANAGER->get("text")->setBool("drawBackground", false);
+            Engine::Shaders->get("text")->setBool("drawBackground", false);
             _shader->setVec3("color", glm::vec3(0));
             _shader->setMat4("model", shadowModel);
             glBindVertexArray(fontVAO);
@@ -91,9 +91,9 @@ void	Font::putString(std::string str, glm::vec2 pos, glm::vec2 scale, glm::vec3 
         }
 
         if (background)
-            SHADER_MANAGER->get("text")->setBool("drawBackground", true);
+            Engine::Shaders->get("text")->setBool("drawBackground", true);
         else
-            SHADER_MANAGER->get("text")->setBool("drawBackground", false);
+            Engine::Shaders->get("text")->setBool("drawBackground", false);
 
         _shader->setVec3("color", color);
         _shader->setMat4("model", charModel);
@@ -109,7 +109,7 @@ void	Font::initFontModel()
     if (fontVAO != 0) return;
 
     if (DEBUG)
-        consoleLog("Loading font quad", LogSeverity::NORMAL);
+        Engine::log("Loading font quad", LogSeverity::NORMAL);
 
     float vertices[] = {
         0.0f, 0.0f,  0.0f, 0.0f,

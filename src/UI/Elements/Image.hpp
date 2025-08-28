@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:43:25 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/25 20:00:05 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:21:06 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,12 +54,7 @@ class	Image : public UIElement
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			glBindVertexArray(0);
 		}
-		void	update(glm::vec2, bool)
-		{
-			this->currentTexture = TEXTURE_MANAGER->get(TITLE_TEXTURE_PATH);;
-			if (this->anchor != UIAnchor::UI_NONE)
-				anchorPos();
-		}
+		void	update(glm::vec2, bool);
 
 		bool						wasPressedInside = false;
 		bool						previousMousePressed = false;

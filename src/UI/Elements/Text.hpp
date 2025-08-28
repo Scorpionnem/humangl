@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/15 11:48:31 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/22 12:49:44 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:15:38 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,13 +39,7 @@ class	Text : public UIElement
 			this->size.x = _label.size() * 16.0f;
 			this->size.y = 16.0f;
 		}
-		void	draw()
-		{
-			getSize();
-			if (this->anchor != UIAnchor::UI_NONE)
-				anchorPos();
-			FONT->putString(this->_label, glm::vec2(this->pos.x, this->pos.y), this->_scale, this->_color, _rotation, _angle, _drawBG, true);
-		}
+		void	draw();
 		void	update(glm::vec2, bool)
 		{
 			if (_update)

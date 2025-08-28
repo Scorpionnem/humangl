@@ -6,12 +6,14 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 13:17:26 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/25 20:01:39 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:16:19 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TEXTBOX_HPP
 # define TEXTBOX_HPP
+
+# include "UIElement.hpp"
 
 struct	TextBoxInfo
 {
@@ -37,70 +39,8 @@ class	TextBox : public UIElement
 		}
 		~TextBox(){}
 
-		void	draw()
-		{
-			if (!this->currentTexture)
-				return ;
-
-			initButtonQuad();
-
-			if (this->anchor != UIAnchor::UI_NONE)
-				anchorPos();
-
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(this->pos.x, this->pos.y, 0.0f));
-			model = glm::scale(model, glm::vec3(this->size.x, this->size.y, 1.0f));
-			glm::mat4 projection = glm::ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
-
-			_shader->use();
-			_shader->setMat4("model", model);
-			_shader->setMat4("projection", projection);
-
-			this->currentTexture->use(0);
-
-			glBindVertexArray(UIquadVAO);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			glBindVertexArray(0);
-
-			float	labelWidth = this->input.size() * 15;
-			float	labelHeight = 15;
-
-			glm::vec2	buttonCenter;
-			buttonCenter.x = (this->pos.x + this->size.x / 2.f) - labelWidth / 2.f;
-			buttonCenter.y = (this->pos.y + this->size.y / 2.f) - labelHeight / 2.f;
-
-			FONT->putString(this->input, buttonCenter, glm::vec2(1, 1), glm::vec3(1), false, false);
-		}
-		void	update(glm::vec2 mousePos, bool mousePressed)
-		{
-			bool inside = isInside(this->pos, this->size, mousePos);
-
-			if (mousePressed && !inside && pressed)
-				validate();
-
-			if (pressed)
-				this->currentTexture = TEXTURE_MANAGER->get(COBBLESTONE_TEXTURE_PATH);
-			else
-				this->currentTexture = TEXTURE_MANAGER->get(STONE_TEXTURE_PATH);
-
-			if (this->anchor != UIAnchor::UI_NONE)
-				anchorPos();
-
-			if (mousePressed && !this->previousMousePressed)
-    			this->wasPressedInside = inside;
-
-    		else
-    		{
-    			if (this->wasPressedInside && inside)
-				{
-    				pressed = !pressed;
-					if (!pressed)
-						validate();
-				}
-    			this->wasPressedInside = false;
-    		}
-
-			this->previousMousePressed = mousePressed;
-		}
+		void	draw();
+		void	update(glm::vec2 mousePos, bool mousePressed);
 		void	setClickData(void *data)
 		{
 			this->clickData = data;

@@ -11,9 +11,16 @@
 /* ************************************************************************** */
 
 #include "UIElement.hpp"
+#include "Engine.hpp"
 
 unsigned int	UIquadVAO = 0;
 unsigned int	UIquadVBO = 0;
+
+UIElement::UIElement()
+{
+	type = UIElementType::UITYPE_UNSET;
+	this->_shader = Engine::Shaders->get("gui");
+}
 
 bool	UIElement::isInside(glm::vec2 buttonPos, glm::vec2 size, glm::vec2 mousePos)
 {

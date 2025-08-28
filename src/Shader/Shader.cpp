@@ -6,16 +6,17 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:15:58 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/14 18:46:51 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:55:23 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Shader.hpp"
+#include "Engine.hpp"
 
 Shader::~Shader()
 {
 	if (DEBUG)
-        consoleLog("Destroying shader: " + vertPath + " " + fragPath, LogSeverity::NORMAL);
+        Engine::log("Destroying shader: " + vertPath + " " + fragPath, LogSeverity::NORMAL);
 	glDeleteProgram(ID);
 }
 
@@ -92,7 +93,7 @@ static int	loadShaderProgram(const char *vertex, const char *fragment)
 Shader::Shader(const char *vertexPath, const char *fragmentPath)
 {
 	if (DEBUG)
-        consoleLog("Loading shader: " + std::string(vertexPath) + " " + std::string(fragmentPath), LogSeverity::NORMAL);
+        Engine::log("Loading shader: " + std::string(vertexPath) + " " + std::string(fragmentPath), LogSeverity::NORMAL);
 		
 	std::string	vertexCode;
 	std::string	fragmentCode;

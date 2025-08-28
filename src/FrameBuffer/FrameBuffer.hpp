@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 11:27:41 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/16 10:52:29 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/28 12:24:18 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 #include "Shader.hpp"
 extern float SCREEN_WIDTH;
 extern float SCREEN_HEIGHT;
-extern Window *WINDOW;
 
 extern uint quadVAO;
 extern uint quadVBO;
