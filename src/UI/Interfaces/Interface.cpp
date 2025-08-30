@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:57:53 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 21:59:16 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:42:47 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,8 @@ void	Interface::update()
 		_onUpdate(this);
 
 	double mouseX, mouseY;
-	bool mousePressed = glfwGetMouseButton(Engine::Window->getWindowData(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
-	glfwGetCursorPos(Engine::Window->getWindowData(), &mouseX, &mouseY);
+	bool mousePressed = glfwGetMouseButton(Engine::Window->data(), GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS;
+	glfwGetCursorPos(Engine::Window->data(), &mouseX, &mouseY);
 	for (auto &element : _elements)
 		element.second->update(glm::vec2(mouseX, mouseY), mousePressed);
 }

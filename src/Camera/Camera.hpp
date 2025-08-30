@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:55:06 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/28 23:25:10 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 11:05:52 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,10 +17,6 @@
 # include "Shader.hpp"
 # include "Window.hpp"
 
-extern float	FOV;
-extern float	RENDER_DISTANCE;
-extern float	SCREEN_WIDTH;
-extern float	SCREEN_HEIGHT;
 extern Window	*WINDOW;
 
 class Camera
@@ -48,6 +44,8 @@ class Camera
 		float	yaw;
 		float	pitch;
 		float	speed;
+		float	renderDistance;
+		float	fov;
 };
 
 #endif

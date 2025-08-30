@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:51:55 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 22:03:51 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 11:01:41 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,13 @@ class	Engine
 		static Font				*Font;
 		static SceneManager		*Scenes;
 		static FrameBuffer		*FrameBuffer;
+
+		static void	keyboardKeyHook(GLFWwindow *window, int key, int, int action, int);
+		static void	keyboardCharHook(GLFWwindow *, unsigned int key);
+		static void	clickMouseHook(GLFWwindow*, int button, int action, int mods);
+		static void scrollMouseHook(GLFWwindow *, double xoffset, double yoffset);
+		static void	moveMouseHook(GLFWwindow*, double xpos, double ypos);
+
 	private:
 		Engine(){}
 };

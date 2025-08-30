@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/08 12:42:04 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 12:33:44 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:38:34 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 # include "libs.hpp"
 # include "Shader.hpp"
 # include "Texture.hpp"
-
-extern float	SCREEN_WIDTH;
-extern float	SCREEN_HEIGHT;
 
 extern unsigned int	UIquadVAO;
 extern unsigned int	UIquadVBO;
@@ -86,22 +83,7 @@ class	UIElement
 		/*
 			Simply draws a quad using any shader. Its up the the caller to define the uniforms used by the shader outside of this function
 		*/
-		static void	draw(Shader *shader, glm::vec2 pos, glm::vec2 size)
-		{
-			initButtonQuad();
-
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f));
-			model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
-			glm::mat4 projection = glm::ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
-
-			shader->use();
-			shader->setMat4("model", model);
-			shader->setMat4("projection", projection);
-
-			glBindVertexArray(UIquadVAO);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			glBindVertexArray(0);
-		}
+		static void	draw(Shader *shader, glm::vec2 pos, glm::vec2 size);
 
 		glm::vec2	offset;
 		glm::vec2	pos;

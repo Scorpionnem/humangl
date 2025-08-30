@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 14:48:45 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 21:59:34 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:32:36 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ void	Font::putString(std::string str, glm::vec2 pos, glm::vec2 scale, glm::vec3 
 
     model = glm::scale(model, glm::vec3(charSizeX, charSizeY, 1.0f));
 
-    glm::mat4 projection = glm::ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
+    glm::mat4 projection = glm::ortho(0.0f, Engine::Window->getWidth(), Engine::Window->getHeight(), 0.0f);
 
     uint    count = 0;
 

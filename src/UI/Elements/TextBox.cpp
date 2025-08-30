@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 12:13:46 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 21:59:42 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:35:57 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void	TextBox::draw()
 
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(this->pos.x, this->pos.y, 0.0f));
 	model = glm::scale(model, glm::vec3(this->size.x, this->size.y, 1.0f));
-	glm::mat4 projection = glm::ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
+	glm::mat4 projection = glm::ortho(0.0f, Engine::Window->getWidth(), Engine::Window->getHeight(), 0.0f);
 
 	_shader->use();
 	_shader->setMat4("model", model);

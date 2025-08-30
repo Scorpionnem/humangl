@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:11:18 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 11:55:46 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:51:27 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include "Shader.hpp"
 # include "Font.hpp"
 
-extern float	SCREEN_WIDTH;
-extern float	SCREEN_HEIGHT;
+# define DEFAULT_WINDOW_WIDTH 860
+# define DEFAULT_WINDOW_HEIGHT 520
 
 class	Window
 {
@@ -30,15 +30,24 @@ class	Window
 		void		loopEnd();
 		void		setIcon(const char *path);
 		void		center();
+		void		close();
 		
-		GLFWwindow	*getWindowData(void);
+		GLFWwindow	*data(void);
 		float		getDeltaTime(void);
 		void		setLastMouseX(float val){this->lastMouseX = val;}
 		void		setLastMouseY(float val){this->lastMouseY = val;}
 		float		getLastMouseX(){return (this->lastMouseX);}
 		float		getLastMouseY(){return (this->lastMouseY);}
 		void		setDefaultMousePos();
+
+		void		setWidth(float val){_width = val;}
+		void		setHeight(float val){_height = val;}
+		float		getWidth(){return (this->_width);}
+		float		getHeight(){return (this->_height);}
 	private:
+		float		_width;
+		float		_height;
+
 		float		_deltaTime;
 		float		_lastFrame;
 		float		_currentFrame;

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 14:45:03 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 12:52:47 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:32:41 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@
 
 extern GLuint fontVAO;
 extern GLuint fontVBO;
-extern float	SCREEN_WIDTH;
-extern float	SCREEN_HEIGHT;
 
 class	Font
 {

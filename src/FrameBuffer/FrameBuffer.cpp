@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 11:28:56 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 21:59:16 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:42:47 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ FrameBuffer::FrameBuffer()
 	
 	glGenTextures(1, &colorTex);
 	glBindTexture(GL_TEXTURE_2D, colorTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, Engine::Window->getWidth(), Engine::Window->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -46,7 +46,7 @@ FrameBuffer::FrameBuffer()
 
 	glGenTextures(1, &depthTex);
 	glBindTexture(GL_TEXTURE_2D, depthTex);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, SCREEN_WIDTH, SCREEN_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT24, Engine::Window->getWidth(), Engine::Window->getHeight(), 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthTex, 0);
@@ -61,9 +61,9 @@ FrameBuffer::FrameBuffer()
 
 void	FrameBuffer::use()
 {
-	SCREEN_WIDTH = width;
-	SCREEN_HEIGHT = height;
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	Engine::Window->setWidth(width);
+	Engine::Window->setHeight(height);
+	glViewport(0, 0, Engine::Window->getWidth(), Engine::Window->getHeight());
 	glBindFramebuffer(GL_FRAMEBUFFER, this->frameBufferID);
 	glEnable(GL_DEPTH_TEST);
 }
@@ -93,7 +93,7 @@ void	FrameBuffer::resize(float width, float height)
 void	FrameBuffer::resizeToWindow()
 {
 	int	width,height;
-	glfwGetWindowSize(Engine::Window->getWindowData(), &width, &height);
+	glfwGetWindowSize(Engine::Window->data(), &width, &height);
 	this->resize(width, height);
 }
 
@@ -136,10 +136,10 @@ void	FrameBuffer::loadQuadModel()
 void	FrameBuffer::reset()
 {
 	int	width,height;
-	glfwGetWindowSize(Engine::Window->getWindowData(), &width, &height);
-	SCREEN_WIDTH = width;
-	SCREEN_HEIGHT = height;
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glfwGetWindowSize(Engine::Window->data(), &width, &height);
+	Engine::Window->setWidth(width);
+	Engine::Window->setHeight(height);
+	glViewport(0, 0, Engine::Window->getWidth(), Engine::Window->getHeight());
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT);

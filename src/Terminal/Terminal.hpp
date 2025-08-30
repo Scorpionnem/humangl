@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 20:02:37 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/16 10:41:24 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 11:07:39 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,6 @@
 # include "ShaderManager.hpp"
 # include "Font.hpp"
 # include "Commands.hpp"
-
-extern bool		PAUSED;
-extern Window	*WINDOW;
-
-extern float	SCREEN_WIDTH;
-extern float	SCREEN_HEIGHT;
-extern uint		seed;
 
 struct Command
 {

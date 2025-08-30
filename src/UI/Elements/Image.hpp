@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 17:43:25 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 12:21:06 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:37:44 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,30 +30,7 @@ class	Image : public UIElement
 		}
 		~Image(){}
 
-		void	draw()
-		{
-			if (!this->currentTexture)
-				return ;
-
-			initButtonQuad();
-
-			if (this->anchor != UIAnchor::UI_NONE)
-				anchorPos();
-
-			glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(this->pos.x, this->pos.y, 0.0f));
-			model = glm::scale(model, glm::vec3(this->size.x, this->size.y, 1.0f));
-			glm::mat4 projection = glm::ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
-
-			_shader->use();
-			_shader->setMat4("model", model);
-			_shader->setMat4("projection", projection);
-
-			this->currentTexture->use(0);
-
-			glBindVertexArray(UIquadVAO);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			glBindVertexArray(0);
-		}
+		void	draw();
 		void	update(glm::vec2, bool);
 
 		bool						wasPressedInside = false;

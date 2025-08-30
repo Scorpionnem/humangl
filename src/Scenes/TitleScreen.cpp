@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 10:39:14 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 21:59:34 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 11:07:00 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@
 #include "FrameBuffer.hpp"
 #include "Skybox.hpp"
 #include "Engine.hpp"
-
-void	closeWindow(ButtonInfo);
 
 #define TITLES_COUNT 5
 #define TITLE_TIME 8
@@ -38,7 +36,7 @@ static void	_buildMainInterface(Interface *interface)
 
 	interface->addElement("button_options", new Button(UIAnchor::UI_CENTER, "options", glm::vec2(0, 0), glm::vec2(300, 80), NULL, NULL));
 
-	interface->addElement("button_quit", new Button(UIAnchor::UI_CENTER, "quit", glm::vec2(0, 90), glm::vec2(300, 80), closeWindow, NULL));
+	interface->addElement("button_quit", new Button(UIAnchor::UI_CENTER, "quit", glm::vec2(0, 90), glm::vec2(300, 80), [](ButtonInfo){Engine::Window->close();}, NULL));
 
 	// Text	*text_popup = static_cast<Text*>(interface->addElement("text_popup", new Text(UIAnchor::UI_TOP_CENTER_HALF, "by mbatty and mbirou!", glm::vec2(175, -40), NULL, false)));
 	// interface->addElement("image_icon", new Image(UIAnchor::UI_TOP_CENTER_HALF, glm::vec2(0, 0), glm::vec2(400, 150)));
@@ -84,8 +82,8 @@ static void	_updateShaders(void)
 
 	textShader->use();
 	textShader->setFloat("time", glfwGetTime());
-	textShader->setFloat("SCREEN_WIDTH", SCREEN_WIDTH);
-	textShader->setFloat("SCREEN_HEIGHT", SCREEN_HEIGHT);
+	textShader->setFloat("SCREEN_WIDTH", Engine::Window->getWidth());
+	textShader->setFloat("SCREEN_HEIGHT", Engine::Window->getHeight());
 }
 
 static void	_keyHookFunc(Scene *scene, int key, int action)

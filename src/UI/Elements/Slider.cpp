@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 12:19:36 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 21:59:42 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:38:00 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void	Slider::draw()
 	glm::mat4 sliderModel = glm::translate(glm::mat4(1.0f), glm::vec3(this->sliderPos.x, this->sliderPos.y, 0.0f));
 	sliderModel = glm::scale(sliderModel, glm::vec3(this->sliderWidth, this->size.y, 1.0f));
 
-	glm::mat4 projection = glm::ortho(0.0f, SCREEN_WIDTH, SCREEN_HEIGHT, 0.0f);
+	glm::mat4 projection = glm::ortho(0.0f, Engine::Window->getWidth(), Engine::Window->getHeight(), 0.0f);
 
 	_buttonShader->use();
 	_buttonShader->setMat4("projection", projection);

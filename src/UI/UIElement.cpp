@@ -62,7 +62,7 @@ void	UIElement::anchorPos()
 {
 	if (this->anchor == UIAnchor::UI_TOP_CENTER)
 	{
-		this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
+		this->pos.x = Engine::Window->getWidth() / 2 - this->size.x / 2 + this->offset.x;
 		this->pos.y = 0 + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_TOP_LEFT)
@@ -72,57 +72,74 @@ void	UIElement::anchorPos()
 	}
 	else if (this->anchor == UIAnchor::UI_TOP_RIGHT)
 	{
-		this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
+		this->pos.x = Engine::Window->getWidth() - this->size.x + this->offset.x;
 		this->pos.y = 0 + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_CENTER)
 	{
-		this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
-		this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+		this->pos.x = Engine::Window->getWidth() / 2 - this->size.x / 2 + this->offset.x;
+		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_CENTER_LEFT)
 	{
 		this->pos.x = 0 + this->offset.x;
-		this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_CENTER_RIGHT)
 	{
-		this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
-		this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+		this->pos.x = Engine::Window->getWidth() - this->size.x + this->offset.x;
+		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_BOTTOM_CENTER)
 	{
-		this->pos.x = SCREEN_WIDTH / 2 - this->size.x / 2 + this->offset.x;
-		this->pos.y = SCREEN_HEIGHT - this->size.y + this->offset.y;
+		this->pos.x = Engine::Window->getWidth() / 2 - this->size.x / 2 + this->offset.x;
+		this->pos.y = Engine::Window->getHeight() - this->size.y + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_BOTTOM_LEFT)
 	{
 		this->pos.x = 0 + this->offset.x;
-		this->pos.y = SCREEN_HEIGHT - this->size.y + this->offset.y;
+		this->pos.y = Engine::Window->getHeight() - this->size.y + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_BOTTOM_RIGHT)
 	{
-		this->pos.x = SCREEN_WIDTH - this->size.x + this->offset.x;
-		this->pos.y = SCREEN_HEIGHT - this->size.y + this->offset.y;
+		this->pos.x = Engine::Window->getWidth() - this->size.x + this->offset.x;
+		this->pos.y = Engine::Window->getHeight() - this->size.y + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_CENTER_HALF_LEFT)
 	{
-		this->pos.x = (SCREEN_WIDTH * 0.25) - this->size.x / 2 + this->offset.x;
-		this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+		this->pos.x = (Engine::Window->getWidth() * 0.25) - this->size.x / 2 + this->offset.x;
+		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_CENTER_HALF_RIGHT)
 	{
-		this->pos.x = (SCREEN_WIDTH * 0.75) - this->size.x / 2 + this->offset.x;
-		this->pos.y = SCREEN_HEIGHT / 2 - this->size.y / 2 + this->offset.y;
+		this->pos.x = (Engine::Window->getWidth() * 0.75) - this->size.x / 2 + this->offset.x;
+		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
 	}
 	else if (this->anchor == UIAnchor::UI_TOP_CENTER_HALF)
 	{
-		this->pos.x = (SCREEN_WIDTH / 2) - this->size.x / 2 + this->offset.x;
-		this->pos.y = (SCREEN_HEIGHT * 0.25) - this->size.y + this->offset.y;
+		this->pos.x = (Engine::Window->getWidth() / 2) - this->size.x / 2 + this->offset.x;
+		this->pos.y = (Engine::Window->getHeight() * 0.25) - this->size.y + this->offset.y;
 	}
 		else if (this->anchor == UIAnchor::UI_BOTTOM_CENTER_HALF)
 	{
-		this->pos.x = (SCREEN_WIDTH / 2) - this->size.x / 2 + this->offset.x;
-		this->pos.y = (SCREEN_HEIGHT * 0.75) - this->size.y + this->offset.y;
+		this->pos.x = (Engine::Window->getWidth() / 2) - this->size.x / 2 + this->offset.x;
+		this->pos.y = (Engine::Window->getHeight() * 0.75) - this->size.y + this->offset.y;
 	}
+}
+
+void	UIElement::draw(Shader *shader, glm::vec2 pos, glm::vec2 size)
+{
+	initButtonQuad();
+
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f));
+	model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
+	glm::mat4 projection = glm::ortho(0.0f, Engine::Window->getWidth(), Engine::Window->getHeight(), 0.0f);
+
+	shader->use();
+	shader->setMat4("model", model);
+	shader->setMat4("projection", projection);
+
+	glBindVertexArray(UIquadVAO);
+	glDrawArrays(GL_TRIANGLES, 0, 6);
+	glBindVertexArray(0);
 }

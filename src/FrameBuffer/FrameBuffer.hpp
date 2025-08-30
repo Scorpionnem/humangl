@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 11:27:41 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 12:24:18 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:32:11 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,6 @@
 #include "libs.hpp"
 #include "Window.hpp"
 #include "Shader.hpp"
-extern float SCREEN_WIDTH;
-extern float SCREEN_HEIGHT;
 
 extern uint quadVAO;
 extern uint quadVBO;

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 10:35:00 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 21:59:42 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 11:07:51 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,7 @@
 
 bool	Terminal::specialInput(int key, int action)
 {
-	(void)action;
-	if (!(action == GLFW_PRESS || action == GLFW_REPEAT) || PAUSED)
+	if (!(action == GLFW_PRESS || action == GLFW_REPEAT))
 		return (false);
 	if (_active)
 	{
@@ -50,14 +49,14 @@ bool	Terminal::specialInput(int key, int action)
 		if (key == GLFW_KEY_SLASH)
 			_input = "/";
 		_cursor = _input.end();
-		glfwSetInputMode(Engine::Window->getWindowData(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		glfwSetInputMode(Engine::Window->data(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 	return (false);
 }
 
 void	Terminal::input(uint key)
 {
-	if (PAUSED || !_active)
+	if (!_active)
 		return ;
 
 	if (!_ignoreNext)
@@ -95,7 +94,7 @@ void	Terminal::_drawLine(std::string line, float offset)
 {
 	glm::vec2	pos;
 	pos.x = 0;
-	pos.y = SCREEN_HEIGHT - (offset * 16);
+	pos.y = Engine::Window->getHeight() - (offset * 16);
 
 	Engine::Font->putString(line, pos, {1, 1}, glm::vec3(1), true, false);
 }
@@ -133,7 +132,7 @@ void	Terminal::_moveLeft()
 	if (_cursor == _input.begin())
 		return ;
 	_cursor--;
-	if (glfwGetKey(Engine::Window->getWindowData(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		while (_cursor != _input.begin() && std::isalnum(*_cursor))
 			_cursor--;
@@ -146,7 +145,7 @@ void	Terminal::_moveRight()
 		return ;
 
 	_cursor++;
-	if (glfwGetKey(Engine::Window->getWindowData(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
 	{
 		while (_cursor != _input.end() && std::isalnum(*_cursor))
 			_cursor++;

@@ -2,7 +2,7 @@ NAME := humangl
 
 OBJ_DIR := ./obj/
 INCLUDE_DIRS := ./includes/ ./GLFW/include/GLFW/ ./includes/glad/. ./includes/render ./src/ ./glm/glm/ ./glm/glm/gtc/
-CLASSE_HEADERS := Camera/ ChunkMaker/ FrameBuffer/ Texture/ Shader/ Camera/ Window/ Managers/ UI/ UI/Elements UI/Interfaces Terminal/ Scenes/ World/
+CLASSE_HEADERS := Camera/ ChunkMaker/ FrameBuffer/ Texture/ Shader/ Camera/ Window/ Managers/ UI/ UI/Elements UI/Interfaces Terminal/ Scenes/ World/ Engine/
 
 GLFWARCHIVE = GLFW/build/src/libglfw3.a
 
@@ -41,7 +41,7 @@ CPP_FILES :=	main \
 				UI/Elements/Text\
 				UI/Elements/TextBox\
 				UI/Elements/Toggle\
-				Engine
+				Engine/Engine
 
 CPP_FILES := $(addsuffix .cpp, $(CPP_FILES))
 

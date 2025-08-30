@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:11:45 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 21:59:23 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 11:03:30 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,22 @@
 #include "FrameBuffer.hpp"
 #include "Engine.hpp"
 
+void	Window::close()
+{
+	if (!this->up())
+		return ;
+	glfwSetWindowShouldClose(this->data(), true);
+	Engine::log("Closing window.", LogSeverity::WARNING);
+}
+
 static void resize_hook(GLFWwindow* window, int width, int height)
 {
 	(void)window;
 	glViewport(0, 0, width, height);
-	SCREEN_WIDTH = width;
-	SCREEN_HEIGHT = height;
+	Engine::Window->setWidth(width);
+	Engine::Window->setHeight(height);
 	Engine::FrameBuffer->resize(width, height);
 }
-
-void	key_hook(GLFWwindow *window, int key, int scancode, int action, int mods);
-void	keyboard_input(GLFWwindow *window, unsigned int key);
-void	move_mouse_hook(GLFWwindow* window, double xpos, double ypos);
-void	press_mouse_hook(GLFWwindow* window, int button, int action, int mods);
-void	scroll_callback(GLFWwindow *, double xoffset, double yoffset);
 
 Window::Window() : _lastFrame(0)
 {
@@ -40,15 +42,18 @@ Window::Window() : _lastFrame(0)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+	this->_width = DEFAULT_WINDOW_WIDTH;
+	this->_height = DEFAULT_WINDOW_HEIGHT;
+
 	// Creates and opens window
 	GLFWmonitor	*monitor = NULL;
 	#if FULL_SCREEN
 		monitor = glfwGetPrimaryMonitor();
 		const GLFWvidmode	*monitorInfos = glfwGetVideoMode(monitor);
-		SCREEN_HEIGHT = monitorInfos->height;
-		SCREEN_WIDTH = monitorInfos->width;
+		this->_height = monitorInfos->height;
+		this->_width = monitorInfos->width;
 	#endif
-	_windowData = glfwCreateWindow(SCREEN_WIDTH, SCREEN_HEIGHT, WIN_NAME, monitor, NULL);
+	_windowData = glfwCreateWindow(this->_width, this->_height, WIN_NAME, monitor, NULL);
 	if (!_windowData)
 	{
 		glfwTerminate();
@@ -60,15 +65,15 @@ Window::Window() : _lastFrame(0)
 		glfwTerminate();
 		throw std::runtime_error("Failed to init GLAD");
 	}
-	glViewport(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
+	glViewport(0, 0, this->_width, this->_height);
 
 	glfwSetFramebufferSizeCallback(_windowData, resize_hook);
-	glfwSetKeyCallback(_windowData, key_hook);
-	glfwSetCharCallback(_windowData, keyboard_input);
-	glfwSetInputMode(this->getWindowData(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-	glfwSetCursorPosCallback(this->getWindowData(), move_mouse_hook);
-	glfwSetMouseButtonCallback(this->getWindowData(), press_mouse_hook);
-	glfwSetScrollCallback(this->getWindowData(), scroll_callback);
+	glfwSetKeyCallback(_windowData, Engine::keyboardKeyHook);
+	glfwSetCharCallback(_windowData, Engine::keyboardCharHook);
+	glfwSetInputMode(this->data(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	glfwSetCursorPosCallback(this->data(), Engine::moveMouseHook);
+	glfwSetMouseButtonCallback(this->data(), Engine::clickMouseHook);
+	glfwSetScrollCallback(this->data(), Engine::scrollMouseHook);
 
 	glClearColor(0.6, 0.8, 1.0, 1.0f);
 	glEnable(GL_DEPTH_TEST);
@@ -89,7 +94,7 @@ Window::~Window()
 	glfwTerminate();
 }
 
-GLFWwindow	*Window::getWindowData(void)
+GLFWwindow	*Window::data(void)
 {
 	return (this->_windowData);
 }
@@ -129,7 +134,7 @@ void		Window::center()
 	GLFWmonitor* monitor = glfwGetPrimaryMonitor();
 	const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
-	glfwSetWindowPos(_windowData, (mode->width / 2) - (SCREEN_WIDTH / 2), (mode->height / 2) - (SCREEN_HEIGHT / 2));
+	glfwSetWindowPos(_windowData, (mode->width / 2) - (this->_width / 2), (mode->height / 2) - (this->_height / 2));
 }
 
 void	Window::setDefaultMousePos()
