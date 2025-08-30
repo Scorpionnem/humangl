@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 12:47:06 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 12:54:58 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 18:09:40 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 glm::vec3	Timeline::getTranslation()
 {
+	if (!_keyframes.size())
+		return (glm::vec3(0));
 	if (_time <= _keyframes.front().getTime())
 		return (_keyframes.front().getTranslation());
 	if (_time >= _keyframes.back().getTime())
@@ -35,6 +37,8 @@ glm::vec3	Timeline::getTranslation()
 
 glm::vec3	Timeline::getRotation()
 {
+	if (!_keyframes.size())
+		return (glm::vec3(0));
 	if (_time <= _keyframes.front().getTime())
 		return (_keyframes.front().getRotation());
 	if (_time >= _keyframes.back().getTime())
@@ -56,6 +60,8 @@ glm::vec3	Timeline::getRotation()
 
 glm::vec3	Timeline::getScale()
 {
+	if (!_keyframes.size())
+		return (glm::vec3(0));
 	if (_time <= _keyframes.front().getTime())
 		return (_keyframes.front().getScale());
 	if (_time >= _keyframes.back().getTime())

@@ -60,11 +60,12 @@ std::string	getFPSString(bool debug)
 
 static void	_buildMainInterface(Interface *interface)
 {
-	interface->addElement("button_start", new Button(UIAnchor::UI_CENTER, "start", glm::vec2(0, -90), glm::vec2(300, 80), NULL, NULL));
+	(void)interface;
+	// interface->addElement("button_start", new Button(UIAnchor::UI_CENTER, "start", glm::vec2(0, -90), glm::vec2(300, 80), NULL, NULL));
 
-	interface->addElement("button_options", new Button(UIAnchor::UI_CENTER, "options", glm::vec2(0, 0), glm::vec2(300, 80), NULL, NULL));
+	// interface->addElement("button_options", new Button(UIAnchor::UI_CENTER, "options", glm::vec2(0, 0), glm::vec2(300, 80), NULL, NULL));
 
-	interface->addElement("button_quit", new Button(UIAnchor::UI_CENTER, "quit", glm::vec2(0, 90), glm::vec2(300, 80), [](ButtonInfo){Engine::Window->close();}, NULL));
+	// interface->addElement("button_quit", new Button(UIAnchor::UI_CENTER, "quit", glm::vec2(0, 90), glm::vec2(300, 80), [](ButtonInfo){Engine::Window->close();}, NULL));
 }
 
 static void	_buildInterface(Scene *scene)
@@ -83,8 +84,32 @@ static void	_buildInterface(Scene *scene)
 		}, false));	
 }
 
+static Camera	camera;
+
 static void	_frameKeyHook(Scene *)
 {
+	float	cameraSpeed = 1 * Engine::Window->getDeltaTime();
+	float	speedBoost = 1.0f;
+
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+		speedBoost = 20.0f;
+
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_LEFT_ALT) == GLFW_PRESS)
+		speedBoost *= 15.0f;
+
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_W) == GLFW_PRESS)
+		camera.pos = camera.pos + camera.front * (cameraSpeed * speedBoost);
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_S) == GLFW_PRESS)
+		camera.pos = camera.pos - camera.front * (cameraSpeed * speedBoost);
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_SPACE) == GLFW_PRESS)
+		camera.pos = camera.pos + camera.worldUp * (cameraSpeed * speedBoost);
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+		camera.pos = camera.pos - camera.worldUp * (cameraSpeed * speedBoost);
+
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_A) == GLFW_PRESS)
+		camera.pos = camera.pos - glm::normalize(glm::cross(camera.front, camera.worldUp)) * (cameraSpeed * speedBoost);
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_D) == GLFW_PRESS)
+		camera.pos = camera.pos + glm::normalize(glm::cross(camera.front, camera.worldUp)) * (cameraSpeed * speedBoost);
 }
 
 static void	_updateShaders(void)
@@ -117,14 +142,13 @@ static void	_charHookFunc(Scene *scene, uint key)
 
 Timeline	testtimeline;
 Timeline	testtimeline2;
+Timeline	testtimeline3;
 
-static void	_render(Scene *ptr)
+void	_draw2D(TitleScene *scene)
 {
-	TitleScene	*scene = static_cast<TitleScene*>(ptr);
-
     glDisable(GL_DEPTH_TEST);
 
-	FrameBuffer::drawFrame(Engine::Shaders->get("title_bg"), Engine::Textures->get(MBATTY_TEXTURE_PATH)->getID());
+	FrameBuffer::drawFrame(Engine::Shaders->get("title_bg"), Engine::Textures->get(SAND_TEXTURE_PATH)->getID());
 	scene->getInterfaceManager()->draw();
 
 	if (scene->getDebug())
@@ -137,9 +161,69 @@ static void	_render(Scene *ptr)
 	shader->setVec3("color", glm::vec3(1, 0, 0));
 		UIElement::draw(shader, glm::vec2(testtimeline.getTranslation() + testtimeline2.getTranslation()), glm::vec2(50, 50));
 
-	testtimeline.draw();
+	shader->setVec3("color", glm::vec3(0, 0, 1));
+	UIElement::draw(shader, glm::vec2(testtimeline.getTranslation() + testtimeline2.getTranslation() + testtimeline3.getTranslation()), glm::vec2(50, 50));
 
-    glEnable(GL_DEPTH_TEST);
+	testtimeline.draw(Engine::Window->getHeight() - 16);
+	testtimeline2.draw(Engine::Window->getHeight() - 32);
+
+	glEnable(GL_DEPTH_TEST);
+}
+
+static void	_render(Scene *ptr)
+{
+	TitleScene	*scene = static_cast<TitleScene*>(ptr);
+
+	// _draw2D(scene);
+
+	Shader	*shader2 = Engine::Shaders->get("cube");
+
+	shader2->use();
+
+	glm::mat4	model = glm::mat4(1.0);
+
+	glm::vec3	translation = testtimeline.getTranslation();
+	glm::vec3	rotation = testtimeline.getRotation();
+	glm::vec3	scale = testtimeline.getScale();
+
+	model = glm::translate(model, translation);
+	model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	model = glm::scale(model, scale);
+
+	shader2->setMat4("model", model);
+	camera.setViewMatrix(*shader2);
+
+	glBindVertexArray(scene->VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+}
+
+void	_moveMouseHookFunc(Scene*, double xpos, double ypos)
+{
+	float xoffset = xpos - Engine::Window->getLastMouseX();
+	float yoffset = Engine::Window->getLastMouseY() - ypos;
+
+	Engine::Window->setLastMouseX(xpos);
+	Engine::Window->setLastMouseY(ypos);
+
+	const float sensitivity = 0.1f;
+
+	xoffset *= sensitivity;
+	yoffset *= sensitivity;
+
+	camera.yaw += xoffset;
+	camera.pitch += yoffset;
+
+	if (camera.pitch > 89.0f)
+		camera.pitch = 89.0f;
+	if (camera.pitch < -89.0f)
+		camera.pitch = -89.0f;
+	if (camera.yaw > 360)
+		camera.yaw = 0;
+	if (camera.yaw < 0)
+		camera.yaw = 360;
 }
 
 static void	_update(Scene *ptr)
@@ -147,12 +231,12 @@ static void	_update(Scene *ptr)
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
 
 	testtimeline.update(Engine::Window->getDeltaTime());
-	testtimeline2.update(Engine::Window->getDeltaTime());
 
 	if (scene->getDebug())
 		scene->getInterfaceManager()->get("debug")->update();
 
 	_frameKeyHook(scene);
+	camera.update();
 	scene->getInterfaceManager()->update();
 	_updateShaders();
 }
@@ -164,6 +248,7 @@ static void	_close(Scene *scene)
 
 static void	_open(Scene *scene)
 {
+	Engine::Window->setDefaultMousePos();
 	scene->getInterfaceManager()->use("main");
 }
 
@@ -178,20 +263,86 @@ TitleScene::TitleScene()
 	this->setOpen(_open);
 	this->setClose(_close);
 
-	testtimeline.addKeyFrame(KeyFrame(0, {0, 0, 0}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(0.3, {100, 100, 100}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(2, {100, 0, 100}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(2.3, {0, 300, 100}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(4, {0, 0, 100}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(5, {400, 50, 100}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(6, {100, 100, 100}, {0, 0, 0}, {1, 1, 1}));
+	this->setMoveMouseHook(_moveMouseHookFunc);
 
-	testtimeline2.addKeyFrame(KeyFrame(0, {0, 0, 0}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline2.addKeyFrame(KeyFrame(0.2, {50, 50, 50}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline2.addKeyFrame(KeyFrame(0.4, {0, 0, 0}, {0, 0, 0}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(0, {1, 0, 0}, {0, 0, 0}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(0.8, {1, 0, 0}, {0, 0, 0}, {16, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(1.6, {1, 0, 0}, {360, 0, 0}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(2.4, {1, 0, 0}, {360, 0, 0}, {1, 1, 16}));
+	testtimeline.addKeyFrame(KeyFrame(3.2, {1, 0, 0}, {360, 0, 360}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(4.0, {1, 0, 0}, {360, 0, 360}, {1, 16, 1}));
+	testtimeline.addKeyFrame(KeyFrame(4.8, {1, 0, 0}, {360, 360, 360}, {1, 1, 1}));
+
+	std::vector<float> cube_vertices = {
+    // front face
+		-0.5f, -0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+		0.5f, -0.5f,  0.5f,
+
+		0.5f,  0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+
+		// back face
+		-0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+
+		0.5f,  0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
+
+		// left face
+		-0.5f,  0.5f,  0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f,  0.5f, -0.5f,
+
+		-0.5f, -0.5f, -0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f, -0.5f,  0.5f,
+
+		// right face
+		0.5f,  0.5f,  0.5f,
+		0.5f,  0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+
+		0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f,  0.5f,
+		0.5f,  0.5f,  0.5f,
+
+		// bottom face
+		-0.5f, -0.5f, -0.5f,
+		0.5f, -0.5f,  0.5f,
+		0.5f, -0.5f, -0.5f,
+
+		0.5f, -0.5f,  0.5f,
+		-0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f,  0.5f,
+
+		// top face
+		-0.5f,  0.5f, -0.5f,
+		0.5f,  0.5f, -0.5f,
+		0.5f,  0.5f,  0.5f,
+
+		0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f,  0.5f,
+		-0.5f,  0.5f, -0.5f
+	};
+
+
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glBindVertexArray(VAO);
+	
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, cube_vertices.size() * sizeof(float), cube_vertices.data(), GL_STATIC_DRAW);
+	
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+		glEnableVertexAttribArray(0);
+	
+		glBindVertexArray(0);
 }
 
 TitleScene::~TitleScene()
 {
-	
 }

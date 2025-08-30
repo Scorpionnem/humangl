@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:55:06 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 11:05:52 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 16:54:13 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ class Camera
 		float	yaw;
 		float	pitch;
 		float	speed;
-		float	renderDistance;
-		float	fov;
+		float	renderDistance = 1024;
+		float	fov = 80;
 };
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:52:22 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 11:22:33 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 15:16:33 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@ static void	_buildShaders()
 	Shader *guiShader = Engine::Shaders->load({"gui", GUI_VERT_SHADER_PATH, GUI_FRAG_SHADER_PATH});
 	Shader *titleBackground = Engine::Shaders->load({"title_bg", BACKGROUND_VERT_SHADER_PATH, BACKGROUND_FRAG_SHADER_PATH});
 	Engine::Shaders->load({"colored_quad", "shaders/coloredquad.vs", "shaders/coloredquad.fs"});
+	Engine::Shaders->load({"cube", "shaders/cube.vs", "shaders/cube.fs"});
 
 	guiShader->setInt("tex0", 0);
 

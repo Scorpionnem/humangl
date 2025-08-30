@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 11:41:02 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 13:25:05 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 18:04:42 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,27 @@ class	Timeline
 	public:
 		Timeline() {}
 		~Timeline() {}
+		Timeline(const Timeline &copy)
+		{
+			*this = copy;
+		}
+		Timeline	&operator=(const Timeline &copy)
+		{
+			if (this != &copy)
+			{
+				this->_keyframes = copy._keyframes;
+				this->_time = copy._time;
+				this->_loop = copy._loop;
+			}
+			return (*this);
+		}
 		glm::vec3	getTranslation();
 		glm::vec3	getRotation();
 		glm::vec3	getScale();
 		void	update(float deltaTime)
 		{
 			_time += deltaTime;
-			if (_loop && _time >= _keyframes.back().getTime())
+			if (_loop && _keyframes.size() && _time >= _keyframes.back().getTime())
 				_time = 0;
 		}
 		void	addKeyFrame(const KeyFrame &keyframe)
@@ -41,20 +55,25 @@ class	Timeline
 			_keyframes.insert(_keyframes.end(), keyframes.begin(), keyframes.end());
 			_sort();
 		}
-		void	draw()
+		void	draw(float y)
 		{
 			Shader	*shader = Engine::Shaders->get("colored_quad");
 
 			float	maxTime = 10;
-			float	keyFrameSize = 15;
+			float	keyFrameSize = 16;
+			float	pointerSize = 14;
+			float	posX = 0;
 
 			for (KeyFrame &keyframe : _keyframes)
 			{
-				float	posX = Engine::Window->getWidth() * (keyframe.getTime() / maxTime) - (keyFrameSize / 2);
+				posX = Engine::Window->getWidth() * (keyframe.getTime() / maxTime) - (keyFrameSize / 2);
 				
 				shader->setVec3("color", glm::vec3(0, 0.5, 0.7));
-					UIElement::draw(shader, glm::vec2(posX, 0), glm::vec2(16, 16));
+					UIElement::draw(shader, glm::vec2(posX, y), glm::vec2(keyFrameSize, keyFrameSize));
 			}
+			posX = Engine::Window->getWidth() * (_time / maxTime) - (pointerSize / 2);
+			shader->setVec3("color", glm::vec3(0.7, 0.0, 0.5));
+			UIElement::draw(shader, glm::vec2(posX, y), glm::vec2(pointerSize, pointerSize));
 		}
 	private:
 		void	_sort()

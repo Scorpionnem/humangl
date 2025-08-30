@@ -24,6 +24,9 @@ class	TitleScene : public Scene
 
 		bool	getDebug() {return (this->_debug);}
 		void	setDebug(bool state) {this->_debug = state;}
+		uint	VAO = 0;
+		uint	VBO = 0;
+		uint	EBO = 0;
 	private:
 		bool	_debug = false;
 };
