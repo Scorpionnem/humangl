@@ -137,6 +137,8 @@ static void	_render(Scene *ptr)
 	shader->setVec3("color", glm::vec3(1, 0, 0));
 		UIElement::draw(shader, glm::vec2(testtimeline.getTranslation() + testtimeline2.getTranslation()), glm::vec2(50, 50));
 
+	testtimeline.draw();
+
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -144,8 +146,8 @@ static void	_update(Scene *ptr)
 {
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
 
-	testtimeline.step(Engine::Window->getDeltaTime());
-	testtimeline2.step(Engine::Window->getDeltaTime());
+	testtimeline.update(Engine::Window->getDeltaTime());
+	testtimeline2.update(Engine::Window->getDeltaTime());
 
 	if (scene->getDebug())
 		scene->getInterfaceManager()->get("debug")->update();
@@ -177,9 +179,9 @@ TitleScene::TitleScene()
 	this->setClose(_close);
 
 	testtimeline.addKeyFrame(KeyFrame(0, {0, 0, 0}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(1, {100, 100, 100}, {0, 0, 0}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(0.3, {100, 100, 100}, {0, 0, 0}, {1, 1, 1}));
 	testtimeline.addKeyFrame(KeyFrame(2, {100, 0, 100}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(3, {0, 300, 100}, {0, 0, 0}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(2.3, {0, 300, 100}, {0, 0, 0}, {1, 1, 1}));
 	testtimeline.addKeyFrame(KeyFrame(4, {0, 0, 100}, {0, 0, 0}, {1, 1, 1}));
 	testtimeline.addKeyFrame(KeyFrame(5, {400, 50, 100}, {0, 0, 0}, {1, 1, 1}));
 	testtimeline.addKeyFrame(KeyFrame(6, {100, 100, 100}, {0, 0, 0}, {1, 1, 1}));
