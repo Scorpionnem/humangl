@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 11:05:13 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 12:01:27 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 11:24:14 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ class	SceneManager
 				_current->close();
 
 			_current = get(name);
-			_current->use();
+			_current->open();
 		}
 		void	update()
 		{
@@ -51,7 +51,7 @@ class	SceneManager
 
 				_current = _swap;
 				_swap = NULL;
-				_current->use();
+				_current->open();
 			}
 			if (_current)
 				_current->update();
@@ -67,7 +67,7 @@ class	SceneManager
 			_current = NULL;
 		}
 		bool	erase(const std::string &name);
-		Scene	*load(std::string name, std::function<void(Scene *)> build, std::function<void(Scene *)> destructor, std::function<void(Scene*)> onRender, std::function<void(Scene*)> onUpdate);
+		Scene	*load(std::string name, Scene *scene);
 		Scene	*get(const std::string &name);
 		Scene	*operator[](const std::string &name)
 		{

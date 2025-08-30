@@ -6,12 +6,12 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 11:52:22 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 11:04:39 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 11:22:33 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Engine.hpp"
-#include "TitleScreen.hpp"
+#include "TitleScene.hpp"
 
 Window			*Engine::Window;
 ShaderManager	*Engine::Shaders;
@@ -58,9 +58,7 @@ static void	_buildShaders()
 
 static void	_buildScenes()
 {
-	Scene	*titleScene = Engine::Scenes->load("title_scene", TitleScreen::build, TitleScreen::destructor, TitleScreen::render, TitleScreen::update);
-	titleScene->setClose(TitleScreen::close);
-	titleScene->setOpen(TitleScreen::open);
+	Engine::Scenes->load("title_scene", new TitleScene());
 	Engine::Scenes->use("title_scene");
 }
 

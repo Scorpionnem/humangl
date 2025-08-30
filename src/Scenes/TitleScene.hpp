@@ -2,7 +2,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   TitleScreen.hpp                                    :+:      :+:    :+:   */
+/*   TitleScene.hpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -11,19 +11,21 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef TITLESCREEN_HPP
-# define TITLESCREEN_HPP
+#ifndef TitleScene_HPP
+# define TitleScene_HPP
 
 # include "Scene.hpp"
 
-namespace	TitleScreen
+class	TitleScene : public Scene
 {
-	void	build(Scene *scene);
-	void	destructor(Scene *scene);
-	void	render(Scene *scene);
-	void	update(Scene *scene);
-	void	close(Scene *scene);
-	void	open(Scene *scene);
+	public:
+		TitleScene();
+		~TitleScene();
+
+		bool	getDebug() {return (this->_debug);}
+		void	setDebug(bool state) {this->_debug = state;}
+	private:
+		bool	_debug = false;
 };
 
 #endif

@@ -1,0 +1,8 @@
+# kf : float time : vec3 translation : vec2 rotation : float scale
+# object : string name
+
+object head
+kf 0.0   0.0 0.0 0.0   0.0 0.0   1.0
+
+object torso
+kf 0.0   0.0 0.0 0.0   0.0 0.0   1.0
