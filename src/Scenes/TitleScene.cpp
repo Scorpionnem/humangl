@@ -110,6 +110,9 @@ static void	_frameKeyHook(Scene *)
 		camera.pos = camera.pos - glm::normalize(glm::cross(camera.front, camera.worldUp)) * (cameraSpeed * speedBoost);
 	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_D) == GLFW_PRESS)
 		camera.pos = camera.pos + glm::normalize(glm::cross(camera.front, camera.worldUp)) * (cameraSpeed * speedBoost);
+
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(Engine::Window->data(), GLFW_TRUE);
 }
 
 static void	_updateShaders(void)
@@ -179,25 +182,28 @@ static void	_render(Scene *ptr)
 	Shader	*shader2 = Engine::Shaders->get("cube");
 
 	shader2->use();
-
-	glm::mat4	model = glm::mat4(1.0);
-
-	glm::vec3	translation = testtimeline.getTranslation();
-	glm::vec3	rotation = testtimeline.getRotation();
-	glm::vec3	scale = testtimeline.getScale();
-
-	model = glm::translate(model, translation);
-	model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
-	model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
-	model = glm::scale(model, scale);
-
-	shader2->setMat4("model", model);
 	camera.setViewMatrix(*shader2);
 
-	glBindVertexArray(scene->VAO);
-	glDrawArrays(GL_TRIANGLES, 0, 36);
-	glBindVertexArray(0);
+	scene->partTest.draw();
+
+	// glm::mat4	model = glm::mat4(1.0);
+
+	// glm::vec3	translation = testtimeline.getTranslation();
+	// glm::vec3	rotation = testtimeline.getRotation();
+	// glm::vec3	scale = testtimeline.getScale();
+
+	// model = glm::translate(model, translation);
+	// model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+	// model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	// model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	// model = glm::scale(model, scale);
+
+	// shader2->setMat4("model", model);
+	// camera.setViewMatrix(*shader2);
+
+	// glBindVertexArray(scene->VAO);
+	// glDrawArrays(GL_TRIANGLES, 0, 36);
+	// glBindVertexArray(0);
 }
 
 void	_moveMouseHookFunc(Scene*, double xpos, double ypos)
@@ -230,7 +236,8 @@ static void	_update(Scene *ptr)
 {
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
 
-	testtimeline.update(Engine::Window->getDeltaTime());
+	// testtimeline.update(Engine::Window->getDeltaTime());
+	scene->partTest.update(glm::mat4(1.0));
 
 	if (scene->getDebug())
 		scene->getInterfaceManager()->get("debug")->update();
@@ -254,6 +261,8 @@ static void	_open(Scene *scene)
 
 TitleScene::TitleScene()
 {
+	camera.pos = glm::vec3(-10, -10, 10);
+
 	_buildInterface(this);
 	this->setKeyHook(_keyHookFunc);
 	this->setCharHook(_charHookFunc);
@@ -266,81 +275,84 @@ TitleScene::TitleScene()
 	this->setMoveMouseHook(_moveMouseHookFunc);
 
 	testtimeline.addKeyFrame(KeyFrame(0, {1, 0, 0}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(0.8, {1, 0, 0}, {0, 0, 0}, {16, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(1.6, {1, 0, 0}, {360, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(2.4, {1, 0, 0}, {360, 0, 0}, {1, 1, 16}));
-	testtimeline.addKeyFrame(KeyFrame(3.2, {1, 0, 0}, {360, 0, 360}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(4.0, {1, 0, 0}, {360, 0, 360}, {1, 16, 1}));
-	testtimeline.addKeyFrame(KeyFrame(4.8, {1, 0, 0}, {360, 360, 360}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(8, {1, 0, 0}, {0, 0, 0}, {16, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(16, {1, 0, 0}, {360, 0, 0}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(24, {1, 0, 0}, {360, 0, 0}, {1, 1, 16}));
+	testtimeline.addKeyFrame(KeyFrame(32, {1, 0, 0}, {360, 0, 360}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(40, {1, 0, 0}, {360, 0, 360}, {1, 16, 1}));
+	testtimeline.addKeyFrame(KeyFrame(48, {1, 0, 0}, {360, 360, 360}, {1, 1, 1}));
 
-	std::vector<float> cube_vertices = {
-    // front face
-		-0.5f, -0.5f,  0.5f,
-		0.5f,  0.5f,  0.5f,
-		0.5f, -0.5f,  0.5f,
+	partTest = Part(testtimeline, glm::vec3(0.0f));
+	partTest.addChild(Part(testtimeline, glm::vec3(0.0f, 0.5f, 0.5f)));
 
-		0.5f,  0.5f,  0.5f,
-		-0.5f, -0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
+	// std::vector<float> cube_vertices = {
+    // // front face
+	// 	-0.5f, -0.5f,  0.5f,
+	// 	0.5f,  0.5f,  0.5f,
+	// 	0.5f, -0.5f,  0.5f,
 
-		// back face
-		-0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f, -0.5f,
-		0.5f,  0.5f, -0.5f,
+	// 	0.5f,  0.5f,  0.5f,
+	// 	-0.5f, -0.5f,  0.5f,
+	// 	-0.5f,  0.5f,  0.5f,
 
-		0.5f,  0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
+	// 	// back face
+	// 	-0.5f, -0.5f, -0.5f,
+	// 	0.5f, -0.5f, -0.5f,
+	// 	0.5f,  0.5f, -0.5f,
 
-		// left face
-		-0.5f,  0.5f,  0.5f,
-		-0.5f, -0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
+	// 	0.5f,  0.5f, -0.5f,
+	// 	-0.5f,  0.5f, -0.5f,
+	// 	-0.5f, -0.5f, -0.5f,
 
-		-0.5f, -0.5f, -0.5f,
-		-0.5f,  0.5f,  0.5f,
-		-0.5f, -0.5f,  0.5f,
+	// 	// left face
+	// 	-0.5f,  0.5f,  0.5f,
+	// 	-0.5f, -0.5f, -0.5f,
+	// 	-0.5f,  0.5f, -0.5f,
 
-		// right face
-		0.5f,  0.5f,  0.5f,
-		0.5f,  0.5f, -0.5f,
-		0.5f, -0.5f, -0.5f,
+	// 	-0.5f, -0.5f, -0.5f,
+	// 	-0.5f,  0.5f,  0.5f,
+	// 	-0.5f, -0.5f,  0.5f,
 
-		0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f,  0.5f,
-		0.5f,  0.5f,  0.5f,
+	// 	// right face
+	// 	0.5f,  0.5f,  0.5f,
+	// 	0.5f,  0.5f, -0.5f,
+	// 	0.5f, -0.5f, -0.5f,
 
-		// bottom face
-		-0.5f, -0.5f, -0.5f,
-		0.5f, -0.5f,  0.5f,
-		0.5f, -0.5f, -0.5f,
+	// 	0.5f, -0.5f, -0.5f,
+	// 	0.5f, -0.5f,  0.5f,
+	// 	0.5f,  0.5f,  0.5f,
 
-		0.5f, -0.5f,  0.5f,
-		-0.5f, -0.5f, -0.5f,
-		-0.5f, -0.5f,  0.5f,
+	// 	// bottom face
+	// 	-0.5f, -0.5f, -0.5f,
+	// 	0.5f, -0.5f,  0.5f,
+	// 	0.5f, -0.5f, -0.5f,
 
-		// top face
-		-0.5f,  0.5f, -0.5f,
-		0.5f,  0.5f, -0.5f,
-		0.5f,  0.5f,  0.5f,
+	// 	0.5f, -0.5f,  0.5f,
+	// 	-0.5f, -0.5f, -0.5f,
+	// 	-0.5f, -0.5f,  0.5f,
 
-		0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-		-0.5f,  0.5f, -0.5f
-	};
+	// 	// top face
+	// 	-0.5f,  0.5f, -0.5f,
+	// 	0.5f,  0.5f, -0.5f,
+	// 	0.5f,  0.5f,  0.5f,
+
+	// 	0.5f,  0.5f,  0.5f,
+	// 	-0.5f,  0.5f,  0.5f,
+	// 	-0.5f,  0.5f, -0.5f
+	// };
 
 
-		glGenVertexArrays(1, &VAO);
-		glGenBuffers(1, &VBO);
-		glBindVertexArray(VAO);
+	// 	glGenVertexArrays(1, &VAO);
+	// 	glGenBuffers(1, &VBO);
+	// 	glBindVertexArray(VAO);
 	
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-		glBufferData(GL_ARRAY_BUFFER, cube_vertices.size() * sizeof(float), cube_vertices.data(), GL_STATIC_DRAW);
+	// 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	// 	glBufferData(GL_ARRAY_BUFFER, cube_vertices.size() * sizeof(float), cube_vertices.data(), GL_STATIC_DRAW);
 	
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
+	// 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	// 	glEnableVertexAttribArray(0);
 	
-		glBindVertexArray(0);
+	// 	glBindVertexArray(0);
 }
 
 TitleScene::~TitleScene()

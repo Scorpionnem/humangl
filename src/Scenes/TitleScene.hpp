@@ -15,6 +15,7 @@
 # define TitleScene_HPP
 
 # include "Scene.hpp"
+# include "Part.hpp"
 
 class	TitleScene : public Scene
 {
@@ -27,6 +28,7 @@ class	TitleScene : public Scene
 		uint	VAO = 0;
 		uint	VBO = 0;
 		uint	EBO = 0;
+		Part	partTest;
 	private:
 		bool	_debug = false;
 };

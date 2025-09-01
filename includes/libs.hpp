@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libs.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: Invalid date        by                   #+#    #+#             */
-/*   Updated: 2025/08/28 11:53:05 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/01 21:08:56 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,5 +52,8 @@
 # include "glm.hpp"
 # include "gtc/matrix_transform.hpp"
 # include "gtc/type_ptr.hpp"
+
+#define GLM_ENABLE_EXPERIMENTAL
+#include "gtx/matrix_decompose.hpp"
 
 #endif
