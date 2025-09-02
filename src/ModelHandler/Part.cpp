@@ -6,16 +6,17 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 19:43:35 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/01 21:48:57 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/02 20:10:05 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <Part.hpp>
 
-Part::Part(const Timeline &timeLine, const glm::vec3 &anchor)
+Part::Part(const Timeline &timeLine, const glm::vec3 &anchor, const glm::vec3 &color)
 {
 	_timeLine = timeLine;
-	_anchor = anchor;
+	_anchor = 1.0f - anchor;
+	_color = color;
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -55,7 +56,7 @@ void	Part::updateAnchor(const glm::mat4 &parentMat)
 	// _mat = glm::rotate(_mat, glm::radians(rotation.y), glm::vec3(0, 1, 0));
 	// _mat = glm::rotate(_mat, glm::radians(rotation.z), glm::vec3(0, 0, 1));
 	_mat = glm::scale(_mat, 1.0f / scale);
-	_mat = glm::translate(_mat, scale / 2.0f);
+	_mat = glm::translate(_mat, -_anchor * scale + scale / 2.0f - translation); //-_anchor * scale + 
 }
 
 void	Part::update(const glm::mat4 &parentMat)
@@ -69,7 +70,7 @@ void	Part::update(const glm::mat4 &parentMat)
 	glm::vec3	rotation = _timeLine.getRotation();
 	glm::vec3	scale = _timeLine.getScale();
 
-	_mat = glm::translate(_mat, translation + _anchor + scale / 2.0f - 1.0f);
+	_mat = glm::translate(_mat, translation);// - glm::vec3(1.0f, 1.0f, 1.0f)
 	_mat = glm::rotate(_mat, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	_mat = glm::rotate(_mat, glm::radians(rotation.y), glm::vec3(0, 1, 0));
 	_mat = glm::rotate(_mat, glm::radians(rotation.z), glm::vec3(0, 0, 1));
@@ -82,6 +83,7 @@ void	Part::update(const glm::mat4 &parentMat)
 void	Part::draw()
 {
 	Engine::Shaders->get("cube")->setMat4("model", _mat);
+	Engine::Shaders->get("cube")->setVec3("color", _color);
 
 	glBindVertexArray(VAO);
 	glDrawArrays(GL_TRIANGLES, 0, 36);

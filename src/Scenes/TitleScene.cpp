@@ -184,7 +184,7 @@ static void	_render(Scene *ptr)
 	shader2->use();
 	camera.setViewMatrix(*shader2);
 
-	scene->partTest.draw();
+	scene->torso.draw();
 
 	// glm::mat4	model = glm::mat4(1.0);
 
@@ -237,7 +237,7 @@ static void	_update(Scene *ptr)
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
 
 	// testtimeline.update(Engine::Window->getDeltaTime());
-	scene->partTest.update(glm::mat4(1.0));
+	scene->torso.update(glm::mat4(1.0));
 
 	if (scene->getDebug())
 		scene->getInterfaceManager()->get("debug")->update();
@@ -274,16 +274,28 @@ TitleScene::TitleScene()
 
 	this->setMoveMouseHook(_moveMouseHookFunc);
 
-	testtimeline.addKeyFrame(KeyFrame(0, {1, 0, 0}, {0, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(8, {1, 0, 0}, {0, 0, 0}, {16, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(16, {1, 0, 0}, {360, 0, 0}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(24, {1, 0, 0}, {360, 0, 0}, {1, 1, 16}));
-	testtimeline.addKeyFrame(KeyFrame(32, {1, 0, 0}, {360, 0, 360}, {1, 1, 1}));
-	testtimeline.addKeyFrame(KeyFrame(40, {1, 0, 0}, {360, 0, 360}, {1, 16, 1}));
-	testtimeline.addKeyFrame(KeyFrame(48, {1, 0, 0}, {360, 360, 360}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(0 * 6.0f, {0, 0, 0}, {0, 0, 0}, {1, 1, 1}));
+	// testtimeline.addKeyFrame(KeyFrame(0.8 * 3.0f, {0, 0, 0}, {0, 0, 0}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(0.8 * 6.0f, {0, 0, 0}, {0, 0, 0}, {10, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(1.6 * 6.0f, {0, 0, 0}, {360, 0, 0}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(2.4 * 6.0f, {0, 0, 0}, {360, 0, 0}, {1, 1, 16}));
+	testtimeline.addKeyFrame(KeyFrame(3.2 * 6.0f, {0, 0, 0}, {360, 0, 360}, {1, 1, 1}));
+	testtimeline.addKeyFrame(KeyFrame(4.0 * 6.0f, {0, 0, 0}, {360, 0, 360}, {1, 16, 1}));
+	testtimeline.addKeyFrame(KeyFrame(4.8 * 6.0f, {0, 0, 0}, {360, 360, 360}, {1, 1, 1}));
 
-	partTest = Part(testtimeline, glm::vec3(0.0f));
-	partTest.addChild(Part(testtimeline, glm::vec3(0.0f, 0.5f, 0.5f)));
+	torso = Part(testtimeline, glm::vec3(0.0f), glm::vec3(0.2f, 0.8f, 0.2f));
+
+	Part	leftLeg = Part(testtimeline, glm::vec3(0.0f, 0.0f, 1.0f), glm::vec3(0.2f, 0.2f, 0.8f));
+	leftLeg.addChild(Part(testtimeline, glm::vec3(1.0f, 0.0f, 0.5f), glm::vec3(0.8f, 0.2f, 0.2f)));
+	// Part	rightLeg = Part(testtimeline, glm::vec3(0.0f, 0.0f, 0.5f), glm::vec3(0.2f, 0.2f, 0.8f));
+	// rightLeg.addChild(Part(testtimeline, glm::vec3(0.0f), glm::vec3(0.2f, 0.2f, 0.8f)));
+
+	// Part	leftLeg = Part(testtimeline, glm::vec3(0.0f, 0.0f, -0.5f), glm::vec3(0.2f, 0.2f, 0.8f));
+	// leftLeg.addChild(Part(testtimeline, glm::vec3(0.0f), glm::vec3(0.2f, 0.2f, 0.8f)));
+	// Part	rightLeg = Part(testtimeline, glm::vec3(0.0f, 0.0f, 0.5f), glm::vec3(0.2f, 0.2f, 0.8f));
+	// rightLeg.addChild(Part(testtimeline, glm::vec3(0.0f), glm::vec3(0.2f, 0.2f, 0.8f)));
+
+	torso.addChild(leftLeg);
 
 	// std::vector<float> cube_vertices = {
     // // front face

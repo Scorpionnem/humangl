@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:31:40 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/01 21:09:56 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/02 20:03:42 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 class Part
 {
 	public:
-		Part(const Timeline &timeLine, const glm::vec3 &anchor);
+		Part(const Timeline &timeLine, const glm::vec3 &anchor, const glm::vec3 &color);
 		Part();
 		~Part();
 	
@@ -35,11 +35,13 @@ class Part
 	
 	private:
 		glm::mat4			_mat;
+		// glm::mat4			_parentMat;
 		glm::vec3			_anchor = glm::vec3(0.0f);
 		std::vector<Part>	_children;
 		Timeline			_timeLine;
 		uint				VAO = 0;
 		uint				VBO = 0;
+		glm::vec3			_color = glm::vec3(0.0f);
 };
 
 #endif
