@@ -6,7 +6,7 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:31:40 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/02 20:03:42 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/03 13:43:05 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 class Part
 {
 	public:
-		Part(const Timeline &timeLine, const glm::vec3 &anchor, const glm::vec3 &color);
+		Part(const Timeline &timeLine, const glm::vec3 &pointAnchor, const glm::vec3 &baseAnchor, const glm::vec3 &color);
 		Part();
 		~Part();
 	
@@ -31,12 +31,14 @@ class Part
 		void	update(const glm::mat4 &parentMat);
 		void	draw();
 
+		glm::vec3	getAnchor() const;
+
 		static std::vector<float> defaultCube;
 	
 	private:
 		glm::mat4			_mat;
-		// glm::mat4			_parentMat;
-		glm::vec3			_anchor = glm::vec3(0.0f);
+		glm::vec3			_pointAnchor = glm::vec3(0.0f);
+		glm::vec3			_baseAnchor = glm::vec3(0.0f);
 		std::vector<Part>	_children;
 		Timeline			_timeLine;
 		uint				VAO = 0;

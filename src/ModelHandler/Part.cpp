@@ -6,16 +6,17 @@
 /*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 19:43:35 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/02 20:10:05 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/04 10:50:48 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <Part.hpp>
 
-Part::Part(const Timeline &timeLine, const glm::vec3 &anchor, const glm::vec3 &color)
+Part::Part(const Timeline &timeLine, const glm::vec3 &pointAnchor, const glm::vec3 &baseAnchor, const glm::vec3 &color)
 {
 	_timeLine = timeLine;
-	_anchor = 1.0f - anchor;
+	_pointAnchor = pointAnchor;
+	_baseAnchor = baseAnchor;
 	_color = color;
 
 	glGenVertexArrays(1, &VAO);
@@ -37,6 +38,10 @@ Part::Part()
 Part::~Part()
 {}
 
+glm::vec3	Part::getAnchor() const
+{
+	return (_pointAnchor);
+}
 
 void	Part::addChild(const Part &child)
 {
@@ -52,11 +57,8 @@ void	Part::updateAnchor(const glm::mat4 &parentMat)
 	glm::vec4 perspective;
 	glm::decompose(parentMat, scale, rotation, translation, skew, perspective);
 
-	// _mat = glm::rotate(_mat, glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	// _mat = glm::rotate(_mat, glm::radians(rotation.y), glm::vec3(0, 1, 0));
-	// _mat = glm::rotate(_mat, glm::radians(rotation.z), glm::vec3(0, 0, 1));
 	_mat = glm::scale(_mat, 1.0f / scale);
-	_mat = glm::translate(_mat, -_anchor * scale + scale / 2.0f - translation); //-_anchor * scale + 
+	_mat = glm::translate(_mat, _pointAnchor * (scale / 2.0f));
 }
 
 void	Part::update(const glm::mat4 &parentMat)
@@ -70,10 +72,12 @@ void	Part::update(const glm::mat4 &parentMat)
 	glm::vec3	rotation = _timeLine.getRotation();
 	glm::vec3	scale = _timeLine.getScale();
 
-	_mat = glm::translate(_mat, translation);// - glm::vec3(1.0f, 1.0f, 1.0f)
+	_mat = glm::translate(_mat, translation - _baseAnchor * (scale / 2.0f));
+	_mat = glm::translate(_mat, (_baseAnchor / 2.0f) * (scale));
 	_mat = glm::rotate(_mat, glm::radians(rotation.x), glm::vec3(1, 0, 0));
 	_mat = glm::rotate(_mat, glm::radians(rotation.y), glm::vec3(0, 1, 0));
 	_mat = glm::rotate(_mat, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	_mat = glm::translate(_mat, -_baseAnchor * (scale / 2.0f));
 	_mat = glm::scale(_mat, scale);
 
 	for (Part &part : _children)

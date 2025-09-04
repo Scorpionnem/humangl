@@ -28,7 +28,7 @@ class	TitleScene : public Scene
 		uint	VAO = 0;
 		uint	VBO = 0;
 		uint	EBO = 0;
-		Part	torso;
+		Part	body;
 	private:
 		bool	_debug = false;
 };

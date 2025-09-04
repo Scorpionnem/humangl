@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Camera.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/12 20:54:38 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 16:54:10 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/04 13:42:19 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 
 Camera::Camera()
 {
-	this->yaw = -90.0f;
+	this->yaw = 0.0f;
 	this->pitch = 0.0f;
 	this->deltaTime = 0.0f;
 	this->lastFrame = 0.0f;

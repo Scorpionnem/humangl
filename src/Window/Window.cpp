@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Window.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:11:45 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 11:03:30 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/04 14:16:34 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,8 @@ Window::Window() : _lastFrame(0)
 		throw std::runtime_error("Failed to init GLAD");
 	}
 	glViewport(0, 0, this->_width, this->_height);
+
+	glfwSetCursorPos(_windowData, 0, 0);
 
 	glfwSetFramebufferSizeCallback(_windowData, resize_hook);
 	glfwSetKeyCallback(_windowData, Engine::keyboardKeyHook);
