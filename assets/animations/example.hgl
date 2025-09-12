@@ -1,8 +1,14 @@
-# kf : float time : vec3 translation : vec2 rotation : float scale
-# object : string name
-
-object head
-kf 0.0   0.0 0.0 0.0   0.0 0.0 0.0   1.0 1.0 1.0
-
-object torso
-kf 0.0   0.0 0.0 0.0   0.0 0.0 0.0   1.0 1.0 1.0
+# 42 humangl project export file by mbatty & mbirou
+# keys used in the file
+#	define : string name
+#		-Defines an object to be used in the file
+#	object : string name
+#		-Sets the object as used
+#	children : string name
+#		-Sets the children of the used object
+#	kft : float time : vec3 translation
+#		-Sets the translation values to the used object
+#	kfr : float time : vec3 rotation
+#		-Sets the rotation values to the used object
+#	kfs : float time : vec3 scale
+#		-Sets the scale values to the used object

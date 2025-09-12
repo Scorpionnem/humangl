@@ -3,21 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   Part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 19:43:35 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/04 10:50:48 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/12 11:33:31 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <Part.hpp>
 
-Part::Part(const Timeline &timeLine, const glm::vec3 &pointAnchor, const glm::vec3 &baseAnchor, const glm::vec3 &color)
+Part::Part(std::string id, const Timeline &timeLine, const glm::vec3 &pointAnchor, const glm::vec3 &baseAnchor, const glm::vec3 &color)
 {
 	_timeLine = timeLine;
 	_pointAnchor = pointAnchor;
 	_baseAnchor = baseAnchor;
 	_color = color;
+	_id = id;
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -68,9 +69,9 @@ void	Part::update(const glm::mat4 &parentMat)
 	_mat = parentMat;
 	updateAnchor(parentMat);
 
-	glm::vec3	translation = _timeLine.getTranslation();
-	glm::vec3	rotation = _timeLine.getRotation();
-	glm::vec3	scale = _timeLine.getScale();
+	glm::vec3	translation = _timeLine.getValue(KeyFrameType::TRANSLATION);
+	glm::vec3	rotation = _timeLine.getValue(KeyFrameType::ROTATION);
+	glm::vec3	scale = _timeLine.getValue(KeyFrameType::SCALE);
 
 	_mat = glm::translate(_mat, translation - _baseAnchor * (scale / 2.0f));
 	_mat = glm::translate(_mat, (_baseAnchor / 2.0f) * (scale));

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 13:25:08 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 13:25:27 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/12 11:00:49 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,22 +15,18 @@
 
 #include "libs.hpp"
 
+template	<typename T>
 class	KeyFrame
 {
 	public:
 		KeyFrame()
 		{
 			_time = 0;
-			_translation = glm::vec3(0);
-			_rotation = glm::vec3(0);
-			_scale = glm::vec3(0);
 		}
-		KeyFrame(float time, glm::vec3 translation, glm::vec3 rotation, glm::vec3 scale) : KeyFrame()
+		KeyFrame(float time, T value) : KeyFrame()
 		{
 			this->_time = time;
-			this->_translation = translation;
-			this->_rotation = rotation;
-			this->_scale = scale;
+			_value = value;
 		}
 		~KeyFrame()
 		{
@@ -45,9 +41,7 @@ class	KeyFrame
 			if (this != &copy)
 			{
 				this->_time = copy._time;
-				this->_translation = copy._translation;
-				this->_rotation = copy._rotation;
-				this->_scale = copy._scale;
+				this->_value = copy._value;
 			}
 			return (*this);
 		}
@@ -55,23 +49,13 @@ class	KeyFrame
 		{
 			return (_time);
 		}
-		glm::vec3	getTranslation() const
+		T	getValue() const
 		{
-			return (_translation);
-		}
-		glm::vec3	getRotation() const
-		{
-			return (_rotation);
-		}
-		glm::vec3	getScale() const
-		{
-			return (_scale);
+			return (_value);
 		}
 	private:
 		float		_time;
-		glm::vec3		_translation;
-		glm::vec3		_rotation;
-		glm::vec3		_scale;
+		T			_value;
 };
 
 #endif

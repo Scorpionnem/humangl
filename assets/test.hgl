@@ -1,0 +1,54 @@
+# 42 humangl project export file by mbatty & mbirou
+# keys used in the file
+#	define : string name
+#		-Defines an object to be used in the file
+#	object : string name
+#		-Sets the object as used
+#	children : string name
+#		-Sets the children of the used object
+#	kft : float time : vec3 translation
+#		-Sets the translation values to the used object
+#	kfr : float time : vec3 rotation
+#		-Sets the rotation values to the used object
+#	kfs : float time : vec3 scale
+#		-Sets the scale values to the used object
+
+define head
+define lowerLeftArm
+define upperLeftArm
+define lowerRightArm
+define upperRightArm
+define lowerLeftLeg
+define upperLeftLeg
+define lowerRightLeg
+define upperRightLeg
+define torso
+
+object head
+
+object upperLeftArm
+children lowerLeftArm
+
+object upperRightArm
+children lowerRightArm
+
+object upperLeftLeg
+children lowerLeftLeg
+
+object upperRightLeg
+children lowerRightLeg
+
+object torso
+children head
+children upperLeftArm
+children upperRightArm
+children upperLeftLeg
+children upperRightLeg
+kft 0 0 0 0
+kft 3 10 10 10
+kfr 0 0 0 0
+kfr 2 0 360 0
+kfs 0 5 5 5
+kfs 1 10 10 10
+kfs 2 5 5 5
+
