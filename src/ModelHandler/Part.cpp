@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 19:43:35 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/12 11:33:31 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/13 15:40:38 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,3 +153,47 @@ std::vector<float> Part::defaultCube = {
 	-0.5f,  0.5f,  0.5f,
 	-0.5f,  0.5f, -0.5f
 };
+
+void	Part::exportAnimation(std::string path)
+{
+	std::ofstream	file;
+
+	file.open(path);
+	if (!file.is_open())
+		return ;
+
+	_addHeader(file);
+
+	_defineExport(file);
+	file << std::endl;
+	
+	for (auto &part : _children)
+		part._exportObject(file);
+	_exportObject(file);
+}
+
+void	Part::_addHeader(std::ofstream &file)
+{
+	file << HGL_HEADER << std::endl;
+}
+
+void	Part::_exportObject(std::ofstream &file)
+{
+	file << "object " << _id << std::endl;
+	_childrenExport(file);
+	_timeLine.exportTimeline(file);
+	file << std::endl;
+}
+
+void	Part::_defineExport(std::ofstream &file)
+{
+	for (auto &part : _children)
+		part._defineExport(file);
+	file << "define " << _id << " path_to_model.obj" << std::endl;
+}
+
+void	Part::_childrenExport(std::ofstream &file)
+{
+	for (auto &part : _children)
+		file << "children " << part._id << std::endl;
+}

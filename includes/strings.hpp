@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 12:15:48 by mbatty            #+#    #+#             */
-/*   Updated: 2025/07/25 20:11:24 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/13 15:35:08 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,5 +43,21 @@
 # define WATER_TEXTURE_PATH "assets/textures/blocks/water.bmp"
 
 # define TITLE_TEXTURE_PATH "assets/textures/ui/title.bmp"
+
+# define	HGL_HEADER "# 42 humangl project export file by mbatty & mbirou\n\
+# keys used in the file\n\
+#	define : string name\n\
+#		-Defines an object to be used in the file\n\
+#	object : string name\n\
+#		-Sets the object as used\n\
+#	children : string name\n\
+#		-Sets the children of the used object\n\
+#	kft : float time : vec3 translation\n\
+#		-Sets the translation values to the used object\n\
+#	kfr : float time : vec3 rotation\n\
+#		-Sets the rotation values to the used object\n\
+#	kfs : float time : vec3 scale\n\
+#		-Sets the scale values to the used object\n\
+"
 
 #endif

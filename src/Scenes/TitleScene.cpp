@@ -506,7 +506,7 @@ TitleScene::TitleScene()
 	body.addChild(leftLeg);
 	body.addChild(rightLeg);
 
-	body.exportTimeline("assets/test.hgl");
+	body.exportAnimation("assets/test.hgl");
 }
 
 TitleScene::~TitleScene()
