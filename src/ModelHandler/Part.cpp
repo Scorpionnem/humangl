@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 19:43:35 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/13 15:40:38 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/14 14:08:37 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -189,7 +189,7 @@ void	Part::_defineExport(std::ofstream &file)
 {
 	for (auto &part : _children)
 		part._defineExport(file);
-	file << "define " << _id << " path_to_model.obj" << std::endl;
+	file << "define " << _id << std::endl;
 }
 
 void	Part::_childrenExport(std::ofstream &file)

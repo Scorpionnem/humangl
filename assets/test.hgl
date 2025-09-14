@@ -13,16 +13,16 @@
 #	kfs : float time : vec3 scale
 #		-Sets the scale values to the used object
 
-define head path_to_model.obj
-define lowerLeftArm path_to_model.obj
-define upperLeftArm path_to_model.obj
-define lowerRightArm path_to_model.obj
-define upperRightArm path_to_model.obj
-define lowerLeftLeg path_to_model.obj
-define upperLeftLeg path_to_model.obj
-define lowerRightLeg path_to_model.obj
-define upperRightLeg path_to_model.obj
-define torso path_to_model.obj
+define head
+define lowerLeftArm
+define upperLeftArm
+define lowerRightArm
+define upperRightArm
+define lowerLeftLeg
+define upperLeftLeg
+define lowerRightLeg
+define upperRightLeg
+define torso
 
 object head
 

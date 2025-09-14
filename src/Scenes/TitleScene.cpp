@@ -506,6 +506,16 @@ TitleScene::TitleScene()
 	body.addChild(leftLeg);
 	body.addChild(rightLeg);
 
+	#include "Model.hpp"
+
+	Model	caca;
+
+	try {
+		caca.load("walking", "assets/test.hgl");
+	} catch (const std::exception &e) {
+		Engine::log(e.what());
+	}
+
 	body.exportAnimation("assets/test.hgl");
 }
 

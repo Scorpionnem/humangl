@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/13 16:01:01 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/14 14:09:03 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,9 @@ class	Animation
 			if (!file.is_open())
 				throw std::runtime_error("Could not open file");
 
+			std::cout << "Loading " << path << std::endl;
+
+			std::string			current;
 			while (std::getline(file, fileLine))
 			{
 				std::istringstream	line(fileLine);
@@ -42,7 +45,39 @@ class	Animation
 				line >> word;
 				if (word == "define")
 				{
-					std::cout << "define" << std::endl;
+					std::string	object;
+					std::string	path;
+					line >> object;
+					std::cout << "define " << object << std::endl;
+
+					_timelines.insert({object, Timeline()});
+				}
+				if (word == "object")
+				{
+					std::string	object;
+					line >> object;
+					std::cout << "object " << object << std::endl;	
+
+					current = object;
+				}
+				if (word == "children")
+				{
+					std::string	object;
+					line >> object;
+					std::cout << "children " << object << std::endl;	
+					
+				}
+				if (word == "kft")
+				{
+					_addKeyFrame(KeyFrameType::TRANSLATION, current, line);
+				}
+				if (word == "kfr")
+				{
+					_addKeyFrame(KeyFrameType::ROTATION, current, line);
+				}
+				if (word == "kfs")
+				{
+					_addKeyFrame(KeyFrameType::SCALE, current, line);
 				}
 			}
 		}
@@ -52,11 +87,20 @@ class	Animation
 		{
 			return (_timelines[id]);
 		}
-		Timeline	&operator[](const std::string &name)
-		{
-			return (this->get(name));
-		}
 	private:
+		void	_addKeyFrame(KeyFrameType type, const std::string &id, std::istringstream &line)
+		{
+			float	time;
+			float	x;
+			float	y;
+			float	z;
+
+			line >> time >> x >> y >> z;
+			std::cout << (int)type << " " << x << " " << y << " " << z << std::endl;
+			if (id.empty())
+				throw std::runtime_error("no defined object");
+			_timelines[id].addKeyFrame(type, KeyFrame(time, glm::vec3(x, y, z)));
+		}
 		std::map<std::string, Timeline>	_timelines;
 };
 
@@ -78,10 +122,6 @@ class	AnimationManager
 		Animation	&get(const std::string &id)
 		{
 			return (_animations[id]);
-		}
-		Animation	&operator[](const std::string &name)
-		{
-			return (this->get(name));
 		}
 	private:
 		std::map<std::string, Animation>	_animations;
