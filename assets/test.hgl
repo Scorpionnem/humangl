@@ -25,18 +25,23 @@ define upperRightLeg
 define torso
 
 object head
+kfs 0 5 5 5
 
 object upperLeftArm
 children lowerLeftArm
+kfs 0 5 5 5
 
 object upperRightArm
 children lowerRightArm
+kfs 0 5 5 5
 
 object upperLeftLeg
 children lowerLeftLeg
+kfs 0 5 5 5
 
 object upperRightLeg
 children lowerRightLeg
+kfs 0 5 5 5
 
 object torso
 children head
@@ -49,6 +54,3 @@ kft 3 10 10 10
 kfr 0 0 0 0
 kfr 2 0 360 0
 kfs 0 5 5 5
-kfs 1 10 10 10
-kfs 2 5 5 5
-

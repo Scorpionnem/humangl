@@ -6,14 +6,15 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:29:09 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/14 14:12:48 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/15 11:13:39 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef MODEL_HPP
+# define MODEL_HPP
+
 #include <libs.hpp>
 #include <Part.hpp>
-
-# include "AnimationManager.hpp"
 
 /*
 
@@ -33,13 +34,47 @@ class Model
 		Model() {}
 		~Model() {}
 	
-		void	render();
-		void	update();
-		void	load(const std::string &id, const std::string &path)
+		void	draw()
 		{
-			_animations.load(id, path);
+			_root->draw();
+		}
+		void	update()
+		{
+			_root->update(glm::mat4(1.0f));
+		}
+		// Will load the model
+		// void	load(const std::string &id, const std::string &path)
+		// {
+		// 	_animations.load(id, path);
+		// }
+		std::map<std::string, Part*>	&getParts()
+		{
+			return (_parts);
+		}
+		void	setRoot(Part *root)
+		{
+			_root = root;
+		}
+		void	setRoot(const std::string &id)
+		{
+			_root = _parts[id];
+		}
+		void	addPart(Part *part)
+		{
+			_parts.insert({part->id(), part});
+		}
+		void	setChild(const std::string &parentID, Part *part)
+		{
+			_parts[parentID]->addChild(part);
+			addPart(part);
+		}
+		void	setChild(const std::string &parentID, const std::string &childID)
+		{
+			_parts[parentID]->addChild(_parts[childID]);
 		}
 	private:
-		std::vector<Part>	_parts;
-		AnimationManager	_animations;
+		std::map<std::string, Part*>	_parts;
+		Part				*_root;
 };
+
+#endif

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/14 14:09:03 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/15 11:36:39 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 
 # include "libs.hpp"
 # include "Timeline.hpp"
+# include "Model.hpp"
 
 /*
 
@@ -50,13 +51,13 @@ class	Animation
 					line >> object;
 					std::cout << "define " << object << std::endl;
 
-					_timelines.insert({object, Timeline()});
+					_timelines.insert({object, new Timeline()});
 				}
 				if (word == "object")
 				{
 					std::string	object;
 					line >> object;
-					std::cout << "object " << object << std::endl;	
+					std::cout << "object " << object << std::endl;
 
 					current = object;
 				}
@@ -64,7 +65,7 @@ class	Animation
 				{
 					std::string	object;
 					line >> object;
-					std::cout << "children " << object << std::endl;	
+					std::cout << "children " << object << std::endl;
 					
 				}
 				if (word == "kft")
@@ -83,7 +84,7 @@ class	Animation
 		}
 		~Animation() {}
 
-		Timeline	&get(const std::string &id)
+		Timeline	*get(const std::string &id)
 		{
 			return (_timelines[id]);
 		}
@@ -96,12 +97,12 @@ class	Animation
 			float	z;
 
 			line >> time >> x >> y >> z;
-			std::cout << (int)type << " " << x << " " << y << " " << z << std::endl;
+			std::cout << id << " " << (int)type << " " << x << " " << y << " " << z << std::endl;
 			if (id.empty())
 				throw std::runtime_error("no defined object");
-			_timelines[id].addKeyFrame(type, KeyFrame(time, glm::vec3(x, y, z)));
+			_timelines[id]->addKeyFrame(type, KeyFrame(time, glm::vec3(x, y, z)));
 		}
-		std::map<std::string, Timeline>	_timelines;
+		std::map<std::string, Timeline*>	_timelines;
 };
 
 /*
@@ -117,14 +118,22 @@ class	AnimationManager
 
 		void	load(const std::string &id, const std::string &path)
 		{
-			_animations.insert({id, Animation(path)});
+			_animations.insert({id, new Animation(path)});
 		}
-		Animation	&get(const std::string &id)
+		//Plays the animation to the model
+		void	play(const std::string &id, Model &model)
 		{
-			return (_animations[id]);
+			std::map<std::string, Part*>	&parts = model.getParts();
+			Animation	*current = _animations[id];
+
+			for (auto part : parts)
+			{
+				part.second->setTimeline(current->get(part.second->id()));
+				std::cout << part.second->id() << " changed timeline" << std::endl;
+			}
 		}
 	private:
-		std::map<std::string, Animation>	_animations;
+		std::map<std::string, Animation*>	_animations;
 };
 
 #endif

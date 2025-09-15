@@ -169,9 +169,14 @@ static void	_charHookFunc(Scene *scene, uint key)
 // 	glEnable(GL_DEPTH_TEST);
 // }
 
+#include "Model.hpp"
+
+Model	model;
+
 static void	_render(Scene *ptr)
 {
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
+	(void)scene;
 
 	// _draw2D(scene);
 
@@ -180,7 +185,8 @@ static void	_render(Scene *ptr)
 	shader2->use();
 	camera.setViewMatrix(*shader2);
 
-	scene->body.draw();
+	// scene->body.draw();
+	model.draw();
 
 	// glm::mat4	model = glm::mat4(1.0);
 
@@ -234,6 +240,7 @@ static void	_update(Scene *ptr)
 
 	// testtimeline.update(Engine::Window->getDeltaTime());
 	scene->body.update(glm::mat4(1.0));
+	model.update();
 
 	if (scene->getDebug())
 		scene->getInterfaceManager()->get("debug")->update();
@@ -488,35 +495,54 @@ TitleScene::TitleScene()
 	// lowerRightLeg.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
 
 
-	body = Part("torso", torso, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(6,99,6) / 255.0f);
+	// body = Part("torso", torso, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(6,99,6) / 255.0f);
 
-	Part leftArm = Part("upperLeftArm", upperLeftArm, glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(224,171,148) / 255.0f);
-	Part rightArm = Part("upperRightArm", upperRightArm, glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(224,171,148) / 255.0f);
-	leftArm.addChild(Part("lowerLeftArm", lowerLeftArm, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
-	rightArm.addChild(Part("lowerRightArm", lowerRightArm, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	// Part leftArm = Part("upperLeftArm", upperLeftArm, glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(224,171,148) / 255.0f);
+	// Part rightArm = Part("upperRightArm", upperRightArm, glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(224,171,148) / 255.0f);
+	// leftArm.addChild(Part("lowerLeftArm", lowerLeftArm, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	// rightArm.addChild(Part("lowerRightArm", lowerRightArm, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
 
-	Part leftLeg = Part("upperLeftLeg", upperLeftLeg, glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(3,76,153) / 255.0f);
-	Part rightLeg = Part("upperRightLeg", upperRightLeg, glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3(3,76,153) / 255.0f);
-	leftLeg.addChild(Part("lowerLeftLeg", lowerLeftLeg, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
-	rightLeg.addChild(Part("lowerRightLeg", lowerRightLeg, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
+	// Part leftLeg = Part("upperLeftLeg", upperLeftLeg, glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(3,76,153) / 255.0f);
+	// Part rightLeg = Part("upperRightLeg", upperRightLeg, glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3(3,76,153) / 255.0f);
+	// leftLeg.addChild(Part("lowerLeftLeg", lowerLeftLeg, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
+	// rightLeg.addChild(Part("lowerRightLeg", lowerRightLeg, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
 
-	body.addChild(Part("head", head, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
-	body.addChild(leftArm);
-	body.addChild(rightArm);
-	body.addChild(leftLeg);
-	body.addChild(rightLeg);
+	// body.addChild(Part("head", head, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	// body.addChild(leftArm);
+	// body.addChild(rightArm);
+	// body.addChild(leftLeg);
+	// body.addChild(rightLeg);
 
-	#include "Model.hpp"
+	#include "AnimationManager.hpp"
 
-	Model	caca;
+	AnimationManager	anims;
+
+	model.addPart(new Part("torso", glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(6,99,6) / 255.0f));
+	model.addPart(new Part("upperLeftArm", glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(224,171,148) / 255.0f));
+	model.addPart(new Part("upperRightArm", glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(224,171,148) / 255.0f));
+	model.setChild("upperLeftArm", new Part("lowerLeftArm", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	model.setChild("upperRightArm", new Part("lowerRightArm", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	model.addPart(new Part("upperLeftLeg", glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(3,76,153) / 255.0f));
+	model.addPart(new Part("upperRightLeg", glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3(3,76,153) / 255.0f));
+	model.setChild("upperLeftLeg", new Part("lowerLeftLeg", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
+	model.setChild("upperRightLeg", new Part("lowerRightLeg", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
+
+	model.setChild("torso", new Part("head", glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	model.setChild("torso", "upperLeftArm");
+	model.setChild("torso", "upperRightArm");
+	model.setChild("torso", "upperLeftLeg");
+	model.setChild("torso", "upperRightLeg");
+
+	model.setRoot("torso");
 
 	try {
-		caca.load("walking", "assets/test.hgl");
+		anims.load("walking", "assets/test.hgl");
+		anims.play("walking", model);
 	} catch (const std::exception &e) {
 		Engine::log(e.what());
 	}
 
-	body.exportAnimation("assets/test.hgl");
+	// body.exportAnimation("assets/test.hgl");
 }
 
 TitleScene::~TitleScene()

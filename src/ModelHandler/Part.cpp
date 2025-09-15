@@ -6,15 +6,14 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 19:43:35 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/14 14:08:37 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/15 11:09:05 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <Part.hpp>
 
-Part::Part(std::string id, const Timeline &timeLine, const glm::vec3 &pointAnchor, const glm::vec3 &baseAnchor, const glm::vec3 &color)
+Part::Part(std::string id, const glm::vec3 &pointAnchor, const glm::vec3 &baseAnchor, const glm::vec3 &color)
 {
-	_timeLine = timeLine;
 	_pointAnchor = pointAnchor;
 	_baseAnchor = baseAnchor;
 	_color = color;
@@ -37,14 +36,15 @@ Part::Part()
 {}
 
 Part::~Part()
-{}
+{
+}
 
 glm::vec3	Part::getAnchor() const
 {
 	return (_pointAnchor);
 }
 
-void	Part::addChild(const Part &child)
+void	Part::addChild(Part *child)
 {
 	_children.push_back(child);
 }
@@ -64,14 +64,16 @@ void	Part::updateAnchor(const glm::mat4 &parentMat)
 
 void	Part::update(const glm::mat4 &parentMat)
 {
-	_timeLine.update(Engine::Window->getDeltaTime());
+	if (!_timeline)
+		return ;
+	_timeline->update(Engine::Window->getDeltaTime());
 
 	_mat = parentMat;
 	updateAnchor(parentMat);
 
-	glm::vec3	translation = _timeLine.getValue(KeyFrameType::TRANSLATION);
-	glm::vec3	rotation = _timeLine.getValue(KeyFrameType::ROTATION);
-	glm::vec3	scale = _timeLine.getValue(KeyFrameType::SCALE);
+	glm::vec3	translation = _timeline->getValue(KeyFrameType::TRANSLATION);
+	glm::vec3	rotation = _timeline->getValue(KeyFrameType::ROTATION);
+	glm::vec3	scale = _timeline->getValue(KeyFrameType::SCALE);
 
 	_mat = glm::translate(_mat, translation - _baseAnchor * (scale / 2.0f));
 	_mat = glm::translate(_mat, (_baseAnchor / 2.0f) * (scale));
@@ -81,8 +83,8 @@ void	Part::update(const glm::mat4 &parentMat)
 	_mat = glm::translate(_mat, -_baseAnchor * (scale / 2.0f));
 	_mat = glm::scale(_mat, scale);
 
-	for (Part &part : _children)
-		part.update(_mat);
+	for (Part *part : _children)
+		part->update(_mat);
 }
 
 void	Part::draw()
@@ -94,8 +96,8 @@ void	Part::draw()
 	glDrawArrays(GL_TRIANGLES, 0, 36);
 	glBindVertexArray(0);
 
-	for (Part &part : _children)
-		part.draw();
+	for (Part *part : _children)
+		part->draw();
 }
 
 std::vector<float> Part::defaultCube = {
@@ -168,7 +170,7 @@ void	Part::exportAnimation(std::string path)
 	file << std::endl;
 	
 	for (auto &part : _children)
-		part._exportObject(file);
+		part->_exportObject(file);
 	_exportObject(file);
 }
 
@@ -181,19 +183,19 @@ void	Part::_exportObject(std::ofstream &file)
 {
 	file << "object " << _id << std::endl;
 	_childrenExport(file);
-	_timeLine.exportTimeline(file);
+	_timeline->exportTimeline(file);
 	file << std::endl;
 }
 
 void	Part::_defineExport(std::ofstream &file)
 {
 	for (auto &part : _children)
-		part._defineExport(file);
+		part->_defineExport(file);
 	file << "define " << _id << std::endl;
 }
 
 void	Part::_childrenExport(std::ofstream &file)
 {
 	for (auto &part : _children)
-		file << "children " << part._id << std::endl;
+		file << "children " << part->_id << std::endl;
 }
