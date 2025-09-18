@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/15 11:36:39 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/18 14:17:07 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,10 @@ class	Animation
 		{
 			return (_timelines[id]);
 		}
+		std::map<std::string, Timeline*>	&getTimelines()
+		{
+			return (this->_timelines);
+		}
 	private:
 		void	_addKeyFrame(KeyFrameType type, const std::string &id, std::istringstream &line)
 		{
@@ -124,15 +128,20 @@ class	AnimationManager
 		void	play(const std::string &id, Model &model)
 		{
 			std::map<std::string, Part*>	&parts = model.getParts();
-			Animation	*current = _animations[id];
+			_current = _animations[id];
 
 			for (auto part : parts)
 			{
-				part.second->setTimeline(current->get(part.second->id()));
+				part.second->setTimeline(_current->get(part.second->id()));
 				std::cout << part.second->id() << " changed timeline" << std::endl;
 			}
 		}
+		Animation	*getCurrent()
+		{
+			return (_current);
+		}
 	private:
+		Animation							*_current = NULL;
 		std::map<std::string, Animation*>	_animations;
 };
 

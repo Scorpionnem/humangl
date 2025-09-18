@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 12:19:36 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 10:38:00 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/18 14:09:42 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,6 +106,6 @@ void	Slider::update(glm::vec2 mousePos, bool mousePressed)
 	normalizedValue = glm::clamp(normalizedValue, 0.0f, 1.0f);
 
 	value = normalizedValue;
-	if (value != previousValue)
+	if (onChange && value != previousValue)
 		onChange(value);
 }

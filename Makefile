@@ -43,6 +43,7 @@ CPP_FILES :=	main \
 				Scenes/TitleScene\
 				Engine/Engine \
 				Timeline/Timeline \
+				Timeline/KeyFrame \
 				ModelHandler/Part
 
 CPP_FILES := $(addsuffix .cpp, $(CPP_FILES))
