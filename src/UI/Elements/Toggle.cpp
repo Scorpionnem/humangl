@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 12:12:17 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 10:36:06 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/20 16:07:22 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,12 @@
 
 void	Toggle::update(glm::vec2 mousePos, bool mousePressed)
 {
+	if (mousePressed && pressed)
+	{
+		if (onUpdate)
+			onUpdate({clickData, pressed, id, label, this});
+	}
+
 	bool inside = isInside(this->pos, this->size, mousePos);
 
 	if (pressed)

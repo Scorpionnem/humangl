@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 13:07:11 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 12:17:28 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/20 16:07:36 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,13 @@ struct	ToggleInfo
 	bool				pressed;
 	const std::string	id;
 	const std::string	label;
+	class Toggle		*toggle;
 };
 
 class	Toggle : public UIElement
 {
 	public:
-		Toggle(UIAnchor anchor, std::string label, glm::vec2 offset, glm::vec2 size, std::function<void(ToggleInfo)> onClick, void *clickData)
+		Toggle(UIAnchor anchor, std::string label, glm::vec2 offset, glm::vec2 size, std::function<void(ToggleInfo)> onClick, std::function<void(ToggleInfo)> onUpdate, void *clickData)
 		{
 			type = UIElementType::UITYPE_TOGGLE;
 			this->label = label;
@@ -34,6 +35,7 @@ class	Toggle : public UIElement
 			this->pos = glm::vec2(0);
 			this->size = size;
 			this->onClick = onClick;
+			this->onUpdate = onUpdate;
 			this->clickData = clickData;
 			this->anchor = anchor;
 
@@ -51,7 +53,19 @@ class	Toggle : public UIElement
 		{
 			pressed = !pressed;
 			if (onClick)
-				this->onClick({clickData, pressed, id, label});
+				this->onClick({clickData, pressed, id, label, this});
+		}
+		void	setOffset(glm::vec2 val)
+		{
+			this->offset = val;
+		}
+		glm::vec2	getSize(void)
+		{
+			return (this->size);
+		}
+		glm::vec2	getOffset(void)
+		{
+			return (this->offset);
 		}
 
 		bool						wasPressedInside = false;
@@ -59,6 +73,7 @@ class	Toggle : public UIElement
 		bool						pressed = false;
 
 		std::function<void(ToggleInfo)>	onClick = NULL;
+		std::function<void(ToggleInfo)>	onUpdate = NULL;
 		void						*clickData = NULL;
 
 		std::string					label;

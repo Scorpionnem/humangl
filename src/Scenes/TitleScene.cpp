@@ -62,14 +62,105 @@ std::string	getFPSString(bool debug)
 	return (fpsString);
 }
 
+bool	redoMainInterface = true;
+KeyFrame<glm::vec3> *selectedKeyframe = NULL;
+
+void	addKeyFrameButton(Interface *interface, std::string id, float x, float y, KeyFrame<glm::vec3> &keyframe)
+{
+	interface->addElement(id + std::to_string(keyframe.getTime()), new Toggle(UIAnchor::UI_BOTTOM_LEFT, id + std::to_string(keyframe.getTime()), glm::vec2(x, y), glm::vec2(20, 20), []
+	(ToggleInfo infos)
+	{
+		selectedKeyframe = static_cast<KeyFrame<glm::vec3>*>(infos.data);
+
+		//Show options of the keyframe based on its type.
+
+	},
+	[](ToggleInfo infos)
+	{
+		if (glfwGetKey(Engine::Window->data(), GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+			return ;
+
+		selectedKeyframe = static_cast<KeyFrame<glm::vec3>*>(infos.data);
+
+		double mouseX, mouseY;
+		glfwGetCursorPos(Engine::Window->data(), &mouseX, &mouseY);
+		infos.toggle->setOffset({mouseX - (infos.toggle->getSize().x / 2.f), infos.toggle->getOffset().y});
+
+		//Calculate new time value based on position
+
+	} , &keyframe));
+}
+
 static void	_buildMainInterface(Interface *interface)
 {
-	(void)interface;
-	// interface->addElement("button_start", new Button(UIAnchor::UI_CENTER, "start", glm::vec2(0, -90), glm::vec2(300, 80), NULL, NULL));
+	interface->clear();
+	// interface->addElement("keyframe_options", new Button(UIAnchor::UI_BOTTOM_RIGHT, "keyframe_options", glm::vec2(0, -120), glm::vec2(128, Engine::Window->getHeight() - 120), NULL, NULL));
+	interface->addElement("keyframe_editor_x", new Slider(UIAnchor::UI_CENTER_RIGHT, "keyframe_editor_x", glm::vec2(0, 0), glm::vec2(200, 40), []
+		(float val)
+		{
+			if (selectedKeyframe)
+				selectedKeyframe->setValue({val, selectedKeyframe->getValue().y, selectedKeyframe->getValue().z});
+		},[]
+		(Slider *slider)
+		{
+			if (selectedKeyframe)
+				slider->setLabel("keyframe_x " + std::to_string(selectedKeyframe->getValue().x));
+			else
+				slider->setLabel("no keyframe");
+		}
+		, 80.f / 120.f));
+	interface->addElement("keyframe_editor_y", new Slider(UIAnchor::UI_CENTER_RIGHT, "keyframe_editor_y", glm::vec2(0, 40), glm::vec2(200, 40), []
+		(float val)
+		{
+			if (selectedKeyframe)
+				selectedKeyframe->setValue({selectedKeyframe->getValue().x, val, selectedKeyframe->getValue().z});
+		},[]
+		(Slider *slider)
+		{
+			if (selectedKeyframe)
+				slider->setLabel("keyframe_y " + std::to_string(selectedKeyframe->getValue().y));
+			else
+				slider->setLabel("no keyframe");
+		}
+		, 80.f / 120.f));
+	interface->addElement("keyframe_editor_z", new Slider(UIAnchor::UI_CENTER_RIGHT, "keyframe_editor_z", glm::vec2(0, 80), glm::vec2(200, 40), []
+		(float val)
+		{
+			if (selectedKeyframe)
+				selectedKeyframe->setValue({selectedKeyframe->getValue().x, selectedKeyframe->getValue().y, val});
+		},[]
+		(Slider *slider)
+		{
+			if (selectedKeyframe)
+				slider->setLabel("keyframe_z " + std::to_string(selectedKeyframe->getValue().z));
+			else
+				slider->setLabel("no keyframe");
+		}
+		, 80.f / 120.f));
 
-	// interface->addElement("button_options", new Button(UIAnchor::UI_CENTER, "options", glm::vec2(0, 0), glm::vec2(300, 80), NULL, NULL));
-
-	// interface->addElement("button_quit", new Button(UIAnchor::UI_CENTER, "quit", glm::vec2(0, 90), glm::vec2(300, 80), [](ButtonInfo){Engine::Window->close();}, NULL));
+	Timeline *timeline = anims.getCurrent()->get("torso");
+	if (!timeline)
+		return ;
+	float	biggestTime = timeline->getBiggestTime();
+	float	maxWidth = (Engine::Window->getWidth() - 148);
+	for (KeyFrame<glm::vec3> &keyframe : timeline->getKeyFrames(KeyFrameType::ROTATION))
+	{
+		float	offsetX = keyframe.getTime() / biggestTime;
+		float	posX = offsetX * maxWidth;
+		addKeyFrameButton(interface, "kfr_", posX, 0, keyframe);
+	}
+	for (KeyFrame<glm::vec3> &keyframe : timeline->getKeyFrames(KeyFrameType::SCALE))
+	{
+		float	offsetX = keyframe.getTime() / biggestTime;
+		float	posX = offsetX * maxWidth;
+		addKeyFrameButton(interface, "kfs_", posX, -21, keyframe);
+	}
+	for (KeyFrame<glm::vec3> &keyframe : timeline->getKeyFrames(KeyFrameType::TRANSLATION))
+	{
+		float	offsetX = keyframe.getTime() / biggestTime;
+		float	posX = offsetX * maxWidth;
+		addKeyFrameButton(interface, "kft_", posX, -42, keyframe);
+	}
 }
 
 static void	_buildInterface(Scene *scene)
@@ -282,7 +373,7 @@ TitleScene::TitleScene()
 {
 	camera.pos = glm::vec3(30, 1, 0);
 	camera.yaw = 180.0f;
-	camera.pitch = 20.f;
+	camera.pitch = 0.f;
 
 	_buildInterface(this);
 	this->setKeyHook(_keyHookFunc);
@@ -293,7 +384,7 @@ TitleScene::TitleScene()
 	this->setOpen(_open);
 	this->setClose(_close);
 
-	this->setMoveMouseHook(_moveMouseHookFunc);
+	// this->setMoveMouseHook(_moveMouseHookFunc);
 
 
 	// torso.addKeyFrame(KeyFrameType::TRANSLATION, KeyFrame(0.0, glm::vec3(0.0f)));
