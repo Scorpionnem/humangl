@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AnimationManager.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/18 14:17:07 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/19 11:44:43 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ class	Animation
 {
 	public:
 		Animation() {}
-		Animation(const std::string &path)
+		void	load(const std::string &path, Model *model)
 		{
 			std::ifstream	file;
 			std::string		fileLine;
@@ -49,11 +49,30 @@ class	Animation
 					std::string	object;
 					std::string	path;
 					line >> object;
-					std::cout << "define " << object << std::endl;
+					std::cout << "define " << object;// << std::endl;
+
+					glm::vec3	infos[3];
+					std::string	values[3];
+
+					for (int i = 0; i < 3; ++i)
+					{
+						line >> values[0];
+						line >> values[0];
+						line >> values[1];
+						line >> values[2];
+					
+						std::cout << " |" << i << "|" << values[0] << "; " << values[1] << "; " << values[2];
+					
+						infos[i] = glm::vec3(std::atof(values[0].c_str()), std::atof(values[1].c_str()), std::atof(values[2].c_str()));
+					}
+
+					std::cout << std::endl;
 
 					_timelines.insert({object, new Timeline()});
+
+					model->addPart(new Part(object, infos[0], infos[1], infos[2] / 255.0f));
 				}
-				if (word == "object")
+				else if (word == "object")
 				{
 					std::string	object;
 					line >> object;
@@ -61,22 +80,33 @@ class	Animation
 
 					current = object;
 				}
-				if (word == "children")
+				else if (word == "root")
+				{
+					std::string	object;
+					line >> object;
+					std::cout << "root " << object << std::endl;
+
+					if (!_rooted)
+						model->setRoot(object);
+					_rooted = true;
+				}
+				else if (word == "children")
 				{
 					std::string	object;
 					line >> object;
 					std::cout << "children " << object << std::endl;
 					
+					model->getPart(current)->addChild(model->getPart(object));
 				}
-				if (word == "kft")
+				else if (word == "kft")
 				{
 					_addKeyFrame(KeyFrameType::TRANSLATION, current, line);
 				}
-				if (word == "kfr")
+				else if (word == "kfr")
 				{
 					_addKeyFrame(KeyFrameType::ROTATION, current, line);
 				}
-				if (word == "kfs")
+				else if (word == "kfs")
 				{
 					_addKeyFrame(KeyFrameType::SCALE, current, line);
 				}
@@ -87,10 +117,6 @@ class	Animation
 		Timeline	*get(const std::string &id)
 		{
 			return (_timelines[id]);
-		}
-		std::map<std::string, Timeline*>	&getTimelines()
-		{
-			return (this->_timelines);
 		}
 	private:
 		void	_addKeyFrame(KeyFrameType type, const std::string &id, std::istringstream &line)
@@ -107,6 +133,7 @@ class	Animation
 			_timelines[id]->addKeyFrame(type, KeyFrame(time, glm::vec3(x, y, z)));
 		}
 		std::map<std::string, Timeline*>	_timelines;
+		bool								_rooted = false;
 };
 
 /*
@@ -122,27 +149,28 @@ class	AnimationManager
 
 		void	load(const std::string &id, const std::string &path)
 		{
-			_animations.insert({id, new Animation(path)});
+			_animations.insert({id, {new Animation(), new Model()}});
+			_animations[id].first->load(path, _animations[id].second);
 		}
 		//Plays the animation to the model
-		void	play(const std::string &id, Model &model)
+		void	play(const std::string &id)
 		{
-			std::map<std::string, Part*>	&parts = model.getParts();
-			_current = _animations[id];
+			std::map<std::string, Part*>	&parts = _animations[id].second->getParts();
+			Animation	*current = _animations[id].first;
 
 			for (auto part : parts)
 			{
-				part.second->setTimeline(_current->get(part.second->id()));
+				part.second->setTimeline(current->get(part.second->id()));
 				std::cout << part.second->id() << " changed timeline" << std::endl;
 			}
 		}
-		Animation	*getCurrent()
+
+		Model	*getAnimationModel(const std::string &id)
 		{
-			return (_current);
+			return (_animations[id].second);
 		}
 	private:
-		Animation							*_current = NULL;
-		std::map<std::string, Animation*>	_animations;
+		std::map<std::string, std::pair<Animation*, Model*> >	_animations;
 };
 
 #endif

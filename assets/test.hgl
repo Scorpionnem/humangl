@@ -1,9 +1,14 @@
 # 42 humangl project export file by mbatty & mbirou
 # keys used in the file
-#	define : string name
-#		-Defines an object to be used in the file
+#
+#	ORDER IS IMPORTANT
+#
+#	define : string name | vec3 parentAnchor | vec3 selfAnchor | vec3 color
+#		-Defines an object to be used in the file, it's anchor and color info
 #	object : string name
 #		-Sets the object as used
+#	root : string name
+#		-Sets the root object
 #	children : string name
 #		-Sets the children of the used object
 #	kft : float time : vec3 translation
@@ -13,85 +18,54 @@
 #	kfs : float time : vec3 scale
 #		-Sets the scale values to the used object
 
-define head
-define lowerLeftArm
-define upperLeftArm
-define lowerRightArm
-define upperRightArm
-define lowerLeftLeg
-define upperLeftLeg
-define lowerRightLeg
-define upperRightLeg
-define torso
+define head | 0 1 0 | 0 -1 0 | 224 171 148
+
+define lowerLeftArm | 1 -1 0 | 1 1 0 | 224 171 148
+define upperLeftArm | 0 1 -1 | 0 1 1 | 224 171 148
+define lowerRightArm | 1 -1 0 | 1 1 0 | 224 171 148
+define upperRightArm | 0 1 1 | 0 1 -1 | 224 171 148
+
+define lowerLeftLeg | 1 -1 0 | 1 1 0 | 3 76 153
+define upperLeftLeg | -1 -1 -1 | -1 1 -1 | 3 76 153
+define lowerRightLeg | 1 -1 0 | 1 1 0 | 3 76 153
+define upperRightLeg | -1 -1 1 | -1 1 1 | 3 76 153
+
+define torso | 0 0 0 | 0 0 0 | 6 99 6
+
+root torso
 
 object head
-kfs 0 5 5 5
-kfs 1 10 10 10
-kfs 2 5 5 5
+kfs 0 2.5 2.5 2.5
 
 object lowerLeftArm
-kfs 1.3 5 50 5
+kfs 0 1 5 1
 kfr 0 0 0 0
-kfr 1 -360 -360 -360
-kfr 2 0 0 0
-kft 0 0 0 0
-kft 0.3 0 1 0
-kft 2.7 0 2 0
-kft 4 0 0 0
+kfr 10 0 0 180
 
 object lowerRightArm
-kfs 1 5 50 5
-kfr 0 0 0 0
-kfr 1 -360 -360 -360
-kfr 2 0 0 0
+kfs 0 1 5 1
 
 object lowerLeftLeg
-kfs 1 5 50 5
-kfr 0 0 0 0
-kfr 1 -360 -360 -360
-kfr 2 0 0 0
+kfs 0 1 5 1
 
 object lowerRightLeg
-kfs 1 5 50 5
-kfr 0 0 0 0
-kfr 1 -360 -360 -360
-kfr 2 0 0 0
+kfs 0 1 5 1
 
 object upperLeftArm
 children lowerLeftArm
-kfr 0 0 0 0
-kfr 1 -360 -360 -360
-kfr 2 0 0 0
-kfr 3 0 0 0
-kfs 0 5 5 5
-kfs 1 5 50 5
+kfs 0 1 5 1
 
 object upperRightArm
 children lowerRightArm
-kfr 0 0 0 0
-kfr 1 360 360 360
-kfr 2 0 0 0
-kfr 3 0 0 0
-kfs 0 5 5 5
-kfs 1 5 50 5
+kfs 0 1 5 1
 
 object upperLeftLeg
 children lowerLeftLeg
-kfr 0 0 0 0
-kfr 1 -360 -360 -360
-kfr 2 0 0 0
-kfr 3 0 0 0
-kfs 0 5 5 5
-kfs 1 5 50 5
+kfs 0 1 5 1
 
 object upperRightLeg
 children lowerRightLeg
-kfr 0 0 0 0
-kfr 1 360 360 360
-kfr 2 0 0 0
-kfr 3 0 0 0
-kfs 0 5 5 5
-kfs 1 5 50 5
+kfs 0 1 5 1
 
 object torso
 children head
@@ -99,10 +73,4 @@ children upperLeftArm
 children upperRightArm
 children upperLeftLeg
 children upperRightLeg
-kft 0 0 0 0
-kft 3 10 10 10
-kfr 0 0 0 0
-kfr 1 360 360 360
-kfr 2 0 0 0
-kfr 3 0 0 0
-kfs 0 25 50 25
+kfs 0 1 8 6

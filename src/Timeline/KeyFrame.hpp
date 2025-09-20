@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 13:25:08 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/18 17:12:13 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/12 11:00:49 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,6 @@ class	KeyFrame
 		float	getTime() const
 		{
 			return (_time);
-		}
-		void	setTime(float val)
-		{
-			_time = val;
 		}
 		T	getValue() const
 		{

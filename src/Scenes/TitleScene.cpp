@@ -19,6 +19,7 @@
 #include "Engine.hpp"
 #include "AnimationManager.hpp"
 
+std::string			animationId = "";
 AnimationManager	anims;
 
 std::string	getFPSString(bool debug)
@@ -61,55 +62,22 @@ std::string	getFPSString(bool debug)
 	return (fpsString);
 }
 
-bool	redoMainInterface = true;
-KeyFrame<glm::vec3> *selectedKeyframe = NULL;
-
-void	addKeyFrameButton(Interface *interface, std::string id, float x, float y, KeyFrame<glm::vec3> &keyframe)
-{
-	interface->addElement(id + std::to_string(keyframe.getTime()), new Toggle(UIAnchor::UI_BOTTOM_LEFT, id + std::to_string(keyframe.getTime()), glm::vec2(x, y), glm::vec2(20, 20), []
-	(ToggleInfo infos)
-	{
-		selectedKeyframe = static_cast<KeyFrame<glm::vec3>*>(infos.data);
-		selectedKeyframe->setTime(selectedKeyframe->getTime() + 0.3);
-		redoMainInterface = true;
-	}, &keyframe));
-}
-
 static void	_buildMainInterface(Interface *interface)
 {
-	interface->clear();
-	interface->addElement("keyframe_options", new Button(UIAnchor::UI_BOTTOM_RIGHT, "keyframe_options", glm::vec2(0, -120), glm::vec2(128, Engine::Window->getHeight() - 120), NULL, NULL));
+	(void)interface;
+	// interface->addElement("button_start", new Button(UIAnchor::UI_CENTER, "start", glm::vec2(0, -90), glm::vec2(300, 80), NULL, NULL));
 
-	Timeline *timeline = anims.getCurrent()->get("torso");
-	if (!timeline)
-		return ;
-	float	biggestTime = timeline->getBiggestTime();
-	float	maxWidth = (Engine::Window->getWidth() - 148);
-	for (KeyFrame<glm::vec3> &keyframe : timeline->getKeyFrames(KeyFrameType::ROTATION))
-	{
-		float	offsetX = keyframe.getTime() / biggestTime;
-		float	posX = offsetX * maxWidth;
-		addKeyFrameButton(interface, "kfr_", posX, 0, keyframe);
-	}
-	for (KeyFrame<glm::vec3> &keyframe : timeline->getKeyFrames(KeyFrameType::SCALE))
-	{
-		float	offsetX = keyframe.getTime() / biggestTime;
-		float	posX = offsetX * maxWidth;
-		addKeyFrameButton(interface, "kfs_", posX, -21, keyframe);
-	}
-	for (KeyFrame<glm::vec3> &keyframe : timeline->getKeyFrames(KeyFrameType::TRANSLATION))
-	{
-		float	offsetX = keyframe.getTime() / biggestTime;
-		float	posX = offsetX * maxWidth;
-		addKeyFrameButton(interface, "kft_", posX, -42, keyframe);
-	}
+	// interface->addElement("button_options", new Button(UIAnchor::UI_CENTER, "options", glm::vec2(0, 0), glm::vec2(300, 80), NULL, NULL));
+
+	// interface->addElement("button_quit", new Button(UIAnchor::UI_CENTER, "quit", glm::vec2(0, 90), glm::vec2(300, 80), [](ButtonInfo){Engine::Window->close();}, NULL));
 }
 
 static void	_buildInterface(Scene *scene)
 {
 	InterfaceManager	*manager = scene->getInterfaceManager();
 
-	manager->load("main");
+	Interface	*main = manager->load("main");
+	_buildMainInterface(main);
 
 	Interface	*debug = manager->load("debug");
 
@@ -179,34 +147,67 @@ static void	_charHookFunc(Scene *scene, uint key)
 
 #include "Timeline.hpp"
 
-void	_draw2D(TitleScene *scene)
-{
-    glDisable(GL_DEPTH_TEST);
+// void	_draw2D(TitleScene *scene)
+// {
+//     glDisable(GL_DEPTH_TEST);
 
-	scene->getInterfaceManager()->draw();
+// 	FrameBuffer::drawFrame(Engine::Shaders->get("title_bg"), Engine::Textures->get(SAND_TEXTURE_PATH)->getID());
+// 	scene->getInterfaceManager()->draw();
 
-	scene->getInterfaceManager()->get("debug")->draw();
+// 	if (scene->getDebug())
+// 		scene->getInterfaceManager()->get("debug")->draw();
 	
-	glEnable(GL_DEPTH_TEST);
-}
+// 	Shader	*shader = Engine::Shaders->get("colored_quad");
+
+// 	shader->setVec3("color", glm::vec3(0, 1, 0));
+// 		UIElement::draw(shader, glm::vec2(testtimeline.getTranslation()), glm::vec2(50, 50));
+// 	shader->setVec3("color", glm::vec3(1, 0, 0));
+// 		UIElement::draw(shader, glm::vec2(testtimeline.getTranslation() + testtimeline2.getTranslation()), glm::vec2(50, 50));
+
+// 	shader->setVec3("color", glm::vec3(0, 0, 1));
+// 	UIElement::draw(shader, glm::vec2(testtimeline.getTranslation() + testtimeline2.getTranslation() + testtimeline3.getTranslation()), glm::vec2(50, 50));
+
+// 	testtimeline.draw(Engine::Window->getHeight() - 16);
+// 	testtimeline2.draw(Engine::Window->getHeight() - 32);
+
+// 	glEnable(GL_DEPTH_TEST);
+// }
 
 #include "Model.hpp"
-
-Model	model;
 
 static void	_render(Scene *ptr)
 {
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
 	(void)scene;
 
+	// _draw2D(scene);
+
 	Shader	*shader2 = Engine::Shaders->get("cube");
 
 	shader2->use();
 	camera.setViewMatrix(*shader2);
 
-	model.draw();
+	// scene->body.draw();
+	anims.getAnimationModel(animationId)->draw();
 
-	_draw2D(scene);
+	// glm::mat4	model = glm::mat4(1.0);
+
+	// glm::vec3	translation = testtimeline.getTranslation();
+	// glm::vec3	rotation = testtimeline.getRotation();
+	// glm::vec3	scale = testtimeline.getScale();
+
+	// model = glm::translate(model, translation);
+	// model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+	// model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	// model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	// model = glm::scale(model, scale);
+
+	// shader2->setMat4("model", model);
+	// camera.setViewMatrix(*shader2);
+
+	// glBindVertexArray(scene->VAO);
+	// glDrawArrays(GL_TRIANGLES, 0, 36);
+	// glBindVertexArray(0);
 }
 
 void	_moveMouseHookFunc(Scene*, double xpos, double ypos)
@@ -239,16 +240,12 @@ static void	_update(Scene *ptr)
 {
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
 
-	if (redoMainInterface)
-	{
-		_buildMainInterface(scene->getInterfaceManager()->get("main"));
-		redoMainInterface = false;	
-	}
-
+	// testtimeline.update(Engine::Window->getDeltaTime());
 	scene->body.update(glm::mat4(1.0));
-	model.update();
+	anims.getAnimationModel(animationId)->update();
 
-	scene->getInterfaceManager()->get("debug")->update();
+	if (scene->getDebug())
+		scene->getInterfaceManager()->get("debug")->update();
 
 	_frameKeyHook(scene);
 	camera.update();
@@ -263,22 +260,22 @@ static void	_close(Scene *scene)
 
 static void	_open(Scene *scene)
 {
-	// Engine::Window->setDefaultMousePos();
+	Engine::Window->setDefaultMousePos();
 	scene->getInterfaceManager()->use("main");
 }
 
-Timeline	torso;
-Timeline	head;
+// Timeline	torso;
+// Timeline	head;
 
-Timeline	upperLeftArm;
-Timeline	upperRightArm;
-Timeline	lowerLeftArm;
-Timeline	lowerRightArm;
+// Timeline	upperLeftArm;
+// Timeline	upperRightArm;
+// Timeline	lowerLeftArm;
+// Timeline	lowerRightArm;
 
-Timeline	upperLeftLeg;
-Timeline	upperRightLeg;
-Timeline	lowerLeftLeg;
-Timeline	lowerRightLeg;
+// Timeline	upperLeftLeg;
+// Timeline	upperRightLeg;
+// Timeline	lowerLeftLeg;
+// Timeline	lowerRightLeg;
 
 
 TitleScene::TitleScene()
@@ -299,37 +296,250 @@ TitleScene::TitleScene()
 	this->setMoveMouseHook(_moveMouseHookFunc);
 
 
-	torso.addKeyFrame(KeyFrameType::TRANSLATION, KeyFrame(0.0, glm::vec3(0.0f)));
-	torso.addKeyFrame(KeyFrameType::TRANSLATION, KeyFrame(3.0, glm::vec3(10.0f, 10, 10)));
+	// torso.addKeyFrame(KeyFrameType::TRANSLATION, KeyFrame(0.0, glm::vec3(0.0f)));
+	// torso.addKeyFrame(KeyFrameType::TRANSLATION, KeyFrame(3.0, glm::vec3(10.0f, 10, 10)));
 
-	torso.addKeyFrame(KeyFrameType::SCALE, KeyFrame(0.0, glm::vec3(5.0f)));
-	torso.addKeyFrame(KeyFrameType::SCALE, KeyFrame(1.0, glm::vec3(10.0f)));
-	torso.addKeyFrame(KeyFrameType::SCALE, KeyFrame(2.0, glm::vec3(5.0f)));
+	// torso.addKeyFrame(KeyFrameType::SCALE, KeyFrame(0.0, glm::vec3(5.0f)));
+	// torso.addKeyFrame(KeyFrameType::SCALE, KeyFrame(1.0, glm::vec3(10.0f)));
+	// torso.addKeyFrame(KeyFrameType::SCALE, KeyFrame(2.0, glm::vec3(5.0f)));
 
-	torso.addKeyFrame(KeyFrameType::ROTATION, KeyFrame(0.0, glm::vec3(0.0f)));
-	torso.addKeyFrame(KeyFrameType::ROTATION, KeyFrame(2.0, glm::vec3(0.0f, 360.0, 0.0)));
+	// torso.addKeyFrame(KeyFrameType::ROTATION, KeyFrame(0.0, glm::vec3(0.0f)));
+	// torso.addKeyFrame(KeyFrameType::ROTATION, KeyFrame(2.0, glm::vec3(0.0f, 360.0, 0.0)));
 
-	model.addPart(new Part("torso", glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(6,99,6) / 255.0f));
-	model.addPart(new Part("upperLeftArm", glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(224,171,148) / 255.0f));
-	model.addPart(new Part("upperRightArm", glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(224,171,148) / 255.0f));
-	model.setChild("upperLeftArm", new Part("lowerLeftArm", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
-	model.setChild("upperRightArm", new Part("lowerRightArm", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
-	model.addPart(new Part("upperLeftLeg", glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(3,76,153) / 255.0f));
-	model.addPart(new Part("upperRightLeg", glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3(3,76,153) / 255.0f));
-	model.setChild("upperLeftLeg", new Part("lowerLeftLeg", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
-	model.setChild("upperRightLeg", new Part("lowerRightLeg", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
+	// torso.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(4.0f, glm::vec3(0.0f), glm::vec3(0.0f, 270.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(4.25f, glm::vec3(0.0f), glm::vec3(0.0f, 270.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(8.75f, glm::vec3(0.0f, 0.0f, 50.0f), glm::vec3(0.0f, 270.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(8.75f, glm::vec3(0.0f, 0.0f, -50.0f), glm::vec3(0.0f, 270.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(13.25f, glm::vec3(0.0f), glm::vec3(0.0f, 270.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(13.5f, glm::vec3(0.0f), glm::vec3(0.0f, 270.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// // torso.addKeyFrame(KeyFrame(14.0f, glm::vec3(0.0f), glm::vec3(0.0f, .0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(15.0f, glm::vec3(0.0f), glm::vec3(0.0f, 360.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(15.001f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(16.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(17.0f, glm::vec3(0.0f, 7.0f, 0.0f), glm::vec3(0.0f, 45.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(18.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(19.0f, glm::vec3(0.0f, 7.0f, 0.0f), glm::vec3(0.0f, 135.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(20.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 180.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(21.0f, glm::vec3(0.0f, 7.0f, 0.0f), glm::vec3(0.0f, 225.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(22.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 270.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(23.0f, glm::vec3(0.0f, 7.0f, 0.0f), glm::vec3(0.0f, 315.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(24.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 360.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(24.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
+	// torso.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 8.0f, 6.0f)));
 
-	model.setChild("torso", new Part("head", glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
-	model.setChild("torso", "upperLeftArm");
-	model.setChild("torso", "upperRightArm");
-	model.setChild("torso", "upperLeftLeg");
-	model.setChild("torso", "upperRightLeg");
 
-	model.setRoot("torso");
+	// head.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(2.5f, 2.5f, 2.5f)));
+	// head.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(2.5f, 2.5f, 2.5f)));
+
+
+	// upperLeftArm.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(4.25f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(5.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(6.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(7.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(8.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(9.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(10.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(11.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(12.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(13.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(13.5f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(16.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(17.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 180.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(18.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(19.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 180.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(20.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(21.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 180.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(22.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(23.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 180.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(24.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftArm.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+
+	// upperRightArm.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(4.25f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(5.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(6.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(7.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(8.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(9.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(10.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(11.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(12.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(13.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(13.5f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(16.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(17.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 180.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(18.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(19.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 180.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(20.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(21.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 180.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(22.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(23.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 180.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(24.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightArm.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+
+
+	// lowerLeftArm.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(4.25f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(5.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(6.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(8.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(9.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(10.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(12.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(13.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 15.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(13.5f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(16.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(24.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftArm.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+
+	// lowerRightArm.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(4.25f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(6.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(7.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(8.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(10.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(11.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(12.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(16.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(24.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightArm.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+
+
+	// upperLeftLeg.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(4.25f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(5.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(6.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(7.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(8.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(9.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(10.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(11.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(12.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(13.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(13.5f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(17.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 00.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(18.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(18.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(19.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(20.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(20.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(21.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(22.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(22.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperLeftLeg.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+
+	// upperRightLeg.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(-0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(4.25f, glm::vec3(0.0f), glm::vec3(-0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(5.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(6.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(7.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(8.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(9.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(10.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(11.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(12.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(13.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(13.5f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(16.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(17.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 00.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(18.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(18.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(19.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(20.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(20.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(21.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(22.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(22.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// upperRightLeg.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+
+
+	// lowerLeftLeg.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(4.25f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(5.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(6.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(8.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(9.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(10.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(12.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(13.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(13.5f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(17.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 00.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(18.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(18.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(19.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(20.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(20.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(21.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(22.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(22.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerLeftLeg.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+
+	// lowerRightLeg.addKeyFrame(KeyFrame(0.0f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(4.25f, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(6.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(7.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(8.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(10.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(11.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -25.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(12.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(16.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(17.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 00.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(18.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(18.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(19.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(20.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(20.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(21.75f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(22.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -20.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(22.25f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+	// lowerRightLeg.addKeyFrame(KeyFrame(26.0f, glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f, 5.0f, 1.0f)));
+
+
+	// body = Part("torso", torso, glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(6,99,6) / 255.0f);
+
+	// Part leftArm = Part("upperLeftArm", upperLeftArm, glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(224,171,148) / 255.0f);
+	// Part rightArm = Part("upperRightArm", upperRightArm, glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(224,171,148) / 255.0f);
+	// leftArm.addChild(Part("lowerLeftArm", lowerLeftArm, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	// rightArm.addChild(Part("lowerRightArm", lowerRightArm, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+
+	// Part leftLeg = Part("upperLeftLeg", upperLeftLeg, glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(3,76,153) / 255.0f);
+	// Part rightLeg = Part("upperRightLeg", upperRightLeg, glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3(3,76,153) / 255.0f);
+	// leftLeg.addChild(Part("lowerLeftLeg", lowerLeftLeg, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
+	// rightLeg.addChild(Part("lowerRightLeg", lowerRightLeg, glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
+
+	// body.addChild(Part("head", head, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	// body.addChild(leftArm);
+	// body.addChild(rightArm);
+	// body.addChild(leftLeg);
+	// body.addChild(rightLeg);
+
+
+
+	// model.addPart(new Part("torso", glm::vec3(0.0f), glm::vec3(0.0f), glm::vec3(6,99,6) / 255.0f));
+	// model.addPart(new Part("upperLeftArm", glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(224,171,148) / 255.0f));
+	// model.addPart(new Part("upperRightArm", glm::vec3(0.0f, 1.0f, 1.0f), glm::vec3(0.0f, 1.0f, -1.0f), glm::vec3(224,171,148) / 255.0f));
+	// model.setChild("upperLeftArm", new Part("lowerLeftArm", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	// model.setChild("upperRightArm", new Part("lowerRightArm", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	// model.addPart(new Part("upperLeftLeg", glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(-1.0f, 1.0f, -1.0f), glm::vec3(3,76,153) / 255.0f));
+	// model.addPart(new Part("upperRightLeg", glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(-1.0f, 1.0f, 1.0f), glm::vec3(3,76,153) / 255.0f));
+	// model.setChild("upperLeftLeg", new Part("lowerLeftLeg", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
+	// model.setChild("upperRightLeg", new Part("lowerRightLeg", glm::vec3(1.0f, -1.0f, 0.0f), glm::vec3(1.0f, 1.0f, 0.0f), glm::vec3(3,76,153) / 255.0f));
+
+	// model.setChild("torso", new Part("head", glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f, -1.0f, 0.0f), glm::vec3(224,171,148) / 255.0f));
+	// model.setChild("torso", "upperLeftArm");
+	// model.setChild("torso", "upperRightArm");
+	// model.setChild("torso", "upperLeftLeg");
+	// model.setChild("torso", "upperRightLeg");
+
+	// model.setRoot("torso");
+
+	animationId = "walking";
 
 	try {
-		anims.load("walking", "assets/test.hgl");
-		anims.play("walking", model);
+		anims.load(animationId, "assets/test.hgl");
+		anims.play(animationId);
 	} catch (const std::exception &e) {
 		Engine::log(e.what());
 	}

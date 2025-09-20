@@ -6,27 +6,16 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 12:21:08 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/18 14:06:38 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:40:23 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Image.hpp"
 #include "Engine.hpp"
 
-Image::Image(UIAnchor anchor, glm::vec2 offset, glm::vec2 size, std::string path)
-{
-	type = UIElementType::UITYPE_IMAGE;
-	this->offset = offset;
-	this->pos = glm::vec2(0);
-	this->size = size;
-	this->anchor = anchor;
-	this->currentTexture = Engine::Textures->get(path);
-	
-	anchorPos();
-}
-
 void	Image::update(glm::vec2, bool)
 {
+	this->currentTexture = Engine::Textures->get(TITLE_TEXTURE_PATH);;
 	if (this->anchor != UIAnchor::UI_NONE)
 		anchorPos();
 }

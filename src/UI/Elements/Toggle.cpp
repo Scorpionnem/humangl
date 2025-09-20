@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 12:12:17 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/18 15:16:26 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:36:06 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,6 @@
 void	Toggle::update(glm::vec2 mousePos, bool mousePressed)
 {
 	bool inside = isInside(this->pos, this->size, mousePos);
-
-	if (mousePressed && !inside && pressed)
-		click();
 
 	if (pressed)
 		this->currentTexture = Engine::Textures->get(COBBLESTONE_TEXTURE_PATH);

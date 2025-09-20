@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:11:18 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/18 14:03:43 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/08/30 10:51:27 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 # include "Shader.hpp"
 # include "Font.hpp"
 
-# define DEFAULT_WINDOW_WIDTH 1075
-# define DEFAULT_WINDOW_HEIGHT 650
+# define DEFAULT_WINDOW_WIDTH 860
+# define DEFAULT_WINDOW_HEIGHT 520
 
 class	Window
 {
