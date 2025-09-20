@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 11:41:02 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/15 10:54:50 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/20 16:13:01 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ class	Timeline
 		void	update(float deltaTime)
 		{
 			_time += deltaTime;
-			if (_loop && _time > _getBiggestTime())
+			if (_loop && _time > getBiggestTime())
 				_time = 0;
 		}
 		void	addKeyFrame(KeyFrameType type, const KeyFrame<glm::vec3> &keyframe)
@@ -91,8 +91,7 @@ class	Timeline
 				file << "kfs " << keyframe.getTime() << " " << keyframe.getValue().x << " " << keyframe.getValue().y << " " << keyframe.getValue().z << std::endl;
 			(void)file;
 		}
-	private:
-		float		_getBiggestTime()
+		float		getBiggestTime()
 		{
 			float res = 0;
 			float	translationMax = _translationKeyframes.size() ? _translationKeyframes.back().getTime() : 0;
@@ -102,6 +101,19 @@ class	Timeline
 			res = std::max(translationMax, std::max(rotationMax, scaleMax));
 			return (res);
 		}
+		std::vector<KeyFrame<glm::vec3>>	&getKeyFrames(KeyFrameType type)
+		{
+			switch (type)
+			{
+				case KeyFrameType::TRANSLATION:
+					return (_translationKeyframes);
+				case KeyFrameType::ROTATION:
+					return (_rotationKeyframes);
+				case KeyFrameType::SCALE:
+					return (_scaleKeyframes);
+			}
+		}
+	private:
 		glm::vec3	_getValue(std::vector<KeyFrame<glm::vec3>> &keyframes)
 		{
 			if (!keyframes.size())

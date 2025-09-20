@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AnimationManager.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/19 11:44:43 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/20 16:24:44 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,21 +156,27 @@ class	AnimationManager
 		void	play(const std::string &id)
 		{
 			std::map<std::string, Part*>	&parts = _animations[id].second->getParts();
-			Animation	*current = _animations[id].first;
+			_current = _animations[id].first;
 
 			for (auto part : parts)
 			{
-				part.second->setTimeline(current->get(part.second->id()));
+				part.second->setTimeline(_current->get(part.second->id()));
 				std::cout << part.second->id() << " changed timeline" << std::endl;
 			}
+			std::cout << "Now playing " << id << std::endl;
 		}
 
 		Model	*getAnimationModel(const std::string &id)
 		{
 			return (_animations[id].second);
 		}
+		Animation	*getAnimation(const std::string &id)
+		{
+			return (_animations[id].first);
+		}
 	private:
 		std::map<std::string, std::pair<Animation*, Model*> >	_animations;
+		Animation												*_current = nullptr;
 };
 
 #endif
