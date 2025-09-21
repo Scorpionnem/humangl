@@ -20,6 +20,8 @@
 #include "AnimationManager.hpp"
 
 std::string			animationId = "";
+std::string			modelId = "";
+bool				redointerface = false;
 AnimationManager	anims;
 
 std::string	getFPSString(bool debug)
@@ -91,59 +93,74 @@ void	addKeyFrameButton(Interface *interface, std::string id, float x, float y, K
 	} , &keyframe));
 }
 
+static void	_buildEditorInterface(Interface *interface)
+{
+	interface->addElement("keyframe_editor_x", new TextBox(UIAnchor::UI_CENTER_RIGHT, glm::vec2(0, 0), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedKeyframe && infos.input.size())
+			selectedKeyframe->setValue({std::atof(infos.input.c_str()), selectedKeyframe->getValue().y, selectedKeyframe->getValue().z});
+	}, NULL));
+	interface->addElement("keyframe_editor_y", new TextBox(UIAnchor::UI_CENTER_RIGHT, glm::vec2(0, 41), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedKeyframe && infos.input.size())
+			selectedKeyframe->setValue({selectedKeyframe->getValue().x, std::atof(infos.input.c_str()), selectedKeyframe->getValue().z});
+	}, NULL));
+	interface->addElement("keyframe_editor_z", new TextBox(UIAnchor::UI_CENTER_RIGHT, glm::vec2(0, 82), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedKeyframe && infos.input.size())
+			selectedKeyframe->setValue({selectedKeyframe->getValue().x, selectedKeyframe->getValue().y, std::atof(infos.input.c_str())});
+	}, NULL));
+	interface->addElement("bodypartselector", new TextBox(UIAnchor::UI_CENTER_RIGHT, glm::vec2(0, 123), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		modelId = infos.input;
+		redointerface = true;
+	}, NULL));
+
+
+
+	interface->addElement("keyframeaddt", new Button(UIAnchor::UI_CENTER_RIGHT, "kft", glm::vec2(-160, 164), glm::vec2(40, 40), []
+	(ButtonInfo )
+	{
+		Animation	*anim = anims.getAnimation(animationId);
+		if (!anim)
+			return ;
+		anim->addKeyFrame(modelId, KeyFrameType::TRANSLATION, KeyFrame<glm::vec3>(1, glm::vec3(0)));
+		redointerface = true;
+	}, NULL));
+	interface->addElement("keyframeaddr", new Button(UIAnchor::UI_CENTER_RIGHT, "kfr", glm::vec2(-100, 164), glm::vec2(40, 40), []
+	(ButtonInfo )
+	{
+		Animation	*anim = anims.getAnimation(animationId);
+		if (!anim)
+			return ;
+		anim->addKeyFrame(modelId, KeyFrameType::ROTATION, KeyFrame<glm::vec3>(1, glm::vec3(0)));
+		redointerface = true;
+	}, NULL));
+	interface->addElement("keyframeadds", new Button(UIAnchor::UI_CENTER_RIGHT, "kfs", glm::vec2(-40, 164), glm::vec2(40, 40), []
+	(ButtonInfo )
+	{
+		Animation	*anim = anims.getAnimation(animationId);
+		if (!anim)
+			return ;
+		anim->addKeyFrame(modelId, KeyFrameType::SCALE, KeyFrame<glm::vec3>(1, glm::vec3(0)));
+		redointerface = true;
+	}, NULL));
+}
+
 static void	_buildMainInterface(Interface *interface)
 {
 	interface->clear();
-	// interface->addElement("keyframe_options", new Button(UIAnchor::UI_BOTTOM_RIGHT, "keyframe_options", glm::vec2(0, -120), glm::vec2(128, Engine::Window->getHeight() - 120), NULL, NULL));
-	interface->addElement("keyframe_editor_x", new Slider(UIAnchor::UI_CENTER_RIGHT, "keyframe_editor_x", glm::vec2(0, 0), glm::vec2(200, 40), []
-		(float val)
-		{
-			if (selectedKeyframe)
-				selectedKeyframe->setValue({val, selectedKeyframe->getValue().y, selectedKeyframe->getValue().z});
-		},[]
-		(Slider *slider)
-		{
-			if (selectedKeyframe)
-				slider->setLabel("keyframe_x " + std::to_string(selectedKeyframe->getValue().x));
-			else
-				slider->setLabel("no keyframe");
-		}
-		, 80.f / 120.f));
-	interface->addElement("keyframe_editor_y", new Slider(UIAnchor::UI_CENTER_RIGHT, "keyframe_editor_y", glm::vec2(0, 40), glm::vec2(200, 40), []
-		(float val)
-		{
-			if (selectedKeyframe)
-				selectedKeyframe->setValue({selectedKeyframe->getValue().x, val, selectedKeyframe->getValue().z});
-		},[]
-		(Slider *slider)
-		{
-			if (selectedKeyframe)
-				slider->setLabel("keyframe_y " + std::to_string(selectedKeyframe->getValue().y));
-			else
-				slider->setLabel("no keyframe");
-		}
-		, 80.f / 120.f));
-	interface->addElement("keyframe_editor_z", new Slider(UIAnchor::UI_CENTER_RIGHT, "keyframe_editor_z", glm::vec2(0, 80), glm::vec2(200, 40), []
-		(float val)
-		{
-			if (selectedKeyframe)
-				selectedKeyframe->setValue({selectedKeyframe->getValue().x, selectedKeyframe->getValue().y, val});
-		},[]
-		(Slider *slider)
-		{
-			if (selectedKeyframe)
-				slider->setLabel("keyframe_z " + std::to_string(selectedKeyframe->getValue().z));
-			else
-				slider->setLabel("no keyframe");
-		}
-		, 80.f / 120.f));
 
 	Animation	*anim = anims.getAnimation(animationId);
 	if (!anim)
 	{
 		return ;
 	}
-	Timeline *timeline = anim->get("lowerLeftArm");
+	Timeline *timeline = anim->get(modelId);
 	if (!timeline)
 	{
 		return ;
@@ -176,8 +193,11 @@ static void	_buildInterface(Scene *scene)
 	InterfaceManager	*manager = scene->getInterfaceManager();
 
 	manager->load("main");
+	
+	_buildEditorInterface(manager->load("editor"));
 
 	Interface	*debug = manager->load("debug");
+	
 
 	debug->addElement("text_fps", new Text(UIAnchor::UI_TOP_LEFT, "fps", glm::vec2(0, 0),
 		[](std::string &label)
@@ -251,6 +271,7 @@ void	_draw2D(TitleScene *scene)
 
 	scene->getInterfaceManager()->draw();
 
+	scene->getInterfaceManager()->get("main")->draw();
 	scene->getInterfaceManager()->get("debug")->draw();
 
 	glEnable(GL_DEPTH_TEST);
@@ -263,34 +284,14 @@ static void	_render(Scene *ptr)
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
 	(void)scene;
 
-	_draw2D(scene);
-
 	Shader	*shader2 = Engine::Shaders->get("cube");
 
 	shader2->use();
 	camera.setViewMatrix(*shader2);
 
-	// scene->body.draw();
 	anims.getAnimationModel(animationId)->draw();
 
-	// glm::mat4	model = glm::mat4(1.0);
-
-	// glm::vec3	translation = testtimeline.getTranslation();
-	// glm::vec3	rotation = testtimeline.getRotation();
-	// glm::vec3	scale = testtimeline.getScale();
-
-	// model = glm::translate(model, translation);
-	// model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
-	// model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
-	// model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
-	// model = glm::scale(model, scale);
-
-	// shader2->setMat4("model", model);
-	// camera.setViewMatrix(*shader2);
-
-	// glBindVertexArray(scene->VAO);
-	// glDrawArrays(GL_TRIANGLES, 0, 36);
-	// glBindVertexArray(0);
+	_draw2D(scene);
 }
 
 void	_moveMouseHookFunc(Scene*, double xpos, double ypos)
@@ -323,11 +324,17 @@ static void	_update(Scene *ptr)
 {
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
 
+	if (redointerface) {
+		redointerface = false;
+		_buildMainInterface(scene->getInterfaceManager()->get("main"));
+	}
+
 	// testtimeline.update(Engine::Window->getDeltaTime());
 	scene->body.update(glm::mat4(1.0));
 	anims.getAnimationModel(animationId)->update();
 
 	scene->getInterfaceManager()->get("debug")->update();
+	scene->getInterfaceManager()->get("main")->update();
 
 	_frameKeyHook(scene);
 	camera.update();
@@ -343,22 +350,8 @@ static void	_close(Scene *scene)
 static void	_open(Scene *scene)
 {
 	// Engine::Window->setDefaultMousePos();
-	scene->getInterfaceManager()->use("main");
+	scene->getInterfaceManager()->use("editor");
 }
-
-// Timeline	torso;
-// Timeline	head;
-
-// Timeline	upperLeftArm;
-// Timeline	upperRightArm;
-// Timeline	lowerLeftArm;
-// Timeline	lowerRightArm;
-
-// Timeline	upperLeftLeg;
-// Timeline	upperRightLeg;
-// Timeline	lowerLeftLeg;
-// Timeline	lowerRightLeg;
-
 
 TitleScene::TitleScene()
 {
