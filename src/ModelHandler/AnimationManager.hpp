@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/21 16:49:18 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/22 13:02:45 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,11 +116,16 @@ class	Animation
 
 		Timeline	*get(const std::string &id)
 		{
+			if (_timelines.find(id) == _timelines.end())
+				return (NULL);
 			return (_timelines[id]);
 		}
 		void	addKeyFrame(std::string part, KeyFrameType type, KeyFrame<glm::vec3> keyframe)
 		{
-			_timelines[part]->addKeyFrame(type, keyframe);
+			Timeline	*tml = get(part);
+			if (!tml)
+				return ;
+			tml->addKeyFrame(type, keyframe);
 		}
 	private:
 		void	_addKeyFrame(KeyFrameType type, const std::string &id, std::istringstream &line)

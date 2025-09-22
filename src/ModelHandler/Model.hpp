@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Model.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:29:09 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/18 17:00:30 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/22 13:41:53 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,11 @@ class Model
 		void	setChild(const std::string &parentID, const std::string &childID)
 		{
 			_parts[parentID]->addChild(_parts[childID]);
+		}
+		void	exportAnimation(const std::string &path)
+		{
+			if (_root)
+				_root->exportAnimation(path);
 		}
 	private:
 		std::map<std::string, Part*>	_parts;
