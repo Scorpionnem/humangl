@@ -72,51 +72,57 @@ void	addKeyFrameButton(Interface *interface, std::string id, float x, float y, K
 	interface->addElement(id + std::to_string(keyframe.getTime()), new Toggle(UIAnchor::UI_BOTTOM_LEFT, id + std::to_string(keyframe.getTime()), glm::vec2(x, y), glm::vec2(20, 20), []
 	(ToggleInfo infos)
 	{
-		selectedKeyframe = static_cast<KeyFrame<glm::vec3>*>(infos.data);
+		Interface *editor = Engine::Scenes->getCurrent()->getInterfaceManager()->get("editor");
 
-		//Show options of the keyframe based on its type.
-
-	},
-	[](ToggleInfo infos)
-	{
-		if (glfwGetKey(Engine::Window->data(), GLFW_KEY_LEFT_SHIFT) != GLFW_PRESS)
+		if (!infos.pressed)
+		{
+			selectedKeyframe = NULL;
+			static_cast<TextBox*>(editor->getElement("keyframe_editor_x"))->input = "";
+			static_cast<TextBox*>(editor->getElement("keyframe_editor_y"))->input = "";
+			static_cast<TextBox*>(editor->getElement("keyframe_editor_z"))->input = "";
+			static_cast<TextBox*>(editor->getElement("keyframe_editor_time"))->input = "";
 			return ;
-
+		}
 		selectedKeyframe = static_cast<KeyFrame<glm::vec3>*>(infos.data);
 
-		double mouseX, mouseY;
-		glfwGetCursorPos(Engine::Window->data(), &mouseX, &mouseY);
-		infos.toggle->setOffset({mouseX - (infos.toggle->getSize().x / 2.f), infos.toggle->getOffset().y});
-
-		//Calculate new time value based on position
-
-	} , &keyframe));
+		static_cast<TextBox*>(editor->getElement("keyframe_editor_x"))->input = std::to_string(selectedKeyframe->getValue().x);
+		static_cast<TextBox*>(editor->getElement("keyframe_editor_y"))->input = std::to_string(selectedKeyframe->getValue().y);
+		static_cast<TextBox*>(editor->getElement("keyframe_editor_z"))->input = std::to_string(selectedKeyframe->getValue().z);
+		static_cast<TextBox*>(editor->getElement("keyframe_editor_time"))->input = std::to_string(selectedKeyframe->getTime());
+	}, NULL, &keyframe));
 }
 
 static void	_buildEditorInterface(Interface *interface)
 {
-	interface->addElement("keyframe_editor_x", new TextBox(UIAnchor::UI_CENTER_RIGHT, glm::vec2(0, 0), glm::vec2(200, 40), []
+	interface->addElement("keyframe_editor_x", new TextBox(UIAnchor::UI_CENTER_RIGHT, "X", glm::vec2(0, 0), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedKeyframe && infos.input.size())
 			selectedKeyframe->setValue({std::atof(infos.input.c_str()), selectedKeyframe->getValue().y, selectedKeyframe->getValue().z});
 	}, NULL));
-	interface->addElement("keyframe_editor_y", new TextBox(UIAnchor::UI_CENTER_RIGHT, glm::vec2(0, 41), glm::vec2(200, 40), []
+	interface->addElement("keyframe_editor_y", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Y", glm::vec2(0, 41), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedKeyframe && infos.input.size())
 			selectedKeyframe->setValue({selectedKeyframe->getValue().x, std::atof(infos.input.c_str()), selectedKeyframe->getValue().z});
 	}, NULL));
-	interface->addElement("keyframe_editor_z", new TextBox(UIAnchor::UI_CENTER_RIGHT, glm::vec2(0, 82), glm::vec2(200, 40), []
+	interface->addElement("keyframe_editor_z", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Z", glm::vec2(0, 82), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedKeyframe && infos.input.size())
 			selectedKeyframe->setValue({selectedKeyframe->getValue().x, selectedKeyframe->getValue().y, std::atof(infos.input.c_str())});
 	}, NULL));
-	interface->addElement("bodypartselector", new TextBox(UIAnchor::UI_CENTER_RIGHT, glm::vec2(0, 123), glm::vec2(200, 40), []
+	interface->addElement("bodypartselector", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Body Part", glm::vec2(0, 123), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		modelId = infos.input;
+		redointerface = true;
+	}, NULL));
+	interface->addElement("keyframe_editor_time", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Time", glm::vec2(0, -41), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedKeyframe && infos.input.size())
+			selectedKeyframe->setTime(std::atof(infos.input.c_str()));
 		redointerface = true;
 	}, NULL));
 

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/20 13:17:26 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/28 12:16:19 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/22 12:28:14 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ struct	TextBoxInfo
 class	TextBox : public UIElement
 {
 	public:
-		TextBox(UIAnchor anchor, glm::vec2 offset, glm::vec2 size, std::function<void(TextBoxInfo)> onClick, void *clickData)
+		TextBox(UIAnchor anchor, std::string label, glm::vec2 offset, glm::vec2 size, std::function<void(TextBoxInfo)> onClick, void *clickData)
 		{
 			type = UIElementType::UITYPE_TEXTBOX;
 			this->offset = offset;
@@ -34,6 +34,7 @@ class	TextBox : public UIElement
 			this->onClick = onClick;
 			this->clickData = clickData;
 			this->anchor = anchor;
+			this->label = label;
 
 			anchorPos();
 		}
@@ -79,11 +80,13 @@ class	TextBox : public UIElement
 		{
 			input.clear();
 		}
+		void	putString(std::string str);
 
 		bool						wasPressedInside = false;
 		bool						previousMousePressed = false;
 		bool						pressed = false;
 		std::string					input;
+		std::string					label;
 
 		std::function<void(TextBoxInfo)>	onClick = NULL;
 		void						*clickData = NULL;

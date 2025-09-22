@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/28 12:13:46 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 10:35:57 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/22 12:28:56 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,20 @@ void	TextBox::draw()
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 
-	float	labelWidth = this->input.size() * 15;
+	if (input.size())
+		putString(input);
+	else
+		putString(label);
+}
+
+void	TextBox::putString(std::string str)
+{
+	float	labelWidth = str.size() * 15;
 	float	labelHeight = 15;
 
 	glm::vec2	buttonCenter;
 	buttonCenter.x = (this->pos.x + this->size.x / 2.f) - labelWidth / 2.f;
 	buttonCenter.y = (this->pos.y + this->size.y / 2.f) - labelHeight / 2.f;
 
-	Engine::Font->putString(this->input, buttonCenter, glm::vec2(1, 1), glm::vec3(1), false, false);
+	Engine::Font->putString(str, buttonCenter, glm::vec2(1, 1), glm::vec3(1), false, false);
 }
