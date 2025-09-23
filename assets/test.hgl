@@ -19,6 +19,8 @@
 #		-Sets the scale values to the used object
 
 define head | 0 1 0 | 0 -1 0 | 224 171 148
+define RightEye | 1 0.4 0.7 | -1 0 0 | 0 0 0
+define LeftEye | 1 0.4 -0.7 | -1 0 0 | 0 0 0
 
 define lowerLeftArm | 1 -1 0 | 1 1 0 | 224 171 148
 define upperLeftArm | 0 1 -1 | 0 1 1 | 224 171 148
@@ -30,13 +32,26 @@ define upperLeftLeg | -1 -1 -1 | -1 1 -1 | 3 76 153
 define lowerRightLeg | 1 -1 0 | 1 1 0 | 3 76 153
 define upperRightLeg | -1 -1 1 | -1 1 1 | 3 76 153
 
-define torso | 0 0 0 | 0 0 0 | 6 99 6
+define upperTorso | 0 1 0 | 0 -1 0 | 6 99 6
+define lowerTorso | 0 -1 0 | 0 1 0 | 6 99 6
 
-root torso
+root lowerTorso
+
+object RightEye
+kfs 0 0.1 0.5 0.5
+kfr 0 0 0 0
+
+object LeftEye
+kfs 0 0.1 0.5 0.5
+kfr 0 0 0 0
 
 object head
+children RightEye
+children LeftEye
+kfr 0 0 20 0
+kfr 1 0 -90 0
+kfr 20 0 -90 0
 kfs 0 2.5 2.5 2.5
-kfr 0 0 0 0
 
 object lowerLeftArm
 kfs 0 1 5 1
@@ -56,13 +71,13 @@ kfr 0 0 0 0
 
 object upperLeftArm
 children lowerLeftArm
+kfr 0 0 -20 0
 kfs 0 1 5 1
-kfr 0 0 0 0
 
 object upperRightArm
 children lowerRightArm
+kfr 0 0 50 7
 kfs 0 1 5 1
-kfr 0 0 0 0
 
 object upperLeftLeg
 children lowerLeftLeg
@@ -74,11 +89,19 @@ children lowerRightLeg
 kfs 0 1 5 1
 kfr 0 0 0 0
 
-object torso
+object upperTorso
 children head
 children upperLeftArm
 children upperRightArm
+kft 0 0 0 0
+kfr 0 0 40 0
+kfr 3 0 -320 0
+kfr 6 0 -320 0
+kfs 0 1 5 5
+
+object lowerTorso
+children upperTorso
 children upperLeftLeg
 children upperRightLeg
-kfs 0 1 8 6
-kfr 0 0 0 0
+kfr 0 0 -20 1
+kfs 0 1 4 4.25

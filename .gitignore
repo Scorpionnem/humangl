@@ -5,6 +5,8 @@ obj/
 
 humangl
 
+*.hgl
+
 # Ignore external libraries (They are cloned by the Makefile)
 GLFW/
 src/glad/

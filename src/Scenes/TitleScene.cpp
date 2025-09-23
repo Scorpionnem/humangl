@@ -65,6 +65,16 @@ std::string	getFPSString(bool debug)
 	return (fpsString);
 }
 
+std::string _getTimeString()
+{
+	std::time_t t = std::time(0);
+	std::tm* tm = std::localtime(&t);
+	char buf[64];
+
+	std::strftime(buf, sizeof(buf), "%d_%m_%Y-%H_%M_%S", tm);
+	return std::string(buf);
+}
+
 bool	redoMainInterface = true;
 KeyFrame<glm::vec3> *selectedKeyframe = NULL;
 
@@ -74,8 +84,12 @@ void	addKeyFrameButton(Interface *interface, std::string id, float x, float y, K
 	(ToggleInfo infos)
 	{
 		Interface *editor = Engine::Scenes->getCurrent()->getInterfaceManager()->get("editor");
+		if (!editor)
+			return ;
 
 		selectedKeyframe = static_cast<KeyFrame<glm::vec3>*>(infos.data);
+		if (!selectedKeyframe)
+			return ;
 
 		static_cast<TextBox*>(editor->getElement("keyframe_editor_x"))->input = std::to_string(selectedKeyframe->getValue().x);
 		static_cast<TextBox*>(editor->getElement("keyframe_editor_y"))->input = std::to_string(selectedKeyframe->getValue().y);
@@ -119,10 +133,14 @@ static void	_buildEditorInterface(Interface *interface)
 		}
 
 		selectedPart = anims.getAnimationModel(animationId)->getPart(infos.input);
+		if (!selectedPart)
+			return ;
 
 		modelId = selectedPart->id();
 
 		Interface *editor = Engine::Scenes->getCurrent()->getInterfaceManager()->get("editor");
+		if (!editor)
+			return ;
 
 		static_cast<TextBox*>(editor->getElement("keyframe_editor_x"))->input = "";
 		static_cast<TextBox*>(editor->getElement("keyframe_editor_y"))->input = "";
@@ -179,14 +197,11 @@ static void	_buildMainInterface(Interface *interface)
 
 	Animation	*anim = anims.getAnimation(animationId);
 	if (!anim)
-	{
 		return ;
-	}
+		
 	Timeline *timeline = anim->get(modelId);
 	if (!timeline)
-	{
 		return ;
-	}
 
 	float	biggestTime = std::max(timeline->getBiggestTime(), 1.0f);
 	float	maxWidth = (Engine::Window->getWidth() - 148);
@@ -279,7 +294,7 @@ static void	_keyHookFunc(Scene *ptr, int key, int action)
 
 	if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
 		scene->setDebug(!scene->getDebug());
-	
+
 	if (key == GLFW_KEY_DELETE && action == GLFW_PRESS)
 	{
 		if (selectedKeyframe)
@@ -288,6 +303,10 @@ static void	_keyHookFunc(Scene *ptr, int key, int action)
 			redointerface = true;
 		}
 	}
+
+	if (glfwGetKey(Engine::Window->data(), GLFW_KEY_S) == GLFW_PRESS)
+		if (glfwGetKey(Engine::Window->data(), GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+			anims.getAnimationModel(animationId)->exportAnimation("./exports/" + _getTimeString() + "_export.hgl");
 
 	scene->getInterfaceManager()->getCurrent()->specialInput(key, action);
 }
@@ -314,7 +333,7 @@ void	_selectPart()
 	double	pos[2] = {0};
 	glfwGetCursorPos(Engine::Window->data(), &pos[0], &pos[1]);
 
-	unsigned char data[3];
+	unsigned char data[3] = {0};
 	glReadPixels(pos[0], Engine::Window->getHeight() - pos[1], 1, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
 
 	selectedPart = anims.getAnimationModel(animationId)->getSelected({float(data[0]), float(data[1]), float(data[2])});
@@ -399,7 +418,6 @@ static void	_update(Scene *ptr)
 		_buildMainInterface(scene->getInterfaceManager()->get("main"));
 	}
 
-	// testtimeline.update(Engine::Window->getDeltaTime());
 	scene->body.update(glm::mat4(1.0));
 	anims.getAnimationModel(animationId)->update();
 
@@ -421,16 +439,6 @@ static void	_open(Scene *scene)
 {
 	// Engine::Window->setDefaultMousePos();
 	scene->getInterfaceManager()->use("editor");
-}
-
-std::string _getTimeString()
-{
-	std::time_t t = std::time(0);
-	std::tm* tm = std::localtime(&t);
-	char buf[64];
-
-	std::strftime(buf, sizeof(buf), "%d_%m_%Y-%H_%M_%S", tm);
-	return std::string(buf);
 }
 
 TitleScene::TitleScene()
@@ -464,5 +472,4 @@ TitleScene::TitleScene()
 
 TitleScene::~TitleScene()
 {
-	anims.getAnimationModel(animationId)->exportAnimation("./exports/" + _getTimeString() + "_export.hgl");
 }
