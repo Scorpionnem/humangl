@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   FrameBuffer.cpp                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/05 11:28:56 by mbatty            #+#    #+#             */
-/*   Updated: 2025/08/30 10:42:47 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/23 14:42:18 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,6 +142,7 @@ void	FrameBuffer::reset()
 	glViewport(0, 0, Engine::Window->getWidth(), Engine::Window->getHeight());
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDisable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
 	glClear(GL_COLOR_BUFFER_BIT);
 }
 

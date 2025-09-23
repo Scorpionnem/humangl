@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Model.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:29:09 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/22 13:41:53 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/23 14:20:05 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,21 @@ class Model
 			if (!_root)
 				std::cout << "ERROR ROOT IS NULL, id: " << std::endl;
 			_root->draw();
+		}
+		void	selectDraw()
+		{
+			if (!_root)
+				std::cout << "ERROR ROOT IS NULL, id: " << std::endl;
+			_root->selectDraw();
+		}
+		Part	*getSelected(const glm::vec3 &idColor)
+		{
+			for (auto part : _parts)
+			{
+				if (part.second->getIdColor() == idColor)
+					return (part.second);
+			}
+			return (NULL);
 		}
 		void	update()
 		{
@@ -92,7 +107,7 @@ class Model
 		}
 	private:
 		std::map<std::string, Part*>	_parts;
-		Part				*_root;
+		Part							*_root;
 };
 
 #endif

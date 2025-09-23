@@ -3,14 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   Part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 19:43:35 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/15 11:09:05 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/23 14:40:31 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <Part.hpp>
+
+unsigned int	Part::_index = 1;
 
 Part::Part(std::string id, const glm::vec3 &pointAnchor, const glm::vec3 &baseAnchor, const glm::vec3 &color)
 {
@@ -18,6 +20,8 @@ Part::Part(std::string id, const glm::vec3 &pointAnchor, const glm::vec3 &baseAn
 	_baseAnchor = baseAnchor;
 	_color = color;
 	_id = id;
+	_idColor = glm::vec3((float)((_index / 255255) % 255), (float)((_index / 255) % 255), (float)(_index % 255));
+	_index ++;
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -42,6 +46,11 @@ Part::~Part()
 glm::vec3	Part::getAnchor() const
 {
 	return (_pointAnchor);
+}
+
+glm::vec3	Part::getIdColor() const
+{
+	return (_idColor);
 }
 
 void	Part::addChild(Part *child)
@@ -85,6 +94,19 @@ void	Part::update(const glm::mat4 &parentMat)
 
 	for (Part *part : _children)
 		part->update(_mat);
+}
+
+void	Part::selectDraw()
+{
+	Engine::Shaders->get("cube")->setMat4("model", _mat);
+	Engine::Shaders->get("cube")->setVec3("color", _idColor / 255.0f);
+
+	glBindVertexArray(VAO);
+	glDrawArrays(GL_TRIANGLES, 0, 36);
+	glBindVertexArray(0);
+
+	for (Part *part : _children)
+		part->selectDraw();
 }
 
 void	Part::draw()

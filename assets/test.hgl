@@ -36,36 +36,43 @@ root torso
 
 object head
 kfs 0 2.5 2.5 2.5
+kfr 0 0 0 0
 
 object lowerLeftArm
 kfs 0 1 5 1
 kfr 0 0 0 0
-kfr 10 0 0 180
 
 object lowerRightArm
 kfs 0 1 5 1
+kfr 0 0 0 0
 
 object lowerLeftLeg
 kfs 0 1 5 1
+kfr 0 0 0 0
 
 object lowerRightLeg
 kfs 0 1 5 1
+kfr 0 0 0 0
 
 object upperLeftArm
 children lowerLeftArm
 kfs 0 1 5 1
+kfr 0 0 0 0
 
 object upperRightArm
 children lowerRightArm
 kfs 0 1 5 1
+kfr 0 0 0 0
 
 object upperLeftLeg
 children lowerLeftLeg
 kfs 0 1 5 1
+kfr 0 0 0 0
 
 object upperRightLeg
 children lowerRightLeg
 kfs 0 1 5 1
+kfr 0 0 0 0
 
 object torso
 children head
@@ -74,3 +81,4 @@ children upperRightArm
 children upperLeftLeg
 children upperRightLeg
 kfs 0 1 8 6
+kfr 0 0 0 0

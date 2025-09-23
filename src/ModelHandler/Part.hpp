@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Part.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:31:40 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/15 11:09:11 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/23 14:19:07 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,10 @@ class Part
 		void	updateAnchor(const glm::mat4 &parentMat);
 		void	update(const glm::mat4 &parentMat);
 		void	draw();
+		void	selectDraw();
 
 		glm::vec3	getAnchor() const;
+		glm::vec3	getIdColor() const;
 		std::string	id()
 		{
 			return (this->_id);
@@ -78,6 +80,8 @@ class Part
 		uint				VAO = 0;
 		uint				VBO = 0;
 		glm::vec3			_color = glm::vec3(0.0f);
+		glm::vec3			_idColor = glm::vec3(0.0f);
+		static unsigned int	_index;
 };
 
 #endif

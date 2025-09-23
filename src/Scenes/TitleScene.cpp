@@ -23,6 +23,7 @@ std::string			animationId = "";
 std::string			modelId = "";
 bool				redointerface = false;
 AnimationManager	anims;
+Part				*selectedPart = NULL;
 
 std::string	getFPSString(bool debug)
 {
@@ -112,16 +113,18 @@ static void	_buildEditorInterface(Interface *interface)
 	interface->addElement("bodypartselector", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Body Part", glm::vec2(0, 123), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
-		modelId = infos.input;
-		if (!anims.getAnimation(animationId)->get(modelId))
+		if (!anims.getAnimation(animationId)->get(infos.input))
 		{
 			infos.input = "";
-			modelId = "";
 		}
+
+		selectedPart = anims.getAnimationModel(animationId)->getPart(infos.input);
+
+		modelId = selectedPart->id();
 
 		Interface *editor = Engine::Scenes->getCurrent()->getInterfaceManager()->get("editor");
 
-		static_cast<TextBox*>(editor->getElement("keyframe_editor_x"))->input = "	";
+		static_cast<TextBox*>(editor->getElement("keyframe_editor_x"))->input = "";
 		static_cast<TextBox*>(editor->getElement("keyframe_editor_y"))->input = "";
 		static_cast<TextBox*>(editor->getElement("keyframe_editor_z"))->input = "";
 		static_cast<TextBox*>(editor->getElement("keyframe_editor_time"))->input = "";
@@ -294,6 +297,42 @@ static void	_charHookFunc(Scene *scene, uint key)
 	scene->getInterfaceManager()->getCurrent()->charInput(key);
 }
 
+void	_selectPart()
+{
+	FrameBuffer	selection;
+
+	Shader	*shader2 = Engine::Shaders->get("cube");
+
+	shader2->use();
+	camera.setViewMatrix(*shader2);
+	selection.use();
+
+	glClearColor(0.0f, 0.0, 0.0f, 1.0f);
+
+	anims.getAnimationModel(animationId)->selectDraw();
+
+	double	pos[2] = {0};
+	glfwGetCursorPos(Engine::Window->data(), &pos[0], &pos[1]);
+
+	unsigned char data[3];
+	glReadPixels(pos[0], Engine::Window->getHeight() - pos[1], 1, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+
+	selectedPart = anims.getAnimationModel(animationId)->getSelected({float(data[0]), float(data[1]), float(data[2])});
+	if (selectedPart)
+	{
+		modelId = selectedPart->id();
+		redointerface = true;
+	}
+
+	FrameBuffer::reset();
+	glClearColor(0.6, 0.8, 1.0, 1.0f);
+}
+
+static void	_mouseBtnHook(Scene*, int button, int action, int)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+		_selectPart();
+}
 
 #include "Timeline.hpp"
 
@@ -314,7 +353,6 @@ void	_draw2D(TitleScene *scene)
 static void	_render(Scene *ptr)
 {
 	TitleScene	*scene = static_cast<TitleScene*>(ptr);
-	(void)scene;
 
 	Shader	*shader2 = Engine::Shaders->get("cube");
 
@@ -409,6 +447,8 @@ TitleScene::TitleScene()
 	this->setUpdate(_update);
 	this->setOpen(_open);
 	this->setClose(_close);
+	this->setMouseBtnHookFunc(_mouseBtnHook);
+
 
 	animationId = "walking";
 
