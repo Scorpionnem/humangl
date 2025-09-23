@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/22 13:02:45 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/23 11:14:22 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ class	Animation
 			std::cout << id << " " << (int)type << " " << x << " " << y << " " << z << std::endl;
 			if (id.empty())
 				throw std::runtime_error("no defined object");
-			_timelines[id]->addKeyFrame(type, KeyFrame(time, glm::vec3(x, y, z)));
+			_timelines[id]->addKeyFrame(type, KeyFrame(time, glm::vec3(x, y, z), type));
 		}
 		std::map<std::string, Timeline*>	_timelines;
 		bool								_rooted = false;

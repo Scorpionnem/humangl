@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 11:41:02 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/20 16:13:01 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/23 11:18:49 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,6 @@
 # include "libs.hpp"
 # include "Engine.hpp"
 # include "KeyFrame.hpp"
-
-enum class KeyFrameType
-{
-	TRANSLATION,
-	ROTATION,
-	SCALE
-};
 
 class	Timeline
 {
@@ -67,6 +60,31 @@ class	Timeline
 					_scaleKeyframes.push_back(keyframe);
 					_sort(_scaleKeyframes);
 					break ;
+			}
+		}
+		void	removeKeyFrame(KeyFrameType type, float time)
+		{
+			std::vector<KeyFrame<glm::vec3>>	keyframes;
+			
+			switch (type)
+			{
+				case KeyFrameType::ROTATION:
+					return (_removeKeyFrame(time, _rotationKeyframes));
+				case KeyFrameType::SCALE:
+					return (_removeKeyFrame(time, _scaleKeyframes));
+				case KeyFrameType::TRANSLATION:
+					return (_removeKeyFrame(time, _translationKeyframes));
+			}
+		}
+		void	_removeKeyFrame(float time, std::vector<KeyFrame<glm::vec3>> &keyframes)
+		{
+			for (auto it = keyframes.begin(); it != keyframes.end(); it++)
+			{
+				if (it->getTime() == time)
+				{
+					keyframes.erase(it);
+					return ;
+				}
 			}
 		}
 		glm::vec3	getValue(KeyFrameType type)
@@ -150,26 +168,5 @@ class	Timeline
 		float					_time = 0;
 		bool					_loop = true;
 };
-
-// void	draw(float y)
-// {
-// 	Shader	*shader = Engine::Shaders->get("colored_quad");
-
-// 	float	maxTime = 10;
-// 	float	keyFrameSize = 16;
-// 	float	pointerSize = 14;
-// 	float	posX = 0;
-
-// 	for (KeyFrame<glm::vec3> &keyframe : _keyframes)
-// 	{
-// 		posX = Engine::Window->getWidth() * (keyframe.getTime() / maxTime) - (keyFrameSize / 2);
-		
-// 		shader->setVec3("color", glm::vec3(0, 0.5, 0.7));
-// 			UIElement::draw(shader, glm::vec2(posX, y), glm::vec2(keyFrameSize, keyFrameSize));
-// 	}
-// 	posX = Engine::Window->getWidth() * (_time / maxTime) - (pointerSize / 2);
-// 	shader->setVec3("color", glm::vec3(0.7, 0.0, 0.5));
-// 	UIElement::draw(shader, glm::vec2(posX, y), glm::vec2(pointerSize, pointerSize));
-// }
 
 #endif

@@ -147,7 +147,7 @@ static void	_buildEditorInterface(Interface *interface)
 		Animation	*anim = anims.getAnimation(animationId);
 		if (!anim || !anim->get(modelId))
 			return ;
-		anim->addKeyFrame(modelId, KeyFrameType::TRANSLATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime() + 1, glm::vec3(0)));
+		anim->addKeyFrame(modelId, KeyFrameType::TRANSLATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime() + 1, glm::vec3(0), KeyFrameType::TRANSLATION));
 		redointerface = true;
 	}, NULL));
 	interface->addElement("keyframeaddr", new Button(UIAnchor::UI_CENTER_RIGHT, "kfr", glm::vec2(-100, 164), glm::vec2(40, 40), []
@@ -156,7 +156,7 @@ static void	_buildEditorInterface(Interface *interface)
 		Animation	*anim = anims.getAnimation(animationId);
 		if (!anim || !anim->get(modelId))
 			return ;
-		anim->addKeyFrame(modelId, KeyFrameType::ROTATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime() + 1, glm::vec3(0)));
+		anim->addKeyFrame(modelId, KeyFrameType::ROTATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime() + 1, glm::vec3(0), KeyFrameType::ROTATION));
 		redointerface = true;
 	}, NULL));
 	interface->addElement("keyframeadds", new Button(UIAnchor::UI_CENTER_RIGHT, "kfs", glm::vec2(-40, 164), glm::vec2(40, 40), []
@@ -165,7 +165,7 @@ static void	_buildEditorInterface(Interface *interface)
 		Animation	*anim = anims.getAnimation(animationId);
 		if (!anim || !anim->get(modelId))
 			return ;
-		anim->addKeyFrame(modelId, KeyFrameType::SCALE, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime() + 1, glm::vec3(1)));
+		anim->addKeyFrame(modelId, KeyFrameType::SCALE, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime() + 1, glm::vec3(1), KeyFrameType::SCALE));
 		redointerface = true;
 	}, NULL));
 }
@@ -276,6 +276,15 @@ static void	_keyHookFunc(Scene *ptr, int key, int action)
 
 	if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
 		scene->setDebug(!scene->getDebug());
+	
+	if (key == GLFW_KEY_DELETE && action == GLFW_PRESS)
+	{
+		if (selectedKeyframe)
+		{
+			anims.getAnimation(animationId)->get(modelId)->removeKeyFrame(selectedKeyframe->getType(), selectedKeyframe->getTime());
+			redointerface = true;
+		}
+	}
 
 	scene->getInterfaceManager()->getCurrent()->specialInput(key, action);
 }
