@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Part.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:31:40 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/23 14:19:07 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/24 10:06:42 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 class Part
 {
 	public:
-		Part(std::string id, const glm::vec3 &pointAnchor, const glm::vec3 &baseAnchor, const glm::vec3 &color);
+		Part(std::string id);
 		Part();
 		~Part();
 		Part(const Part &copy)
@@ -46,7 +46,7 @@ class Part
 		}
 	
 		void	addChild(Part *child);
-		void	exportAnimation(std::string path);
+		void	exportAnimation(std::string path, Part *root);
 
 		void	setTimeline(Timeline *cpy)
 		{
@@ -57,6 +57,18 @@ class Part
 		void	draw();
 		void	selectDraw();
 
+		void	setPointAnchor(const glm::vec3 &val)
+		{
+			this->_pointAnchor = val;
+		}
+		void	setBaseAnchor(const glm::vec3 &val)
+		{
+			this->_baseAnchor = val;
+		}
+		void	setColor(const glm::vec3 &val)
+		{
+			this->_color = val;
+		}
 		glm::vec3	getAnchor() const;
 		glm::vec3	getIdColor() const;
 		std::string	id()

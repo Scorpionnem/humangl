@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/23 11:14:22 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/24 10:10:02 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,26 +51,9 @@ class	Animation
 					line >> object;
 					std::cout << "define " << object;// << std::endl;
 
-					glm::vec3	infos[3];
-					std::string	values[3];
-
-					for (int i = 0; i < 3; ++i)
-					{
-						line >> values[0];
-						line >> values[0];
-						line >> values[1];
-						line >> values[2];
-					
-						std::cout << " |" << i << "|" << values[0] << "; " << values[1] << "; " << values[2];
-					
-						infos[i] = glm::vec3(std::atof(values[0].c_str()), std::atof(values[1].c_str()), std::atof(values[2].c_str()));
-					}
-
-					std::cout << std::endl;
-
 					_timelines.insert({object, new Timeline()});
 
-					model->addPart(new Part(object, infos[0], infos[1], infos[2] / 255.0f));
+					model->addPart(new Part(object));
 				}
 				else if (word == "object")
 				{
@@ -109,6 +92,33 @@ class	Animation
 				else if (word == "kfs")
 				{
 					_addKeyFrame(KeyFrameType::SCALE, current, line);
+				}
+				else if (word == "color")
+				{
+					float	x;
+					float	y;
+					float	z;
+
+					line >> x >> y >> z;
+					model->getPart(current)->setColor(glm::vec3(x, y, z) / 255.f);
+				}
+				else if (word == "banchor")
+				{
+					float	x;
+					float	y;
+					float	z;
+
+					line >> x >> y >> z;
+					model->getPart(current)->setBaseAnchor(glm::vec3(x, y, z));
+				}
+				else if (word == "panchor")
+				{
+					float	x;
+					float	y;
+					float	z;
+
+					line >> x >> y >> z;
+					model->getPart(current)->setPointAnchor(glm::vec3(x, y, z));
 				}
 			}
 		}

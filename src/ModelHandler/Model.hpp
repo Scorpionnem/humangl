@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Model.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:29:09 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/23 14:20:05 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/24 10:02:03 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,7 +103,7 @@ class Model
 		void	exportAnimation(const std::string &path)
 		{
 			if (_root)
-				_root->exportAnimation(path);
+				_root->exportAnimation(path, _root);
 		}
 	private:
 		std::map<std::string, Part*>	_parts;

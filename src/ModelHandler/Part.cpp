@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 19:43:35 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/23 14:40:31 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/24 10:19:17 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 
 unsigned int	Part::_index = 1;
 
-Part::Part(std::string id, const glm::vec3 &pointAnchor, const glm::vec3 &baseAnchor, const glm::vec3 &color)
+Part::Part(std::string id)
 {
-	_pointAnchor = pointAnchor;
-	_baseAnchor = baseAnchor;
-	_color = color;
+	_pointAnchor = glm::vec3(0);
+	_baseAnchor = glm::vec3(0);
+	_color = glm::vec3(0);
 	_id = id;
 	_idColor = glm::vec3((float)((_index / 255255) % 255), (float)((_index / 255) % 255), (float)(_index % 255));
 	_index ++;
@@ -178,7 +178,7 @@ std::vector<float> Part::defaultCube = {
 	-0.5f,  0.5f, -0.5f
 };
 
-void	Part::exportAnimation(std::string path)
+void	Part::exportAnimation(std::string path, Part *root)
 {
 	std::ofstream	file;
 
@@ -191,8 +191,10 @@ void	Part::exportAnimation(std::string path)
 	_defineExport(file);
 	file << std::endl;
 	
-	for (auto &part : _children)
-		part->_exportObject(file);
+	if (root)
+		file << "root " << root->_id << std::endl;
+	file << std::endl;
+
 	_exportObject(file);
 }
 
@@ -203,10 +205,20 @@ void	Part::_addHeader(std::ofstream &file)
 
 void	Part::_exportObject(std::ofstream &file)
 {
+	std::cout << "object " << _id << std::endl;
+
 	file << "object " << _id << std::endl;
 	_childrenExport(file);
+
+	file << "banchor " << _baseAnchor.x << " " << _baseAnchor.y << " " << _baseAnchor.z << std::endl;
+	file << "panchor " << _pointAnchor.x << " " << _pointAnchor.y << " " << _pointAnchor.z << std::endl;
+	file << "color " << _color.x * 255.f << " " << _color.y * 255.f << " " << _color.z * 255.f << std::endl;
+
 	_timeline->exportTimeline(file);
 	file << std::endl;
+
+	for (auto &part : _children)
+		part->_exportObject(file);
 }
 
 void	Part::_defineExport(std::ofstream &file)
