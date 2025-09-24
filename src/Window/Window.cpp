@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/03 12:11:45 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/22 13:18:49 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/24 10:47:59 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ Window::Window() : _lastFrame(0)
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	this->center();
-	this->setIcon(MBATTY_TEXTURE_PATH);
+	this->setIcon(MBIROU_TEXTURE_PATH);
 	Engine::log("Creating window, done.", LogSeverity::SUCCESS);
 }
 

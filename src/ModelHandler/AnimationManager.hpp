@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/24 10:10:02 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/24 10:42:17 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,8 @@ class	Animation
 				{
 					std::string	object;
 					std::string	path;
-					line >> object;
+					if (!(line >> object))
+						throw std::runtime_error("define: No argument given");
 					std::cout << "define " << object;// << std::endl;
 
 					_timelines.insert({object, new Timeline()});
@@ -58,7 +59,8 @@ class	Animation
 				else if (word == "object")
 				{
 					std::string	object;
-					line >> object;
+					if (!(line >> object))
+						throw std::runtime_error("object: No argument given");
 					std::cout << "object " << object << std::endl;
 
 					current = object;
@@ -66,7 +68,8 @@ class	Animation
 				else if (word == "root")
 				{
 					std::string	object;
-					line >> object;
+					if (!(line >> object))
+						throw std::runtime_error("root: No argument given");
 					std::cout << "root " << object << std::endl;
 
 					if (!_rooted)
@@ -76,9 +79,12 @@ class	Animation
 				else if (word == "children")
 				{
 					std::string	object;
-					line >> object;
+					if (!(line >> object))
+						throw std::runtime_error("children: No argument given");
 					std::cout << "children " << object << std::endl;
-					
+
+					if (current.empty())
+						throw std::runtime_error("children: Object not set");
 					model->getPart(current)->addChild(model->getPart(object));
 				}
 				else if (word == "kft")
@@ -99,7 +105,8 @@ class	Animation
 					float	y;
 					float	z;
 
-					line >> x >> y >> z;
+					if (!(line >> x >> y >> z))
+						throw std::runtime_error("color: Failed to parse");
 					model->getPart(current)->setColor(glm::vec3(x, y, z) / 255.f);
 				}
 				else if (word == "banchor")
@@ -108,7 +115,8 @@ class	Animation
 					float	y;
 					float	z;
 
-					line >> x >> y >> z;
+					if (!(line >> x >> y >> z))
+						throw std::runtime_error("banchor: Failed to parse");
 					model->getPart(current)->setBaseAnchor(glm::vec3(x, y, z));
 				}
 				else if (word == "panchor")
@@ -117,7 +125,8 @@ class	Animation
 					float	y;
 					float	z;
 
-					line >> x >> y >> z;
+					if (!(line >> x >> y >> z))
+						throw std::runtime_error("panchor: Failed to parse");
 					model->getPart(current)->setPointAnchor(glm::vec3(x, y, z));
 				}
 			}
@@ -145,7 +154,8 @@ class	Animation
 			float	y;
 			float	z;
 
-			line >> time >> x >> y >> z;
+			if (!(line >> time >> x >> y >> z))
+				throw std::runtime_error("kf*: Failed to parse");
 			std::cout << id << " " << (int)type << " " << x << " " << y << " " << z << std::endl;
 			if (id.empty())
 				throw std::runtime_error("no defined object");

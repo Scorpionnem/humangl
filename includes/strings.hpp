@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 12:15:48 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/24 10:31:28 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/24 10:47:55 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@
 # define SKYBOX_PATHES "assets/textures/skybox/right.bmp","assets/textures/skybox/left.bmp","assets/textures/skybox/top.bmp","assets/textures/skybox/bottom.bmp","assets/textures/skybox/front.bmp","assets/textures/skybox/back.bmp"
 
 # define MBATTY_TEXTURE_PATH "assets/textures/ui/mbatty.bmp"
+# define MBIROU_TEXTURE_PATH "assets/textures/ui/mbirou.bmp"
 # define STONE_TEXTURE_PATH "assets/textures/blocks/stone.bmp"
 # define COBBLESTONE_TEXTURE_PATH "assets/textures/blocks/cobblestone.bmp"
 # define DIRT_TEXTURE_PATH "assets/textures/blocks/dirt.bmp"

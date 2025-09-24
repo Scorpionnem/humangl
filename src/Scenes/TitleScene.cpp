@@ -465,6 +465,7 @@ TitleScene::TitleScene()
 		anims.play(animationId);
 	} catch (const std::exception &e) {
 		Engine::log(e.what());
+		throw ;
 	}
 
 	_buildMainInterface(this->getInterfaceManager()->get("main"));
