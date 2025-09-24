@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 11:41:02 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/23 11:18:49 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/24 11:59:35 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,6 +111,10 @@ class	Timeline
 		}
 		float		getBiggestTime()
 		{
+			_sort(_scaleKeyframes);
+			_sort(_rotationKeyframes);
+			_sort(_translationKeyframes);
+			
 			float res = 0;
 			float	translationMax = _translationKeyframes.size() ? _translationKeyframes.back().getTime() : 0;
 			float	rotationMax = _rotationKeyframes.size() ? _rotationKeyframes.back().getTime() : 0;
