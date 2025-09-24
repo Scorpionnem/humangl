@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/28 12:15:48 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/13 15:35:08 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/24 10:31:28 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,27 @@
 
 # define	HGL_HEADER "# 42 humangl project export file by mbatty & mbirou\n\
 # keys used in the file\n\
+#\n\
+#	Order is important, if you use a key that needs a used object, an error will be throwed!\n\
+#\n\
 #	define : string name\n\
 #		-Defines an object to be used in the file\n\
+#	root : string name\n\
+#		-Sets the root object\n\
+#\n\
 #	object : string name\n\
 #		-Sets the object as used\n\
+#\n\
 #	children : string name\n\
 #		-Sets the children of the used object\n\
+#\n\
+#	banchor : vec3\n\
+#		-Sets the base anchor of the used object\n\
+#	panchor : vec3\n\
+#		-Sets the point anchor of the used object\n\
+#	color : vec3\n\
+#		-Sets the color of the used object\n\
+#\n\
 #	kft : float time : vec3 translation\n\
 #		-Sets the translation values to the used object\n\
 #	kfr : float time : vec3 rotation\n\
