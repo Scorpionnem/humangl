@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Part.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:31:40 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/24 10:06:42 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/24 18:37:46 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ class Part
 {
 	public:
 		Part(std::string id);
-		Part();
 		~Part();
 		Part(const Part &copy)
 		{
@@ -61,6 +60,15 @@ class Part
 		{
 			this->_pointAnchor = val;
 		}
+		void	setPointAnchorx(float val) {this->_pointAnchor.x = val;}
+		void	setPointAnchory(float val) {this->_pointAnchor.y = val;}
+		void	setPointAnchorz(float val) {this->_pointAnchor.z = val;}
+		void	setBaseAnchorx(float val) {this->_baseAnchor.x = val;}
+		void	setBaseAnchory(float val) {this->_baseAnchor.y = val;}
+		void	setBaseAnchorz(float val) {this->_baseAnchor.z = val;}
+		void	setColorr(float val) {this->_color.x = val;}
+		void	setColorg(float val) {this->_color.y = val;}
+		void	setColorb(float val) {this->_color.z = val;}
 		void	setBaseAnchor(const glm::vec3 &val)
 		{
 			this->_baseAnchor = val;

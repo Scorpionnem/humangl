@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   AnimationManager.hpp                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/24 10:42:17 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/24 14:53:13 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -145,6 +145,10 @@ class	Animation
 			if (!tml)
 				return ;
 			tml->addKeyFrame(type, keyframe);
+		}
+		void	addTimeLine(const std::string &part, Timeline *tml)
+		{
+			_timelines.insert({part, tml});
 		}
 	private:
 		void	_addKeyFrame(KeyFrameType type, const std::string &id, std::istringstream &line)

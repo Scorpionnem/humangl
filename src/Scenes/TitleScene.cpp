@@ -98,8 +98,101 @@ void	addKeyFrameButton(Interface *interface, std::string id, float x, float y, K
 	}, NULL, &keyframe));
 }
 
+std::string	currentAddPartParent;
+
+/*
+
+	// Sets keyframe as used
+	void	selectKeyFrame() {}
+
+	// Sets part as used and sets the smallest keyframe as used
+	void	selectPart() {} -> selectKeyFrame(smallest)
+
+	// Adds a new keyframe and sets it as used
+	void	addKeyFrame() {} -> selectKeyFrame(new)
+
+	// Updates the editor interface to refresh the labels to the used keyframe/bodypart
+	void	updateEditorInterface 
+
+*/
+
 static void	_buildEditorInterface(Interface *interface)
 {
+	interface->addElement("keyframe_editor_panchor_x", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor X", glm::vec2(0, 0), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedPart && infos.input.size())
+		{
+			selectedPart->setPointAnchorx(std::atof(infos.input.c_str()));
+		}
+	}, NULL));
+	interface->addElement("keyframe_editor_panchor_y", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor Y", glm::vec2(0, 41), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedPart && infos.input.size())
+		{
+			selectedPart->setPointAnchory(std::atof(infos.input.c_str()));
+		}
+	}, NULL));
+	interface->addElement("keyframe_editor_panchor_z", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor Z", glm::vec2(0, 82), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedPart && infos.input.size())
+		{
+			selectedPart->setPointAnchorz(std::atof(infos.input.c_str()));
+		}
+	}, NULL));
+	interface->addElement("keyframe_editor_banchor_x", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor X", glm::vec2(200, 0), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedPart && infos.input.size())
+		{
+			selectedPart->setBaseAnchorx(std::atof(infos.input.c_str()));
+		}
+	}, NULL));
+	interface->addElement("keyframe_editor_banchor_y", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Y", glm::vec2(200, 41), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedPart && infos.input.size())
+		{
+			selectedPart->setBaseAnchory(std::atof(infos.input.c_str()));
+		}
+	}, NULL));
+	interface->addElement("keyframe_editor_banchor_z", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Z", glm::vec2(200, 82), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedPart && infos.input.size())
+		{
+			selectedPart->setBaseAnchorz(std::atof(infos.input.c_str()));
+		}
+	}, NULL));
+	interface->addElement("keyframe_editor_color_r", new TextBox(UIAnchor::UI_CENTER_LEFT, "Red", glm::vec2(100, -123), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedPart && infos.input.size())
+		{
+			selectedPart->setColorr(std::atof(infos.input.c_str()) / 255.f);
+		}
+	}, NULL));
+	interface->addElement("keyframe_editor_color_g", new TextBox(UIAnchor::UI_CENTER_LEFT, "Green", glm::vec2(100, -82), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedPart && infos.input.size())
+		{
+			selectedPart->setColorg(std::atof(infos.input.c_str()) / 255.f);
+		}
+	}, NULL));
+	interface->addElement("keyframe_editor_color_b", new TextBox(UIAnchor::UI_CENTER_LEFT, "Blue", glm::vec2(100, -41), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (selectedPart && infos.input.size())
+		{
+			selectedPart->setColorb(std::atof(infos.input.c_str()) / 255.f);
+		}
+	}, NULL));
+
+
+
 	interface->addElement("keyframe_editor_x", new TextBox(UIAnchor::UI_CENTER_RIGHT, "X", glm::vec2(0, 0), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
@@ -159,7 +252,32 @@ static void	_buildEditorInterface(Interface *interface)
 			infos.input = "";
 		redointerface = true;
 	}, NULL));
+	interface->addElement("keyframe_editor_addpart", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Add Part", glm::vec2(0, -82), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		if (!infos.input.empty())
+		{
+			if (!anims.getAnimationModel(animationId)->getPart(currentAddPartParent) || anims.getAnimationModel(animationId)->getPart(infos.input))
+				return ;
 
+			std::cout << currentAddPartParent << " " << infos.input << std::endl;
+			Timeline	*tml = new Timeline();
+
+			anims.getAnimation(animationId)->addTimeLine(infos.input, tml);
+			anims.getAnimationModel(animationId)->setChild(currentAddPartParent, new Part(infos.input));
+			Part *part = anims.getAnimationModel(animationId)->getPart(infos.input);
+
+			part->setTimeline(tml);
+			part->setBaseAnchor(glm::vec3(0));
+			part->setPointAnchor(glm::vec3(0));
+			part->setColor(glm::vec3(1));
+		}
+	}, NULL));
+	interface->addElement("keyframe_editor_addpart_parent", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Parent", glm::vec2(0, -123), glm::vec2(200, 40), []
+	(TextBoxInfo infos)
+	{
+		currentAddPartParent = infos.input;
+	}, NULL));
 
 
 	interface->addElement("keyframeaddt", new Button(UIAnchor::UI_CENTER_RIGHT, "kft", glm::vec2(-160, 164), glm::vec2(40, 40), []
@@ -418,7 +536,6 @@ static void	_update(Scene *ptr)
 		_buildMainInterface(scene->getInterfaceManager()->get("main"));
 	}
 
-	scene->body.update(glm::mat4(1.0));
 	anims.getAnimationModel(animationId)->update();
 
 	scene->getInterfaceManager()->get("debug")->update();

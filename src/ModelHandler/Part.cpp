@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
+/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/01 19:43:35 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/24 10:19:17 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/24 15:01:01 by mbirou           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ Part::Part(std::string id)
 	_id = id;
 	_idColor = glm::vec3((float)((_index / 255255) % 255), (float)((_index / 255) % 255), (float)(_index % 255));
 	_index ++;
+	_mat = glm::mat4(1.0f);
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
@@ -35,9 +36,6 @@ Part::Part(std::string id)
 
 	glBindVertexArray(0);
 }
-
-Part::Part()
-{}
 
 Part::~Part()
 {

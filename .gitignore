@@ -5,7 +5,8 @@ obj/
 
 humangl
 
-*.hgl
+export/*
+exports/*
 
 # Ignore external libraries (They are cloned by the Makefile)
 GLFW/
