@@ -120,17 +120,8 @@ void	selectKeyFrame(KeyFrame<glm::vec3> *keyframe)
 	}
 }
 
-void	selectBodyPart(std::string partID)
+void	updatePartEditorInterface()
 {
-	Part	*part;
-
-	part = anims.getAnimationModel(animationId)->getPart(partID);
-
-	selectedPart = part;
-	modelId = partID;
-	selectedKeyframe = NULL;
-	redointerface = true;
-
 	Interface	*editor = getEditorInterface();
 	if (!editor)
 		return ;
@@ -149,21 +140,21 @@ void	selectBodyPart(std::string partID)
 
 	TextBox	*selector = static_cast<TextBox*>(editor->getElement("bodypartselector"));
 
-	if (part)
+	if (selectedPart)
 	{
-		panchorX->input = std::to_string(part->getPointAnchor().x);
-		panchorY->input = std::to_string(part->getPointAnchor().y);
-		panchorZ->input = std::to_string(part->getPointAnchor().z);
+		panchorX->input = std::to_string(selectedPart->getPointAnchor().x);
+		panchorY->input = std::to_string(selectedPart->getPointAnchor().y);
+		panchorZ->input = std::to_string(selectedPart->getPointAnchor().z);
 	
-		banchorX->input = std::to_string(part->getBaseAnchor().x);
-		banchorY->input = std::to_string(part->getBaseAnchor().y);
-		banchorZ->input = std::to_string(part->getBaseAnchor().z);
+		banchorX->input = std::to_string(selectedPart->getBaseAnchor().x);
+		banchorY->input = std::to_string(selectedPart->getBaseAnchor().y);
+		banchorZ->input = std::to_string(selectedPart->getBaseAnchor().z);
 	
-		colorR->input = std::to_string(part->getColor().x * 255.f);
-		colorG->input = std::to_string(part->getColor().y * 255.f);
-		colorB->input = std::to_string(part->getColor().z * 255.f);
+		colorR->input = std::to_string(selectedPart->getColor().x * 255.f);
+		colorG->input = std::to_string(selectedPart->getColor().y * 255.f);
+		colorB->input = std::to_string(selectedPart->getColor().z * 255.f);
 	
-		selector->input = part->id();
+		selector->input = selectedPart->id();
 	}
 	else
 	{
@@ -181,6 +172,20 @@ void	selectBodyPart(std::string partID)
 	
 		selector->input = "";
 	}
+}
+
+void	selectBodyPart(std::string partID)
+{
+	Part	*part;
+
+	part = anims.getAnimationModel(animationId)->getPart(partID);
+
+	selectedPart = part;
+	modelId = partID;
+	selectedKeyframe = NULL;
+	redointerface = true;
+
+	updatePartEditorInterface();
 
 	selectKeyFrame(NULL);
 }
@@ -195,22 +200,6 @@ void	addKeyFrameButton(Interface *interface, std::string id, float x, float y, K
 }
 
 std::string	currentAddPartParent;
-
-/*
-
-	// Sets keyframe as used
-	void	selectKeyFrame() {}
-
-	// Sets part as used and sets the smallest keyframe as used
-	void	selectPart() {} -> selectKeyFrame(smallest)
-
-	// Adds a new keyframe and sets it as used
-	void	addKeyFrame() {} -> selectKeyFrame(new)
-
-	// Updates the editor interface to refresh the labels to the used keyframe/bodypart
-	void	updateEditorInterface 
-
-*/
 
 static void	_buildEditorInterface(Interface *interface)
 {
@@ -346,11 +335,20 @@ static void	_buildEditorInterface(Interface *interface)
 			part->setBaseAnchor(glm::vec3(0));
 			part->setPointAnchor(glm::vec3(0));
 			part->setColor(glm::vec3(1));
+
+			selectBodyPart(part->id());
+
+			infos.input = "";
 		}
 	}, NULL));
 	interface->addElement("part_editor_addpart_parent", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Parent", glm::vec2(0, -123), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
+		if (!anims.getAnimationModel(animationId)->getPart(infos.input))
+		{
+			infos.input = "";
+			return ;
+		}
 		currentAddPartParent = infos.input;
 	}, NULL));
 
