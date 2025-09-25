@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/30 11:41:02 by mbatty            #+#    #+#             */
-/*   Updated: 2025/09/24 11:59:35 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/09/25 14:21:48 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,14 @@ class	Timeline
 			
 			res = std::max(translationMax, std::max(rotationMax, scaleMax));
 			return (res);
+		}
+		float		getBiggestTime(KeyFrameType type)
+		{
+			std::vector<KeyFrame<glm::vec3>>	&keyframes = getKeyFrames(type);
+
+			_sort(keyframes);
+
+			return (keyframes.size() ? keyframes.back().getTime() : 0);
 		}
 		std::vector<KeyFrame<glm::vec3>>	&getKeyFrames(KeyFrameType type)
 		{

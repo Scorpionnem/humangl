@@ -78,23 +78,119 @@ std::string _getTimeString()
 bool	redoMainInterface = true;
 KeyFrame<glm::vec3> *selectedKeyframe = NULL;
 
+Interface	*getEditorInterface()
+{
+	TitleScene	*scene = static_cast<TitleScene*>(Engine::Scenes->get("title_scene"));
+	if (!scene)
+		return (NULL);
+
+	Interface	*interface = scene->getInterfaceManager()->get("editor");
+
+	return (interface);
+}
+
+void	selectKeyFrame(KeyFrame<glm::vec3> *keyframe)
+{
+	selectedKeyframe = keyframe;
+
+	Interface	*editor = getEditorInterface();
+	if (!editor)
+		return ;
+
+	TextBox	*editX = static_cast<TextBox*>(editor->getElement("keyframe_editor_x"));
+	TextBox	*editY = static_cast<TextBox*>(editor->getElement("keyframe_editor_y"));
+	TextBox	*editZ = static_cast<TextBox*>(editor->getElement("keyframe_editor_z"));
+	TextBox	*editTime = static_cast<TextBox*>(editor->getElement("keyframe_editor_time"));
+
+	if (keyframe)
+	{
+		editX->input = std::to_string(keyframe->getValue().x);
+		editY->input = std::to_string(keyframe->getValue().y);
+		editZ->input = std::to_string(keyframe->getValue().z);
+	
+		editTime->input = std::to_string(keyframe->getTime());
+	}
+	else
+	{
+		editX->input = "";
+		editY->input = "";
+		editZ->input = "";
+	
+		editTime->input = "";
+	}
+}
+
+void	selectBodyPart(std::string partID)
+{
+	Part	*part;
+
+	part = anims.getAnimationModel(animationId)->getPart(partID);
+
+	selectedPart = part;
+	modelId = partID;
+	selectedKeyframe = NULL;
+	redointerface = true;
+
+	Interface	*editor = getEditorInterface();
+	if (!editor)
+		return ;
+
+	TextBox	*panchorX = static_cast<TextBox*>(editor->getElement("bodypart_editor_panchor_x"));
+	TextBox	*panchorY = static_cast<TextBox*>(editor->getElement("bodypart_editor_panchor_y"));
+	TextBox	*panchorZ = static_cast<TextBox*>(editor->getElement("bodypart_editor_panchor_z"));
+
+	TextBox	*banchorX = static_cast<TextBox*>(editor->getElement("bodypart_editor_banchor_x"));
+	TextBox	*banchorY = static_cast<TextBox*>(editor->getElement("bodypart_editor_banchor_y"));
+	TextBox	*banchorZ = static_cast<TextBox*>(editor->getElement("bodypart_editor_banchor_z"));
+
+	TextBox	*colorR = static_cast<TextBox*>(editor->getElement("bodypart_editor_color_r"));
+	TextBox	*colorG = static_cast<TextBox*>(editor->getElement("bodypart_editor_color_g"));
+	TextBox	*colorB = static_cast<TextBox*>(editor->getElement("bodypart_editor_color_b"));
+
+	TextBox	*selector = static_cast<TextBox*>(editor->getElement("bodypartselector"));
+
+	if (part)
+	{
+		panchorX->input = std::to_string(part->getPointAnchor().x);
+		panchorY->input = std::to_string(part->getPointAnchor().y);
+		panchorZ->input = std::to_string(part->getPointAnchor().z);
+	
+		banchorX->input = std::to_string(part->getBaseAnchor().x);
+		banchorY->input = std::to_string(part->getBaseAnchor().y);
+		banchorZ->input = std::to_string(part->getBaseAnchor().z);
+	
+		colorR->input = std::to_string(part->getColor().x * 255.f);
+		colorG->input = std::to_string(part->getColor().y * 255.f);
+		colorB->input = std::to_string(part->getColor().z * 255.f);
+	
+		selector->input = part->id();
+	}
+	else
+	{
+		panchorX->input = "";
+		panchorY->input = "";
+		panchorZ->input = "";
+	
+		banchorX->input = "";
+		banchorY->input = "";
+		banchorZ->input = "";
+	
+		colorR->input = "";
+		colorG->input = "";
+		colorB->input = "";
+	
+		selector->input = "";
+	}
+
+	selectKeyFrame(NULL);
+}
+
 void	addKeyFrameButton(Interface *interface, std::string id, float x, float y, KeyFrame<glm::vec3> &keyframe)
 {
 	interface->addElement(id, new Toggle(UIAnchor::UI_BOTTOM_LEFT, id, glm::vec2(x, y), glm::vec2(20, 20), []
 	(ToggleInfo infos)
 	{
-		Interface *editor = Engine::Scenes->getCurrent()->getInterfaceManager()->get("editor");
-		if (!editor)
-			return ;
-
-		selectedKeyframe = static_cast<KeyFrame<glm::vec3>*>(infos.data);
-		if (!selectedKeyframe)
-			return ;
-
-		static_cast<TextBox*>(editor->getElement("keyframe_editor_x"))->input = std::to_string(selectedKeyframe->getValue().x);
-		static_cast<TextBox*>(editor->getElement("keyframe_editor_y"))->input = std::to_string(selectedKeyframe->getValue().y);
-		static_cast<TextBox*>(editor->getElement("keyframe_editor_z"))->input = std::to_string(selectedKeyframe->getValue().z);
-		static_cast<TextBox*>(editor->getElement("keyframe_editor_time"))->input = std::to_string(selectedKeyframe->getTime());
+		selectKeyFrame((KeyFrame<glm::vec3>*)infos.data);
 	}, NULL, &keyframe));
 }
 
@@ -118,7 +214,7 @@ std::string	currentAddPartParent;
 
 static void	_buildEditorInterface(Interface *interface)
 {
-	interface->addElement("keyframe_editor_panchor_x", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor X", glm::vec2(0, 0), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_panchor_x", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor X", glm::vec2(0, 0), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -126,7 +222,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setPointAnchorx(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("keyframe_editor_panchor_y", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor Y", glm::vec2(0, 41), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_panchor_y", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor Y", glm::vec2(0, 41), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -134,7 +230,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setPointAnchory(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("keyframe_editor_panchor_z", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor Z", glm::vec2(0, 82), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_panchor_z", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor Z", glm::vec2(0, 82), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -142,7 +238,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setPointAnchorz(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("keyframe_editor_banchor_x", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor X", glm::vec2(200, 0), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_banchor_x", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor X", glm::vec2(200, 0), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -150,7 +246,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setBaseAnchorx(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("keyframe_editor_banchor_y", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Y", glm::vec2(200, 41), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_banchor_y", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Y", glm::vec2(200, 41), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -158,7 +254,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setBaseAnchory(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("keyframe_editor_banchor_z", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Z", glm::vec2(200, 82), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_banchor_z", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Z", glm::vec2(200, 82), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -166,7 +262,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setBaseAnchorz(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("keyframe_editor_color_r", new TextBox(UIAnchor::UI_CENTER_LEFT, "Red", glm::vec2(100, -123), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_color_r", new TextBox(UIAnchor::UI_CENTER_LEFT, "Red", glm::vec2(100, -123), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -174,7 +270,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setColorr(std::atof(infos.input.c_str()) / 255.f);
 		}
 	}, NULL));
-	interface->addElement("keyframe_editor_color_g", new TextBox(UIAnchor::UI_CENTER_LEFT, "Green", glm::vec2(100, -82), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_color_g", new TextBox(UIAnchor::UI_CENTER_LEFT, "Green", glm::vec2(100, -82), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -182,7 +278,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setColorg(std::atof(infos.input.c_str()) / 255.f);
 		}
 	}, NULL));
-	interface->addElement("keyframe_editor_color_b", new TextBox(UIAnchor::UI_CENTER_LEFT, "Blue", glm::vec2(100, -41), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_color_b", new TextBox(UIAnchor::UI_CENTER_LEFT, "Blue", glm::vec2(100, -41), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -220,28 +316,7 @@ static void	_buildEditorInterface(Interface *interface)
 	interface->addElement("bodypartselector", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Body Part", glm::vec2(0, 123), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
-		if (!anims.getAnimation(animationId)->get(infos.input))
-		{
-			infos.input = "";
-		}
-
-		selectedPart = anims.getAnimationModel(animationId)->getPart(infos.input);
-		if (!selectedPart)
-			return ;
-
-		modelId = selectedPart->id();
-
-		Interface *editor = Engine::Scenes->getCurrent()->getInterfaceManager()->get("editor");
-		if (!editor)
-			return ;
-
-		static_cast<TextBox*>(editor->getElement("keyframe_editor_x"))->input = "";
-		static_cast<TextBox*>(editor->getElement("keyframe_editor_y"))->input = "";
-		static_cast<TextBox*>(editor->getElement("keyframe_editor_z"))->input = "";
-		static_cast<TextBox*>(editor->getElement("keyframe_editor_time"))->input = "";
-
-		selectedKeyframe = NULL;
-		redointerface = true;
+		selectBodyPart(infos.input);
 	}, NULL));
 	interface->addElement("keyframe_editor_time", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Time", glm::vec2(0, -41), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
@@ -252,7 +327,7 @@ static void	_buildEditorInterface(Interface *interface)
 			infos.input = "";
 		redointerface = true;
 	}, NULL));
-	interface->addElement("keyframe_editor_addpart", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Add Part", glm::vec2(0, -82), glm::vec2(200, 40), []
+	interface->addElement("part_editor_addpart", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Add Part", glm::vec2(0, -82), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (!infos.input.empty())
@@ -273,12 +348,11 @@ static void	_buildEditorInterface(Interface *interface)
 			part->setColor(glm::vec3(1));
 		}
 	}, NULL));
-	interface->addElement("keyframe_editor_addpart_parent", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Parent", glm::vec2(0, -123), glm::vec2(200, 40), []
+	interface->addElement("part_editor_addpart_parent", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Parent", glm::vec2(0, -123), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		currentAddPartParent = infos.input;
 	}, NULL));
-
 
 	interface->addElement("keyframeaddt", new Button(UIAnchor::UI_CENTER_RIGHT, "kft", glm::vec2(-160, 164), glm::vec2(40, 40), []
 	(ButtonInfo )
@@ -286,7 +360,7 @@ static void	_buildEditorInterface(Interface *interface)
 		Animation	*anim = anims.getAnimation(animationId);
 		if (!anim || !anim->get(modelId))
 			return ;
-		anim->addKeyFrame(modelId, KeyFrameType::TRANSLATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime() + 1, glm::vec3(0), KeyFrameType::TRANSLATION));
+		anim->addKeyFrame(modelId, KeyFrameType::TRANSLATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime(KeyFrameType::TRANSLATION) + 1, glm::vec3(0), KeyFrameType::TRANSLATION));
 		redointerface = true;
 	}, NULL));
 	interface->addElement("keyframeaddr", new Button(UIAnchor::UI_CENTER_RIGHT, "kfr", glm::vec2(-100, 164), glm::vec2(40, 40), []
@@ -295,7 +369,7 @@ static void	_buildEditorInterface(Interface *interface)
 		Animation	*anim = anims.getAnimation(animationId);
 		if (!anim || !anim->get(modelId))
 			return ;
-		anim->addKeyFrame(modelId, KeyFrameType::ROTATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime() + 1, glm::vec3(0), KeyFrameType::ROTATION));
+		anim->addKeyFrame(modelId, KeyFrameType::ROTATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime(KeyFrameType::ROTATION) + 1, glm::vec3(0), KeyFrameType::ROTATION));
 		redointerface = true;
 	}, NULL));
 	interface->addElement("keyframeadds", new Button(UIAnchor::UI_CENTER_RIGHT, "kfs", glm::vec2(-40, 164), glm::vec2(40, 40), []
@@ -304,7 +378,7 @@ static void	_buildEditorInterface(Interface *interface)
 		Animation	*anim = anims.getAnimation(animationId);
 		if (!anim || !anim->get(modelId))
 			return ;
-		anim->addKeyFrame(modelId, KeyFrameType::SCALE, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime() + 1, glm::vec3(1), KeyFrameType::SCALE));
+		anim->addKeyFrame(modelId, KeyFrameType::SCALE, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime(KeyFrameType::SCALE) + 1, glm::vec3(1), KeyFrameType::SCALE));
 		redointerface = true;
 	}, NULL));
 }
@@ -454,12 +528,11 @@ void	_selectPart()
 	unsigned char data[3] = {0};
 	glReadPixels(pos[0], Engine::Window->getHeight() - pos[1], 1, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
 
-	selectedPart = anims.getAnimationModel(animationId)->getSelected({float(data[0]), float(data[1]), float(data[2])});
+	Part *part = anims.getAnimationModel(animationId)->getSelected({float(data[0]), float(data[1]), float(data[2])});
+	if (part)
+		selectedPart = part;
 	if (selectedPart)
-	{
-		modelId = selectedPart->id();
-		redointerface = true;
-	}
+		selectBodyPart(selectedPart->id());
 
 	FrameBuffer::reset();
 	glClearColor(0.6, 0.8, 1.0, 1.0f);

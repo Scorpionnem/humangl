@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Part.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbirou <mbirou@student.42.fr>              +#+  +:+       +#+        */
+/*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:31:40 by mbirou            #+#    #+#             */
-/*   Updated: 2025/09/24 18:37:46 by mbirou           ###   ########.fr       */
+/*   Updated: 2025/09/25 13:52:15 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ class Part
 		{
 			this->_color = val;
 		}
-		glm::vec3	getAnchor() const;
+		glm::vec3	getPointAnchor() const;
+		glm::vec3	getBaseAnchor() {return (this->_baseAnchor);}
+		glm::vec3	getColor() {return (this->_color);}
 		glm::vec3	getIdColor() const;
 		std::string	id()
 		{
