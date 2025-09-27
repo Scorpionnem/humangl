@@ -414,7 +414,8 @@ static void	_buildMainInterface(Interface *interface)
 	if (!timeline)
 		return ;
 
-	// float	biggestTime = std::max(timeline->getBiggestTime(), 1.0f);
+	if (biggestTime < 8)
+		biggestTime = 8;
 	float	smallestTime = biggestTime - 8;
 	if (smallestTime < 0)
 		smallestTime = 0;
@@ -426,7 +427,6 @@ static void	_buildMainInterface(Interface *interface)
 		if (keyframe.getTime() < smallestTime || keyframe.getTime() > biggestTime)
 			continue ;
 		i++;
-		
 		float timeSpan = biggestTime - smallestTime;
 		float	offsetX = (keyframe.getTime() - smallestTime) / timeSpan;
 		float	posX = offsetX * maxWidth;
