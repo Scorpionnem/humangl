@@ -201,6 +201,8 @@ void	addKeyFrameButton(Interface *interface, std::string id, float x, float y, K
 
 std::string	currentAddPartParent;
 
+float	biggestTime = 8;
+
 static void	_buildEditorInterface(Interface *interface)
 {
 	interface->addElement("bodypart_editor_panchor_x", new TextBox(UIAnchor::UI_CENTER_LEFT, "PointAnchor X", glm::vec2(0, 0), glm::vec2(200, 40), []
@@ -227,7 +229,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setPointAnchorz(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("bodypart_editor_banchor_x", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor X", glm::vec2(200, 0), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_banchor_x", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor X", glm::vec2(0, 164), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -235,7 +237,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setBaseAnchorx(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("bodypart_editor_banchor_y", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Y", glm::vec2(200, 41), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_banchor_y", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Y", glm::vec2(0, 205), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -243,7 +245,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setBaseAnchory(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("bodypart_editor_banchor_z", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Z", glm::vec2(200, 82), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_banchor_z", new TextBox(UIAnchor::UI_CENTER_LEFT, "BaseAnchor Z", glm::vec2(0, 246), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -251,7 +253,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setBaseAnchorz(std::atof(infos.input.c_str()));
 		}
 	}, NULL));
-	interface->addElement("bodypart_editor_color_r", new TextBox(UIAnchor::UI_CENTER_LEFT, "Red", glm::vec2(100, -123), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_color_r", new TextBox(UIAnchor::UI_CENTER_LEFT, "Red", glm::vec2(0, -164), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -259,7 +261,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setColorr(std::atof(infos.input.c_str()) / 255.f);
 		}
 	}, NULL));
-	interface->addElement("bodypart_editor_color_g", new TextBox(UIAnchor::UI_CENTER_LEFT, "Green", glm::vec2(100, -82), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_color_g", new TextBox(UIAnchor::UI_CENTER_LEFT, "Green", glm::vec2(0, -123), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -267,7 +269,7 @@ static void	_buildEditorInterface(Interface *interface)
 			selectedPart->setColorg(std::atof(infos.input.c_str()) / 255.f);
 		}
 	}, NULL));
-	interface->addElement("bodypart_editor_color_b", new TextBox(UIAnchor::UI_CENTER_LEFT, "Blue", glm::vec2(100, -41), glm::vec2(200, 40), []
+	interface->addElement("bodypart_editor_color_b", new TextBox(UIAnchor::UI_CENTER_LEFT, "Blue", glm::vec2(0, -82), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (selectedPart && infos.input.size())
@@ -302,7 +304,7 @@ static void	_buildEditorInterface(Interface *interface)
 		else
 			infos.input = "";
 	}, NULL));
-	interface->addElement("bodypartselector", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Body Part", glm::vec2(0, 123), glm::vec2(200, 40), []
+	interface->addElement("bodypartselector", new TextBox(UIAnchor::UI_CENTER_LEFT, "Body Part", glm::vec2(0, -246), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		selectBodyPart(infos.input);
@@ -316,7 +318,7 @@ static void	_buildEditorInterface(Interface *interface)
 			infos.input = "";
 		redointerface = true;
 	}, NULL));
-	interface->addElement("part_editor_addpart", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Add Part", glm::vec2(0, -82), glm::vec2(200, 40), []
+	interface->addElement("part_editor_addpart", new TextBox(UIAnchor::UI_CENTER_LEFT, "Add Part", glm::vec2(201, -205), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (!infos.input.empty())
@@ -341,7 +343,7 @@ static void	_buildEditorInterface(Interface *interface)
 			infos.input = "";
 		}
 	}, NULL));
-	interface->addElement("part_editor_addpart_parent", new TextBox(UIAnchor::UI_CENTER_RIGHT, "Parent", glm::vec2(0, -123), glm::vec2(200, 40), []
+	interface->addElement("part_editor_addpart_parent", new TextBox(UIAnchor::UI_CENTER_LEFT, "Parent", glm::vec2(201, -246), glm::vec2(200, 40), []
 	(TextBoxInfo infos)
 	{
 		if (!anims.getAnimationModel(animationId)->getPart(infos.input))
@@ -352,7 +354,7 @@ static void	_buildEditorInterface(Interface *interface)
 		currentAddPartParent = infos.input;
 	}, NULL));
 
-	interface->addElement("keyframeaddt", new Button(UIAnchor::UI_CENTER_RIGHT, "kft", glm::vec2(-160, 164), glm::vec2(40, 40), []
+	interface->addElement("keyframeaddt", new Button(UIAnchor::UI_CENTER_RIGHT, "kft", glm::vec2(-160, 123), glm::vec2(40, 40), []
 	(ButtonInfo )
 	{
 		Animation	*anim = anims.getAnimation(animationId);
@@ -361,7 +363,7 @@ static void	_buildEditorInterface(Interface *interface)
 		anim->addKeyFrame(modelId, KeyFrameType::TRANSLATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime(KeyFrameType::TRANSLATION) + 1, glm::vec3(0), KeyFrameType::TRANSLATION));
 		redointerface = true;
 	}, NULL));
-	interface->addElement("keyframeaddr", new Button(UIAnchor::UI_CENTER_RIGHT, "kfr", glm::vec2(-100, 164), glm::vec2(40, 40), []
+	interface->addElement("keyframeaddr", new Button(UIAnchor::UI_CENTER_RIGHT, "kfr", glm::vec2(-100, 123), glm::vec2(40, 40), []
 	(ButtonInfo )
 	{
 		Animation	*anim = anims.getAnimation(animationId);
@@ -370,7 +372,7 @@ static void	_buildEditorInterface(Interface *interface)
 		anim->addKeyFrame(modelId, KeyFrameType::ROTATION, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime(KeyFrameType::ROTATION) + 1, glm::vec3(0), KeyFrameType::ROTATION));
 		redointerface = true;
 	}, NULL));
-	interface->addElement("keyframeadds", new Button(UIAnchor::UI_CENTER_RIGHT, "kfs", glm::vec2(-40, 164), glm::vec2(40, 40), []
+	interface->addElement("keyframeadds", new Button(UIAnchor::UI_CENTER_RIGHT, "kfs", glm::vec2(-40, 123), glm::vec2(40, 40), []
 	(ButtonInfo )
 	{
 		Animation	*anim = anims.getAnimation(animationId);
@@ -379,7 +381,26 @@ static void	_buildEditorInterface(Interface *interface)
 		anim->addKeyFrame(modelId, KeyFrameType::SCALE, KeyFrame<glm::vec3>(anim->get(modelId)->getBiggestTime(KeyFrameType::SCALE) + 1, glm::vec3(1), KeyFrameType::SCALE));
 		redointerface = true;
 	}, NULL));
+
+	interface->addElement("timeline_slider", new Slider(UIAnchor::UI_BOTTOM_CENTER, "timeline time", glm::vec2(0, 0), glm::vec2(Engine::Window->getWidth(), 21), []
+	(float offset)
+	{
+		Animation	*anim = anims.getAnimation(animationId);
+		if (!anim)
+			return ;
+		
+		Timeline *timeline = anim->get(modelId);
+		if (!timeline)
+			return ;
+
+		float	max = std::max(timeline->getBiggestTime(), 1.0f);
+		biggestTime = max * offset;
+		redointerface = true;
+	}, NULL, 0));
 }
+
+// Slider(UIAnchor anchor, std::string label, glm::vec2 offset, glm::vec2 size, std::function<void(float)> onChange, std::function<void(Slider *)> onUpdate, float startValue);
+
 
 static void	_buildMainInterface(Interface *interface)
 {
@@ -393,29 +414,43 @@ static void	_buildMainInterface(Interface *interface)
 	if (!timeline)
 		return ;
 
-	float	biggestTime = std::max(timeline->getBiggestTime(), 1.0f);
+	// float	biggestTime = std::max(timeline->getBiggestTime(), 1.0f);
+	float	smallestTime = biggestTime - 8;
+	if (smallestTime < 0)
+		smallestTime = 0;
+
 	float	maxWidth = (Engine::Window->getWidth() - 148);
 	int	i = 0;
 	for (KeyFrame<glm::vec3> &keyframe : timeline->getKeyFrames(KeyFrameType::ROTATION))
 	{
+		if (keyframe.getTime() < smallestTime || keyframe.getTime() > biggestTime)
+			continue ;
 		i++;
-		float	offsetX = keyframe.getTime() / biggestTime;
+		
+		float timeSpan = biggestTime - smallestTime;
+		float	offsetX = (keyframe.getTime() - smallestTime) / timeSpan;
 		float	posX = offsetX * maxWidth;
-		addKeyFrameButton(interface, "kfr_" + std::to_string(i), posX, 0, keyframe);
+		addKeyFrameButton(interface, "kfr_" + std::to_string(i), posX, -21, keyframe);
 	}
 	for (KeyFrame<glm::vec3> &keyframe : timeline->getKeyFrames(KeyFrameType::SCALE))
 	{
+		if (keyframe.getTime() < smallestTime || keyframe.getTime() > biggestTime)
+			continue ;
 		i++;
-		float	offsetX = keyframe.getTime() / biggestTime;
+		float timeSpan = biggestTime - smallestTime;
+		float	offsetX = (keyframe.getTime() - smallestTime) / timeSpan;
 		float	posX = offsetX * maxWidth;
-		addKeyFrameButton(interface, "kfs_" + std::to_string(i), posX, -21, keyframe);
+		addKeyFrameButton(interface, "kfs_" + std::to_string(i), posX, -42, keyframe);
 	}
 	for (KeyFrame<glm::vec3> &keyframe : timeline->getKeyFrames(KeyFrameType::TRANSLATION))
 	{
+		if (keyframe.getTime() < smallestTime || keyframe.getTime() > biggestTime)
+			continue ;
 		i++;
-		float	offsetX = keyframe.getTime() / biggestTime;
+		float timeSpan = biggestTime - smallestTime;
+		float	offsetX = (keyframe.getTime() - smallestTime) / timeSpan;
 		float	posX = offsetX * maxWidth;
-		addKeyFrameButton(interface, "kft_" + std::to_string(i), posX, -42, keyframe);
+		addKeyFrameButton(interface, "kft_" + std::to_string(i), posX, -63, keyframe);
 	}
 }
 
