@@ -1,0 +1,39 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    template_element.txt                               :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2025/10/15 08:42:38 by mbatty            #+#    #+#              #
+#    Updated: 2025/10/18 14:05:34 by mbatty           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+class	Template : public UIElement
+{
+	public:
+		Template(glm::vec2 size, glm::vec2 anchor, glm::vec2 offset, custom ..., shaders/textures...)
+		~Template()
+
+		void	handleEvents(UIEvent events);
+
+		void	draw(glm::vec2 windowSize);
+	private:
+		Texture	*_texture = NULL;
+		Shader	*_shader = NULL;
+};
+
+	//slider template
+
+	tmp = _panel.add("testSlider", new ImprovedSlider(glm::vec2(200, 20), glm::vec2(10, 20), glm::vec2(0), glm::vec2(10, 10), 0.5, shaders.get("image"), textures.get(TX_PATH_SLIDER), textures.get(TX_PATH_SLIDER_HANDLE), textures.get(TX_PATH_SLIDER_HANDLE_HIGHLIGHTED)));
+	ImprovedSlider	*slider = static_cast<ImprovedSlider*>(tmp);
+	slider->setClickFunc([this, slider]
+		(float val)
+		{
+			(void)this;
+			int	min = 0;
+			int	max = 10;
+			int step = (int)(std::round(val * (max - min))) + min;
+			slider->setVal(step / (float)(max));
+		});

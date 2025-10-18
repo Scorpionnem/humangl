@@ -1,141 +1,111 @@
-NAME := humangl
+NAME = ft_minecraft
 
-OBJ_DIR := ./obj/
-INCLUDE_DIRS := ./includes/ ./GLFW/include/GLFW/ ./includes/glad/. ./includes/render ./src/ ./glm/glm/ ./glm/glm/gtc/
-CLASSE_HEADERS := Camera/ ChunkMaker/ FrameBuffer/ Texture/ Shader/ Camera/ Window/ Managers/ UI/ UI/Elements UI/Interfaces Terminal/ Scenes/ World/ Engine/ Timeline/ ModelHandler/
+CXX = c++
+CXXFLAGS = -Wall -Wextra -Werror -std=c++17 -g
 
-GLFWARCHIVE = GLFW/build/src/libglfw3.a
+GLFWARCHIVE = external/GLFW/build/src/libglfw3.a
+GLFW_CFLAGS  = $(shell pkg-config --cflags glfw3)
+GLFW_LDFLAGS = $(shell pkg-config --libs glfw3)
 
-INCLUDE_DIRS := $(addprefix -I, $(INCLUDE_DIRS))
-CLASSE_HEADERS := $(addprefix -I./src/, $(CLASSE_HEADERS))
+INCLUDES =	-I ./includes\
+			-I ./external\
+			-I ./external/GLFW/include/GLFW\
+			-I ./external/glad/\
+			-I ./external/GLM/glm/\
+			-I ./external/GLM/glm/gtc/\
+			-I ./includes/UI/\
+			-I ./includes/UI/Elements\
+			-I ./includes/Scenes\
+			-I ./includes/Scenes/Title\
+			-I ./includes/Scenes/Misc\
+			-I ./includes/Renderer\
+			-I ./includes/Core\
+			-I ./includes/Managers\
+			-I ./includes/Utils
 
-MAKE := @make --no-print-directory
+SRCS =	external/glad/glad.cpp\
+		src/stb_image.cpp\
+		src/main.cpp\
+		src/Core/Game.cpp\
+		src/Core/Window.cpp\
+		src/Core/Input.cpp\
+		src/Core/Camera.cpp\
+		src/Renderer/Shader.cpp\
+		src/Renderer/Texture.cpp\
+		src/Scenes/Title/TitleScene.cpp\
+		src/Scenes/Title/LoadAnimScene.cpp\
+		src/Scenes/Misc/OptionsScene.cpp\
+		src/UI/UIElement.cpp\
+		src/UI/Elements/ImprovedButton.cpp\
+		src/UI/Elements/ImprovedText.cpp\
+		src/UI/Elements/ImprovedBackgroundImage.cpp\
+		src/UI/Elements/ImprovedImage.cpp\
+		src/UI/Elements/ImprovedToggle.cpp\
+		src/UI/Elements/ImprovedTextField.cpp
 
-SOURCE_DIR := ./src/
+OBJDIR = obj
+EXTERNALDIR = external
+OBJS = $(SRCS:%.cpp=$(OBJDIR)/%.o)
+DEPS = $(SRCS:%.cpp=$(OBJDIR)/%.d)
 
-OBJ_DIR := ./obj/
+all: $(EXTERNALDIR) stb_image glfw glm $(NAME)
 
-OBJECTS = $(SOURCES:.cpp=.o)
-
-CPP_FILES :=	main \
-				glad/glad \
-				Window/Window \
-				Camera/Camera \
-				Shader/Shader \
-				Shader/Font \
-				Texture/Texture \
-				Texture/Skybox \
-				FrameBuffer/FrameBuffer \
-				UI/Interfaces/Interface \
-				UI/Interfaces/InterfaceManager \
-				UI/UIElement \
-				Terminal/Terminal \
-				Terminal/Commands \
-				Managers/ShaderManager \
-				Managers/TextureManager \
-				Scenes/SceneManager \
-				UI/Elements/Button\
-				UI/Elements/Image\
-				UI/Elements/Slider\
-				UI/Elements/Text\
-				UI/Elements/TextBox\
-				UI/Elements/Toggle\
-				Scenes/TitleScene\
-				Engine/Engine \
-				Timeline/Timeline \
-				ModelHandler/Part
-
-CPP_FILES := $(addsuffix .cpp, $(CPP_FILES))
-
-SOURCES := $(addprefix $(SOURCE_DIR), $(CPP_FILES))
-
-OBJECTS := $(addprefix $(OBJ_DIR), $(CPP_FILES:.cpp=.o))
-DEPS := $(addprefix $(OBJ_DIR), $(CPP_FILES:.cpp=.d))
-
-CFLAGS = -MP -MMD -g -Wall -Wextra -Werror -std=c++17
-
-GLAD_PATH = libs/glad
-
-all: glfw glad glm $(NAME)
-
-run: all
-	@./$(NAME) 42
-
-vrun: all
-	@valgrind ./$(NAME) 42
+$(EXTERNALDIR):
+	@mkdir external
 
 glfw:
-	@if ls | grep -q "GLFW"; then \
+	@if ls external | grep -q "GLFW"; then \
 		echo "\033[32;1;4mGLFW Found\033[0m"; \
 	else \
-		echo "\033[31;1;4mGLFW Not Found\033[0m"; \
-		echo "\033[31;1mDownloading GLFW from github \033[0m"; \
-		git clone https://github.com/glfw/glfw.git GLFW; \
-		echo "\033[31;1mCompiling GLFW\033[0m"; \
-		cmake -S GLFW -B GLFW/build; \
-		cmake --build GLFW/build; \
+		echo "\033[31;1mDownloading GLFW sources\033[0m"; \
+		git clone https://github.com/glfw/glfw.git external/GLFW; \
+		cmake -S external/GLFW -B external/GLFW/build; \
+		cmake --build external/GLFW/build; \
 	fi
 
-glad:
-	@if ls src | grep -q "glad"; then \
-		echo "\033[32;1;4mglad Found\033[0m"; \
-	else \
-		echo "\033[31;1;4mglad Not Found\033[0m"; \
-		echo "\033[31;1mDownloading glad from github \033[0m"; \
-		pip install glad; \
-		git clone https://github.com/Dav1dde/glad.git glad; \
-		python -m glad --out-path=glad/build --generator=c; \
-		mkdir -p glad2; \
-		cp glad/build/include/glad/glad.h glad2/.; \
-		cp glad/build/src/glad.c glad2/.; \
-		rm -rf glad; \
-		mv glad2 glad; \
-		mv glad/glad.c glad/glad.cpp; \
-		mkdir -p src/glad; \
-		mkdir -p includes/glad; \
-		mv glad/glad.cpp src/glad/; \
-		mv glad/glad.h includes/glad/; \
-		rm -rf glad; \
+stb_image:
+	@if ls external | grep -q "stb_image.h"; then \
+		echo "\033[32;1;4mstb_image.h Found\033[0m"; \
+	else\
+		echo "\033[31;1mDownloading stb_image.h\033[0m"; \
+		curl --silent -o external/stb_image.h https://raw.githubusercontent.com/nothings/stb/master/stb_image.h;\
+		echo "\033[31;1mDownloaded stb_image.h\033[0m"; \
 	fi
 
 glm:
-	@if ls | grep -q "glm"; then \
+	@if ls external | grep -q "GLM"; then \
 		echo "\033[32;1;4mGLM Found\033[0m"; \
 	else \
-		echo "\033[31;1;4mGLM Not Found\033[0m"; \
-		echo "\033[31;1mCloning GLM from github\033[0m"; \
-		git clone https://github.com/g-truc/glm.git glm; \
+		echo "\033[31;1mDownloading GLM sources\033[0m"; \
+		git clone https://github.com/g-truc/glm.git external/GLM; \
 	fi
-
-$(OBJECTS): $(OBJ_DIR)%.o : $(SOURCE_DIR)%.cpp
-	@echo "\033[0;32mCompiling $<\033[0m"
-	@c++ $(CFLAGS) $(CLASSE_HEADERS) $(INCLUDE_DIRS) -c $< -o $@
-
-$(OBJ_DIR):
-	@(cd $(SOURCE_DIR) && find . -type d -exec mkdir -p -- $(shell pwd)/$(OBJ_DIR){} \;)
-
-$(NAME): $(OBJ_DIR) $(OBJECTS)
-	@c++ $(OBJECTS) $(GLFWARCHIVE) -o $(NAME)
-	@echo "\033[0;32mCompiled $(NAME)\033[0m"
-
-clean:
-	@rm -rf $(OBJ_DIR)
-	@echo "\033[0;32mCleaned objects\033[0m"
-
-fclean:
-	$(MAKE) clean
-	@rm -f $(NAME)
-	@echo "\033[0;32mCleaned $(NAME)\033[0m"
-
-dclean: fclean
-	@rm -rf src/glad
-	@rm -rf includes/glad
-	@rm -rf GLFW
-	@rm -rf glm
-	@echo "\033[0;32mCleaned external libraries\033[0m"
 
 re: fclean all
 
-.PHONY: all clean fclean dclean re GLFW glad run glm
+$(NAME): $(OBJS)
+	@echo Compiling $(NAME)
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(GLFWARCHIVE) -o $@ $^ $(GLFW_LDFLAGS)
+
+$(OBJDIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	@echo Compiling $<
+	@$(CXX) $(CXXFLAGS) $(INCLUDES) $(GLFW_CFLAGS) -MMD -MP -c $< -o $@
+
+clean:
+	@echo Cleaning objects
+	@rm -rf $(OBJDIR)
+
+dclean: fclean
+	@echo Cleaning external libraries
+	@rm -rf external/
+
+fclean: clean
+	@echo Cleaning $(NAME)
+	@rm -rf $(NAME)
+
+run: $(NAME)
+	@./$(NAME)
+
+.PHONY: all clean fclean re run glfw stb_image glm
 
 -include $(DEPS)

@@ -1,20 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   ImprovedImage.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/24 11:14:03 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/18 17:29:13 by mbatty           ###   ########.fr       */
+/*   Created: 2025/10/05 11:53:41 by mbatty            #+#    #+#             */
+/*   Updated: 2025/10/05 11:56:52 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Game.hpp"
+#pragma once
 
-int	main(void)
+# include "UIElement.hpp"
+
+class	ImprovedImage : public UIElement
 {
-	Game	game;
-	
-	game.run();
-}
+	public:
+		ImprovedImage(glm::vec2 size, glm::vec2 anchor, glm::vec2 offset, Shader *shader, Texture *texture);
+		~ImprovedImage() {}
+
+		void	handleEvents(UIEvent) {}
+
+		void	draw(glm::vec2 windowSize);
+
+	private:
+		Texture	*_texture = NULL;
+
+		Shader	*_shader = NULL;
+};

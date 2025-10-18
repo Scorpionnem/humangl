@@ -1,20 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.cpp                                           :+:      :+:    :+:   */
+/*   stb_image.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/09/24 11:14:03 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/18 17:29:13 by mbatty           ###   ########.fr       */
+/*   Created: 2025/09/27 13:43:35 by mbatty            #+#    #+#             */
+/*   Updated: 2025/10/04 22:32:58 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Game.hpp"
-
-int	main(void)
-{
-	Game	game;
-	
-	game.run();
-}
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"

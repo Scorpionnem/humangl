@@ -1,145 +1,72 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   UIElement.cpp                                        :+:      :+:    :+:   */
+/*   UIElement.cpp                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/07 23:23:09 by mbatty            #+#    #+#             */
-/*   Updated: 2025/06/07 23:23:29 by mbatty           ###   ########.fr       */
+/*   Created: 2025/10/04 21:23:28 by mbatty            #+#    #+#             */
+/*   Updated: 2025/10/05 11:43:28 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "UIElement.hpp"
-#include "Engine.hpp"
 
-unsigned int	UIquadVAO = 0;
-unsigned int	UIquadVBO = 0;
-
-UIElement::UIElement()
+bool	UIElement::_isInBounds(glm::vec2 point, glm::vec2 zonePos, glm::vec2 zoneSize)
 {
-	type = UIElementType::UITYPE_UNSET;
-	this->_shader = Engine::Shaders->get("gui");
+	return (point.x >= zonePos.x && point.x <= zonePos.x + zoneSize.x && point.y >= zonePos.y && point.y <= zonePos.y + zoneSize.y);
 }
 
-bool	UIElement::isInside(glm::vec2 buttonPos, glm::vec2 size, glm::vec2 mousePos)
+glm::vec2	UIElement::_getScaledPos(glm::vec2 size, glm::vec2 anchor, glm::vec2 offset, glm::vec2 windowSize)
 {
-	return mousePos.x >= buttonPos.x && mousePos.x <= buttonPos.x + size.x && mousePos.y >= buttonPos.y && mousePos.y <= buttonPos.y + size.y;
+	float	scale = UIElement::_getUiScale(windowSize);
+	glm::vec2	scaledSize = size * scale;
+
+	float	x = (anchor.x * windowSize.x) - (anchor.x * scaledSize.x);
+	float	y = (anchor.y * windowSize.y) - (anchor.y * scaledSize.y);
+
+	return (glm::vec2(x, y) + (offset * scale));
 }
 
-void	UIElement::initButtonQuad()
+float	UIElement::_getUiScale(glm::vec2 windowSize)
 {
-	if (UIquadVAO != 0)
-		return;
+	float windowWidth  = windowSize.x;
+	float windowHeight = windowSize.y;
 
-	if (DEBUG)
-		std::cout << "Loading simple quad" << std::endl;
+	float scaleX = windowWidth / REFERENCE_WIDTH;
+	float scaleY = windowHeight / REFERENCE_HEIGHT;
 
-	float vertices[] =
-	{
-		0.0f, 0.0f,
-		1.0f, 1.0f,
-		0.0f, 1.0f,
-		0.0f, 0.0f,
-		1.0f, 0.0f,
-		1.0f, 1.0f
-	};
+	return (std::min(scaleX, scaleY));
+}
 
-	glGenVertexArrays(1, &UIquadVAO);
-	glGenBuffers(1, &UIquadVBO);
+glm::vec2	UIElement::_getUiScaleXY(glm::vec2 windowSize)
+{
+	float windowWidth  = windowSize.x;
+	float windowHeight = windowSize.y;
 
-	glBindVertexArray(UIquadVAO);
-	glBindBuffer(GL_ARRAY_BUFFER, UIquadVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	float scaleX = windowWidth / REFERENCE_WIDTH;
+	float scaleY = windowHeight / REFERENCE_HEIGHT;
+
+	return (glm::vec2(scaleX, scaleY));
+}
+
+void	UIElement::_upload(void)
+{
+	if (_VAO != 0)
+		return ;
+
+	glGenVertexArrays(1, &_VAO);
+	glGenBuffers(1, &_VBO);
+
+	glBindVertexArray(_VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, _VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
 
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 
-	glBindVertexArray(0);
-}
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
 
-void	UIElement::anchorPos()
-{
-	if (this->anchor == UIAnchor::UI_TOP_CENTER)
-	{
-		this->pos.x = Engine::Window->getWidth() / 2 - this->size.x / 2 + this->offset.x;
-		this->pos.y = 0 + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_TOP_LEFT)
-	{
-		this->pos.x = 0 + this->offset.x;
-		this->pos.y = 0 + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_TOP_RIGHT)
-	{
-		this->pos.x = Engine::Window->getWidth() - this->size.x + this->offset.x;
-		this->pos.y = 0 + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_CENTER)
-	{
-		this->pos.x = Engine::Window->getWidth() / 2 - this->size.x / 2 + this->offset.x;
-		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_CENTER_LEFT)
-	{
-		this->pos.x = 0 + this->offset.x;
-		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_CENTER_RIGHT)
-	{
-		this->pos.x = Engine::Window->getWidth() - this->size.x + this->offset.x;
-		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_BOTTOM_CENTER)
-	{
-		this->pos.x = Engine::Window->getWidth() / 2 - this->size.x / 2 + this->offset.x;
-		this->pos.y = Engine::Window->getHeight() - this->size.y + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_BOTTOM_LEFT)
-	{
-		this->pos.x = 0 + this->offset.x;
-		this->pos.y = Engine::Window->getHeight() - this->size.y + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_BOTTOM_RIGHT)
-	{
-		this->pos.x = Engine::Window->getWidth() - this->size.x + this->offset.x;
-		this->pos.y = Engine::Window->getHeight() - this->size.y + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_CENTER_HALF_LEFT)
-	{
-		this->pos.x = (Engine::Window->getWidth() * 0.25) - this->size.x / 2 + this->offset.x;
-		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_CENTER_HALF_RIGHT)
-	{
-		this->pos.x = (Engine::Window->getWidth() * 0.75) - this->size.x / 2 + this->offset.x;
-		this->pos.y = Engine::Window->getHeight() / 2 - this->size.y / 2 + this->offset.y;
-	}
-	else if (this->anchor == UIAnchor::UI_TOP_CENTER_HALF)
-	{
-		this->pos.x = (Engine::Window->getWidth() / 2) - this->size.x / 2 + this->offset.x;
-		this->pos.y = (Engine::Window->getHeight() * 0.25) - this->size.y + this->offset.y;
-	}
-		else if (this->anchor == UIAnchor::UI_BOTTOM_CENTER_HALF)
-	{
-		this->pos.x = (Engine::Window->getWidth() / 2) - this->size.x / 2 + this->offset.x;
-		this->pos.y = (Engine::Window->getHeight() * 0.75) - this->size.y + this->offset.y;
-	}
-}
-
-void	UIElement::draw(Shader *shader, glm::vec2 pos, glm::vec2 size)
-{
-	initButtonQuad();
-
-	glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.0f));
-	model = glm::scale(model, glm::vec3(size.x, size.y, 1.0f));
-	glm::mat4 projection = glm::ortho(0.0f, Engine::Window->getWidth(), Engine::Window->getHeight(), 0.0f);
-
-	shader->use();
-	shader->setMat4("model", model);
-	shader->setMat4("projection", projection);
-
-	glBindVertexArray(UIquadVAO);
-	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 }

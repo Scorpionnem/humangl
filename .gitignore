@@ -1,19 +1,8 @@
-# Ignore objects
+ft_minecraft
 obj/
 *.o
 *.d
-
-humangl
-
-export/*
-exports/*
-
-# Ignore external libraries (They are cloned by the Makefile)
-GLFW/
-src/glad/
-includes/glad/
-glm/
-
-# Ignore useless things
-*.png
+external/
 .vscode/
+server_list.txt
+saves/
