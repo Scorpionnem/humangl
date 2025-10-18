@@ -51,7 +51,7 @@ void	LoadAnimScene::onEnter()
 	tmp = _panel.add("name_text_field_text", new ImprovedText("Animation Name", 1, glm::vec2(0.5, 0.5), glm::vec2(0, -20), shaders.get("font"), textures.get(TX_PATH_ASCII)));
 	static_cast<ImprovedText*>(tmp)->setColor(glm::vec4(glm::vec3(0.7), 1.0));
 
-	tmp = _panel.add("info_text", new ImprovedText("Animations will be selected/created in \"./exports/\"", 1, glm::vec2(0.5, 0.5), glm::vec2(0, 40), shaders.get("font"), textures.get(TX_PATH_ASCII)));
+	tmp = _panel.add("info_text", new ImprovedText("Animations will be loaded/created in \"./exports/\"", 1, glm::vec2(0.5, 0.5), glm::vec2(0, 40), shaders.get("font"), textures.get(TX_PATH_ASCII)));
 	static_cast<ImprovedText*>(tmp)->setColor(glm::vec4(glm::vec3(0.7), 1.0));
 
 	// Done text to create a server entry and go back to multiplayer scene
