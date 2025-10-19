@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/27 12:28:00 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/18 18:22:06 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/19 09:31:23 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,7 @@ void	Game::_loadShaders()
 	_shaders.load("image", "assets/shaders/image.vert", "assets/shaders/image.frag");
 	_shaders.load("background", "assets/shaders/background.vert", "assets/shaders/background.frag");
 	_shaders.load("quad", "assets/shaders/quad.vert", "assets/shaders/quad.frag");
+	_shaders.load("cube", "assets/shaders/cube.vert", "assets/shaders/cube.frag");
 }
 
 void	Game::_stop()

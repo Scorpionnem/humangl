@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 14:17:02 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/18 18:17:05 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/19 08:42:01 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "OptionsScene.hpp"
 #include "ErrorScene.hpp"
 #include "LoadAnimScene.hpp"
-#include "SingleplayerScene.hpp"
 
 constexpr uint SPLASH_TEXT_COUNT = 2;
 constexpr double SPLASH_TEXT_INTERVAL = 10.0;

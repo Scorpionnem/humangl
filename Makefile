@@ -18,10 +18,14 @@ INCLUDES =	-I ./includes\
 			-I ./includes/Scenes\
 			-I ./includes/Scenes/Title\
 			-I ./includes/Scenes/Misc\
+			-I ./includes/Scenes/Render\
 			-I ./includes/Renderer\
 			-I ./includes/Core\
 			-I ./includes/Managers\
-			-I ./includes/Utils
+			-I ./includes/Utils\
+			-I ./includes/HumanGL\
+			-I ./includes/HumanGL/ModelHandler\
+			-I ./includes/HumanGL/Timeline
 
 SRCS =	external/glad/glad.cpp\
 		src/stb_image.cpp\
@@ -35,13 +39,15 @@ SRCS =	external/glad/glad.cpp\
 		src/Scenes/Title/TitleScene.cpp\
 		src/Scenes/Title/LoadAnimScene.cpp\
 		src/Scenes/Misc/OptionsScene.cpp\
+		src/Scenes/Render/AnimationScene.cpp\
 		src/UI/UIElement.cpp\
 		src/UI/Elements/ImprovedButton.cpp\
 		src/UI/Elements/ImprovedText.cpp\
 		src/UI/Elements/ImprovedBackgroundImage.cpp\
 		src/UI/Elements/ImprovedImage.cpp\
 		src/UI/Elements/ImprovedToggle.cpp\
-		src/UI/Elements/ImprovedTextField.cpp
+		src/UI/Elements/ImprovedTextField.cpp\
+		src/HumanGL/ModelHandler/Part.cpp
 
 OBJDIR = obj
 EXTERNALDIR = external

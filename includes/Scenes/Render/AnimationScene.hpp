@@ -1,31 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SingleplayerScene.hpp                              :+:      :+:    :+:   */
+/*   AnimationScene.hpp                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/02 11:44:26 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/04 18:36:50 by mbatty           ###   ########.fr       */
+/*   Created: 2025/09/30 17:01:55 by mbatty            #+#    #+#             */
+/*   Updated: 2025/10/19 09:29:30 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef SINGLEPLAYERSCENE_HPP
-# define SINGLEPLAYERSCENE_HPP
+#ifndef AnimationScene_HPP
+# define AnimationScene_HPP
 
-# include "Panel.hpp"
 # include "Scene.hpp"
 # include "UIElement.hpp"
+# include "Panel.hpp"
+# include "Part.hpp"
+# include "Camera.hpp"
+# include "Model.hpp"
+# include "Animation.hpp"
 
-class SingleplayerScene : public Scene
+class AnimationScene : public Scene
 {
 	public:
-		SingleplayerScene(Game *game) : Scene(game)
+		AnimationScene(Game *game, const std::string &path) : Scene(game)
 		{
-			_id = "SingleplayerScene";
-			_keepAlive = true;
+			_id = "AnimationScene";
+			_animPath = path;
 		}
-		~SingleplayerScene() {};
+		~AnimationScene() {};
 
 		void onEnter();
 
@@ -34,9 +38,19 @@ class SingleplayerScene : public Scene
 		void render();
 
 		void onExit();
+
 	private:
+		void	_updateCamera(UIEvent &events, float deltaTime);
+
 		Panel		_panel;
-		Panel		_worldsPanel;
+		std::string	_animPath;
+		
+		Camera		_camera;
+
+		Animation				_animation;
+		Model					_model;
+		// Part					*_selectedPart = NULL;
+		// KeyFrame<glm::vec3>	*_selectedKeyframe = NULL;
 };
 
 #endif

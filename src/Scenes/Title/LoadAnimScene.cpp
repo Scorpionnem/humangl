@@ -13,11 +13,26 @@
 #include "LoadAnimScene.hpp"
 
 #include "TitleScene.hpp"
+#include "AnimationScene.hpp"
 #include "Game.hpp"
 #include "ImprovedBackgroundImage.hpp"
 #include "ImprovedButton.hpp"
 #include "ImprovedText.hpp"
 #include "ImprovedTextField.hpp"
+
+std::string	_formatAnimName(const std::string str)
+{
+	std::string	res;
+
+	for (char c : str)
+	{
+		if (c == ' ')
+			res += '_';
+		else
+			res += c;
+	}
+	return (res);
+}
 
 void	LoadAnimScene::onEnter()
 {
@@ -60,7 +75,7 @@ void	LoadAnimScene::onEnter()
 	static_cast<ImprovedButton*>(tmp)->setClickFunc(
 		[this]()
 		{
-			this->_requestScene(new TitleScene(_game));
+			this->_requestScene(new AnimationScene(_game, _formatAnimName(EXPORTS_PATH + _name + HGL_FORMAT)));
 		});
 	static_cast<ImprovedButton*>(tmp)->disable();
 }
