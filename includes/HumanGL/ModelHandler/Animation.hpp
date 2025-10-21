@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 09:22:28 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/19 09:50:12 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/19 10:27:18 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -134,7 +134,11 @@ class	Animation
 				}
 			}
 		}
-		~Animation() {}
+		~Animation()
+		{
+			for (auto &it : _timelines)
+				delete it.second;
+		}
 
 		Timeline	*get(const std::string &id)
 		{

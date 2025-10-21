@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:29:09 by mbirou            #+#    #+#             */
-/*   Updated: 2025/10/19 09:59:31 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/20 08:34:39 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,11 @@ class Model
 {
 	public:
 		Model() {}
-		~Model() {}
+		~Model()
+		{
+			for (auto part : _parts)
+				delete part.second;
+		}
 	
 		void	draw(Shader *shader)
 		{
@@ -93,6 +97,13 @@ class Model
 			if (!part)
 				return ; // needs an error
 			_parts[parentID]->addChild(part);
+			addPart(part);
+		}
+		void	setChild(Part *parent, Part *part)
+		{
+			if (!part || !parent)
+				return ;
+			_parts[parent->id()]->addChild(part);
 			addPart(part);
 		}
 		void	setChild(const std::string &parentID, const std::string &childID)

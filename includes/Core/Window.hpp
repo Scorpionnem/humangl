@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/27 12:33:09 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/01 12:02:02 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/19 10:24:31 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 # define DEFAULT_WINDOW_WIDTH 1150
 # define DEFAULT_WINDOW_HEIGHT 650
-# define WINDOW_NAME "ft_minecraft"
+# define WINDOW_NAME "humangl"
 
 class	Window
 {

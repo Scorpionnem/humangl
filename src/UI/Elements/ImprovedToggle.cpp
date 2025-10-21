@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/15 08:47:19 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/15 08:56:06 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/20 08:21:53 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,12 @@ void	ImprovedToggle::handleEvents(UIEvent events)
 
 	if (events.inputs->isMousePressed(GLFW_MOUSE_BUTTON_LEFT))
 	{
+		bool	wasClicked = _clicked;
 		if (inside)
 			_clicked = !_clicked;
 		else
 			_clicked = false;
-		if (_onClick)
+		if (_onClick && (_clicked || wasClicked))
 			_onClick(_clicked);
 	}
 }

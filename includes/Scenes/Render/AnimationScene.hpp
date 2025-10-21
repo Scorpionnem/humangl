@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:55 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/19 09:29:30 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/20 08:31:18 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,16 +40,23 @@ class AnimationScene : public Scene
 		void onExit();
 
 	private:
+		void	_createEditorInterface();
+		void	_updateEditorInterface();
+		
+		void	_selectPart(Part *part);
+		void	_addPart(const std::string &name);
 		void	_updateCamera(UIEvent &events, float deltaTime);
 
 		Panel		_panel;
+		Panel		_editorPanel;
+		Panel		_pausePanel;
 		std::string	_animPath;
 		
 		Camera		_camera;
 
 		Animation				_animation;
 		Model					_model;
-		// Part					*_selectedPart = NULL;
+		Part					*_selectedPart = NULL;
 		// KeyFrame<glm::vec3>	*_selectedKeyframe = NULL;
 };
 

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/24 11:29:27 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/19 09:04:37 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/20 08:48:03 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,7 @@
 # include "gtc/type_ptr.hpp"
 # define GLM_ENABLE_EXPERIMENTAL
 # include "gtx/matrix_decompose.hpp"
+
+# include "HumanGL.hpp"
 
 #endif

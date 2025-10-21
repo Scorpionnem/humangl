@@ -1,4 +1,4 @@
-NAME = ft_minecraft
+NAME = humangl
 
 CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++17 -g
@@ -47,7 +47,8 @@ SRCS =	external/glad/glad.cpp\
 		src/UI/Elements/ImprovedImage.cpp\
 		src/UI/Elements/ImprovedToggle.cpp\
 		src/UI/Elements/ImprovedTextField.cpp\
-		src/HumanGL/ModelHandler/Part.cpp
+		src/HumanGL/ModelHandler/Part.cpp\
+		src/HumanGL/utils.cpp
 
 OBJDIR = obj
 EXTERNALDIR = external
