@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:55 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/20 08:31:18 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/21 16:42:33 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,14 @@
 # include "Camera.hpp"
 # include "Model.hpp"
 # include "Animation.hpp"
+
+enum class PartEditMode
+{
+	COLOR,
+	POINT_ANCHOR,
+	BASE_ANCHOR,
+	NONE
+};
 
 class AnimationScene : public Scene
 {
@@ -42,9 +50,16 @@ class AnimationScene : public Scene
 	private:
 		void	_createEditorInterface();
 		void	_updateEditorInterface();
+		void	_createPartRadioButtons();
 		
 		void	_selectPart(Part *part);
 		void	_addPart(const std::string &name);
+		void	_setPartValue(char elem, float val);
+		
+		void	_resetPartEdit();
+		void	_selectPartEdit(const std::string &mode);
+		PartEditMode	_partEditMode;
+
 		void	_updateCamera(UIEvent &events, float deltaTime);
 
 		Panel		_panel;

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/19 09:22:28 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/19 10:27:18 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/21 14:03:29 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,6 @@ class	Animation
 			if (!file.is_open())
 				throw std::runtime_error("Could not open file");
 
-			std::cout << "Loading " << path << std::endl;
-
 			std::string			current;
 			while (std::getline(file, fileLine))
 			{
@@ -50,7 +48,6 @@ class	Animation
 					std::string	path;
 					if (!(line >> object))
 						throw std::runtime_error("define: No argument given");
-					std::cout << "define " << object;
 
 					Timeline	*tml = new Timeline();
 					_timelines.insert({object, tml});
@@ -64,7 +61,6 @@ class	Animation
 					std::string	object;
 					if (!(line >> object))
 						throw std::runtime_error("object: No argument given");
-					std::cout << "object " << object << std::endl;
 
 					current = object;
 				}
@@ -73,7 +69,6 @@ class	Animation
 					std::string	object;
 					if (!(line >> object))
 						throw std::runtime_error("root: No argument given");
-					std::cout << "root " << object << std::endl;
 
 					if (!_rooted)
 						model->setRoot(object);
@@ -84,7 +79,6 @@ class	Animation
 					std::string	object;
 					if (!(line >> object))
 						throw std::runtime_error("children: No argument given");
-					std::cout << "children " << object << std::endl;
 
 					if (current.empty())
 						throw std::runtime_error("children: Object not set");
@@ -172,7 +166,6 @@ class	Animation
 
 			if (!(line >> time >> x >> y >> z))
 				throw std::runtime_error("kf*: Failed to parse");
-			std::cout << id << " " << (int)type << " " << x << " " << y << " " << z << std::endl;
 			if (id.empty())
 				throw std::runtime_error("no defined object");
 			_timelines[id]->addKeyFrame(type, KeyFrame(time, glm::vec3(x, y, z), type));

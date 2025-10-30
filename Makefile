@@ -46,6 +46,7 @@ SRCS =	external/glad/glad.cpp\
 		src/UI/Elements/ImprovedBackgroundImage.cpp\
 		src/UI/Elements/ImprovedImage.cpp\
 		src/UI/Elements/ImprovedToggle.cpp\
+		src/UI/Elements/ImprovedCheckbox.cpp\
 		src/UI/Elements/ImprovedTextField.cpp\
 		src/HumanGL/ModelHandler/Part.cpp\
 		src/HumanGL/utils.cpp

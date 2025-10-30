@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/13 15:45:33 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/19 09:23:02 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/10/21 14:03:08 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,7 @@ class	AnimationManager
 			_current = _animations[id].first;
 
 			for (auto part : parts)
-			{
 				part.second->setTimeline(_current->get(part.second->id()));
-				std::cout << part.second->id() << " changed timeline" << std::endl;
-			}
-			std::cout << "Now playing " << id << std::endl;
 		}
 
 		Model	*getAnimationModel(const std::string &id)
