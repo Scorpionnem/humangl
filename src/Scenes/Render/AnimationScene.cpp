@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/21 13:48:18 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/30 09:47:15 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/12/05 13:54:53 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ void	AnimationScene::_selectPart(Part *part)
 		static_cast<ImprovedTextField*>(_editorPanel.get("selected_part_field"))->resetInput();
 	else
 		static_cast<ImprovedTextField*>(_editorPanel.get("selected_part_field"))->setInput(_selectedPart->id());
+	_createTimeline();
 }
 
 void	AnimationScene::_addPart(const std::string &name)
@@ -175,6 +176,23 @@ void	AnimationScene::_setPartValue(char elem, float val)
 	}
 }
 
+void	AnimationScene::_createTimeline()
+{
+	_timelinePanel.clear();
+
+	if (!_selectedPart)
+		return ;
+	
+	ShaderManager &shaders = _game->getShaders();
+	TextureManager &textures = _game->getTextures();
+
+	_timelinePanel.add("back", new ImprovedButton(glm::vec2(200, 20), glm::vec2(0.0, 0), glm::vec2(0, 0), shaders.get("image"), textures.get(TX_PATH_BUTTON), textures.get(TX_PATH_BUTTON_HIGHLIGHTED), textures.get(TX_PATH_BUTTON_DISABLED)));
+	
+	Timeline	*tml = _selectedPart->getTimeline();
+	std::cout << tml->getBiggestTime(KeyFrameType::ROTATION) << std::endl;
+	
+}
+
 void	AnimationScene::_createEditorInterface()
 {
 	ShaderManager &shaders = _game->getShaders();
@@ -188,6 +206,7 @@ void	AnimationScene::_createEditorInterface()
 	_editorPanel.add("timeline_background", new ImprovedBackgroundImage(glm::vec2(REFERENCE_WIDTH, 60), glm::vec2(0.5, 1), glm::vec2(0), glm::vec2(1, 0), 0.5, shaders.get("background"), textures.get(TX_PATH_DIRT)));
 	tmp = _editorPanel.add("timeline_text", new ImprovedText("Timeline", 1, glm::vec2(0.5, 1.0), glm::vec2(0, -62), shaders.get("font"), textures.get(TX_PATH_ASCII)));
 	static_cast<ImprovedText*>(tmp)->setColor(glm::vec4(glm::vec3(0.7), 1.0));
+	_createTimeline();
 
 	_editorPanel.add("keyframe_background", new ImprovedBackgroundImage(glm::vec2(80, 196), glm::vec2(1, 0.5), glm::vec2(0), glm::vec2(0, 0), 0.5, shaders.get("background"), textures.get(TX_PATH_DIRT)));
 	tmp = _editorPanel.add("keyframe_text", new ImprovedText("Keyframe", 1, glm::vec2(1.0, 0.5), glm::vec2(0, -104), shaders.get("font"), textures.get(TX_PATH_ASCII)));
@@ -317,6 +336,7 @@ void	AnimationScene::update(UIEvent events, float deltaTime)
 	_panel.handleEvents(events);
 	_editorPanel.handleEvents(events);
 	_pausePanel.handleEvents(events);
+	_timelinePanel.handleEvents(events);
 
 	_updateCamera(events, deltaTime);
 
@@ -338,5 +358,6 @@ void	AnimationScene::render()
 	_panel.draw(window.getSize());
 	_editorPanel.draw(window.getSize());
 	_pausePanel.draw(window.getSize());
+	_timelinePanel.draw(window.getSize());
 }
 

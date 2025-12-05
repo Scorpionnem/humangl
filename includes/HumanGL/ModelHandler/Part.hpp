@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/27 22:31:40 by mbirou            #+#    #+#             */
-/*   Updated: 2025/10/19 14:22:53 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/12/05 13:46:17 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,10 @@ class Part
 		void	setTimeline(Timeline *cpy)
 		{
 			_timeline = cpy;
+		}
+		Timeline	*getTimeline()
+		{
+			return (_timeline);
 		}
 		void	updateAnchor(const glm::mat4 &parentMat);
 		void	update(const glm::mat4 &parentMat, float deltaTime);

@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/09/30 17:01:55 by mbatty            #+#    #+#             */
-/*   Updated: 2025/10/21 16:42:33 by mbatty           ###   ########.fr       */
+/*   Updated: 2025/12/05 13:42:09 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,8 @@ class AnimationScene : public Scene
 		void	_createEditorInterface();
 		void	_updateEditorInterface();
 		void	_createPartRadioButtons();
-		
+		void	_createTimeline();
+
 		void	_selectPart(Part *part);
 		void	_addPart(const std::string &name);
 		void	_setPartValue(char elem, float val);
@@ -65,6 +66,7 @@ class AnimationScene : public Scene
 		Panel		_panel;
 		Panel		_editorPanel;
 		Panel		_pausePanel;
+		Panel		_timelinePanel;
 		std::string	_animPath;
 		
 		Camera		_camera;
