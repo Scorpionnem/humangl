@@ -9,7 +9,7 @@ struct Mat4
 {
 	T	data[16];
 
-	Mat4() : Mat4(0) {}
+	Mat4() : Mat4(0.0) {}
 	Mat4(T val)
 	{
 		std::fill(data, data + 16, 0.0f);

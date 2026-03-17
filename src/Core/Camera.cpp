@@ -6,7 +6,7 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/07 16:08:20 by mbatty            #+#    #+#             */
-/*   Updated: 2026/03/17 14:57:05 by mbatty           ###   ########.fr       */
+/*   Updated: 2026/03/17 15:20:34 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,9 @@ void	Camera::update(float delta, float aspectRatio)
 
 	if (ImGui::Begin("Camera", (bool *)__null))
 	{
-		ImGui::InputDouble("X", &pos.x);
-		ImGui::InputDouble("Y", &pos.y);
-		ImGui::InputDouble("Z", &pos.z);
+		ImGui::InputFloat("X", &pos.x);
+		ImGui::InputFloat("Y", &pos.y);
+		ImGui::InputFloat("Z", &pos.z);
 
 		ImGui::InputFloat("Pitch", &pitch);
 		ImGui::InputFloat("Yaw", &yaw);
@@ -92,7 +92,7 @@ void	Camera::_updatePlaneNormals(float aspectRatio)
 	frustum.right.normalize();
 }
 
-bool	Camera::Frustum::isInside(Vec3d minCorner, Vec3d maxCorner)
+bool	Camera::Frustum::isInside(Vec3f minCorner, Vec3f maxCorner)
 {
 	Vec3d	point = Vec3d(top.A >= 0 ? maxCorner.x : minCorner.x, top.B >= 0 ? maxCorner.y : minCorner.y, top.C >= 0 ? maxCorner.z : minCorner.z);
 	if (top.getDist(point) < 0)

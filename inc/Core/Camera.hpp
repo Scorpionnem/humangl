@@ -6,13 +6,15 @@
 /*   By: mbatty <mbatty@student.42angouleme.fr>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/01/02 16:04:06 by mbatty            #+#    #+#             */
-/*   Updated: 2026/03/17 15:01:16 by mbatty           ###   ########.fr       */
+/*   Updated: 2026/03/17 15:21:59 by mbatty           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include "Math.hpp"
+
+#include <iostream>
 
 class	Camera
 {
@@ -21,11 +23,11 @@ class	Camera
 		{
 			float	A, B, C, D;
 			void	normalize();
-			Vec3d	getNormal()
+			Vec3f	getNormal()
 			{
-				return (Vec3d(A, B, C));
+				return (Vec3f(A, B, C));
 			}
-			float	getDist(Vec3d point)
+			float	getDist(Vec3f point)
 			{
 				return (dot(getNormal(), point) + D);
 			}
@@ -33,33 +35,33 @@ class	Camera
 		struct	Frustum
 		{
 			Plane top, bottom, right, left, zNear, zFar;
-			bool	isInside(Vec3d minCorner, Vec3d maxCorner);
+			bool	isInside(Vec3f minCorner, Vec3f maxCorner);
 		};
 	public:
-		Camera() : Camera(Vec3d(0)) {}
-		Camera(Vec3d pos)
+		Camera() : Camera(Vec3f(0)) {}
+		Camera(Vec3f pos)
 		{
 			this->pos = pos;
-			front = Vec3d(0.0f, 0.0f, -1.0f);
-			up = Vec3d(0.0f, 1.0f, 0.0f);
+			front = Vec3f(0.0f, 0.0f, -1.0f);
+			up = Vec3f(0.0f, 1.0f, 0.0f);
 		}
 
 		void	update(float delta, float aspectRatio);
 
 		Mat4f	getViewMatrix()
 		{
-			return (lookAt<float>(Vec3d(0), Vec3d(0) + front, up));
+			return (lookAt<float>(Vec3f(pos), Vec3f(pos) + front, up));
 		}
 
 		float	yaw = 0;
 		float	pitch = 0;
-		Vec3d	pos;
-		Vec3d	front;
-		Vec3d	up;
+		Vec3f	pos;
+		Vec3f	front;
+		Vec3f	up;
 		Frustum	frustum;
 		float	speed = 0;
 	private:
 		void	_updatePlaneNormals(float aspectRatio);
-		Vec3d	_direction;
-		Vec3d	_lastPos;
+		Vec3f	_direction;
+		Vec3f	_lastPos;
 };

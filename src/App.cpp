@@ -102,7 +102,8 @@ void	App::_loop()
 
 		shader.use();
 
-		float	speed = 50 * events.getDeltaTime();
+		float	speed = 25 * events.getDeltaTime();
+		float	sensibility = 50 * events.getDeltaTime();
 
 		if (events.getKey(SDLK_w))
 			cam.pos = cam.pos + cam.front * speed;
@@ -117,17 +118,17 @@ void	App::_loop()
 		if (events.getKey(SDLK_d))
 			cam.pos = cam.pos + normalize(cross(cam.front, cam.up)) * speed;
 		if (events.getKey(SDLK_UP))
-			cam.pitch += speed * 2;
+			cam.pitch += sensibility * 2;
 		if (events.getKey(SDLK_DOWN))
-			cam.pitch -= speed * 2;
+			cam.pitch -= sensibility * 2;
 		if (events.getKey(SDLK_RIGHT))
-			cam.yaw += speed * 2;
+			cam.yaw += sensibility * 2;
 		if (events.getKey(SDLK_LEFT))
-			cam.yaw -= speed * 2;
+			cam.yaw -= sensibility * 2;
 
 		cam.update(events.getDeltaTime(), events.getAspectRatio());
 
-		shader.setMat4f("model", Mat4f(1.0));
+		shader.setMat4f("model", Mat4f(1));
 		shader.setMat4f("view", cam.getViewMatrix());
 		shader.setMat4f("projection", perspective<float>(90.0, events.getAspectRatio(), 0.01, 1000.0));
 
