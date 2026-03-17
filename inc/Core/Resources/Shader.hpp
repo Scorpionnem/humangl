@@ -31,7 +31,7 @@ class	Shader
 		void	setInt(const std::string &name, int val);
 		void	setFloat(const std::string &name, float val);
 		void	setVec3f(const std::string &name, Vec3f val);
-		// void	setMat4f(const std::string &name, Mat4f val);
+		void	setMat4f(const std::string &name, Mat4f val);
 	private:
 		std::string	_processShaderFile(const std::string &path);
 		std::map<GLenum, std::string>	_files;

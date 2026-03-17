@@ -6,6 +6,19 @@
 #include <memory>
 #include <string>
 
+#include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_opengl3.h>
+
+void	Window::render()
+{
+	ImGui::Render();
+	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	SDL_GL_SwapWindow(_window);
+	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
 void	Window::open(const char *title, uint32_t width, uint32_t height)
 {
 	_width = width;
@@ -53,8 +66,17 @@ void	Window::open(const char *title, uint32_t width, uint32_t height)
 	glDepthFunc(GL_LESS);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glEnable(GL_CULL_FACE);
-	glCullFace(GL_CW);
+	// glEnable(GL_CULL_FACE);
+	// glCullFace(GL_CW);
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
+	(void)io;
+	ImGui::StyleColorsDark();
+	ImGui_ImplSDL2_InitForOpenGL(_window, _GLContext);
+	ImGui_ImplOpenGL3_Init();
 
 	_open = true;
 	_chrono.start();
@@ -67,9 +89,11 @@ const Window::Events	&Window::pollEvents()
 
 	_events._reset();
 	_events._deltaTime = _chrono.get() - _lastFrame;
+	_events._aspectRatio = (double)_width / (double)_height;
 	_lastFrame = _chrono.get();
 	while (SDL_PollEvent(&event))
 	{
+		ImGui_ImplSDL2_ProcessEvent(&event);
 		switch (event.type)
 		{
 			case SDL_QUIT:
@@ -107,6 +131,11 @@ const Window::Events	&Window::pollEvents()
 				break ;
 		}
 	}
+
+	ImGui_ImplOpenGL3_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+
 	return (_events);
 }
 

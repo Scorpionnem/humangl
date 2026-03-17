@@ -26,12 +26,14 @@ class	Window
 				float	getMouseScroll() const;
 
 				double	getDeltaTime() const {return (_deltaTime);}
+				double	getAspectRatio() const {return (_aspectRatio);}
 			private:
 				friend Window;
 
 				void	_reset();
 
 				double	_deltaTime = 0;
+				double	_aspectRatio = 0;
 
 				float	_mouseDeltaX = 0;
 				float	_mouseDeltaY = 0;
@@ -60,9 +62,7 @@ class	Window
 		void	clearWindow()
 		{
 		}
-		void	render()
-		{
-		}
+		void	render();
 
 		bool	is_open() {return (_open);}
 	private:

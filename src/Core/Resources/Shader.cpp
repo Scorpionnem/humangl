@@ -66,10 +66,10 @@ void	Shader::setVec3f(const std::string &name, Vec3f val)
 	glUniform3fv(glGetUniformLocation(_id, name.c_str()), 1, &val.x);
 }
 
-// void	Shader::setMat4(const std::string &name, Mat4 val)
-// {
-// 	glUniformMatrix4fv(glGetUniformLocation(_id, name.c_str()), 1, GL_FALSE, val.data);
-// }
+void	Shader::setMat4f(const std::string &name, Mat4f val)
+{
+	glUniformMatrix4fv(glGetUniformLocation(_id, name.c_str()), 1, GL_FALSE, val.data);
+}
 
 std::string	Shader::_processShaderFile(const std::string &path)
 {
