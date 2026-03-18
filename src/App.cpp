@@ -52,7 +52,7 @@ void	App::_loop()
 
 	Rig	rig;
 
-	rig.load("assets/anims/car.hgl");
+	rig.load("assets/anims/human.hgl");
 	rig.export_to("lol.hgl");
 
 	while (_window.is_open())

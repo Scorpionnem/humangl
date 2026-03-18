@@ -129,7 +129,7 @@ class	Rig
 
 					if (!(line >> x >> y >> z))
 						throw std::runtime_error("banchor: Failed to parse");
-					current->setBaseAnchor(Vec3f(x, y, z) / 255.0f);
+					current->setBaseAnchor(Vec3f(x, y, z));
 				}
 				else if (word == "panchor")
 				{
@@ -139,7 +139,7 @@ class	Rig
 
 					if (!(line >> x >> y >> z))
 						throw std::runtime_error("panchor: Failed to parse");
-					current->setPointAnchor(Vec3f(x, y, z) / 255.0f);
+					current->setPointAnchor(Vec3f(x, y, z));
 				}
 				else if (word == "kft")
 				{
