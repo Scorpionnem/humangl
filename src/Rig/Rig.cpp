@@ -50,6 +50,9 @@ void	Rig::load(const std::string &path)
 			if (!(line >> object))
 				throw std::runtime_error("object: No argument given");
 
+			if (!_parts[object])
+				throw std::runtime_error("object: Invalid");
+
 			current = _parts[object];
 		}
 		else if (word == "root")
@@ -57,6 +60,9 @@ void	Rig::load(const std::string &path)
 			std::string	object;
 			if (!(line >> object))
 				throw std::runtime_error("root: No argument given");
+
+			if (!_parts[object])
+				throw std::runtime_error("root: Invalid");
 
 			if (!_root)
 				set_root(_parts[object]);
@@ -69,6 +75,9 @@ void	Rig::load(const std::string &path)
 
 			if (!current)
 				throw std::runtime_error("children: Object not set");
+			if (!_parts[object])
+				throw std::runtime_error("object: Invalid");
+
 			current->addChild(_parts[object]);
 		}
 		else if (word == "color")
