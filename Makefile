@@ -26,6 +26,8 @@ SRCS :=	main\
 		Core/Window\
 		Core/Camera\
 		Rig/Part\
+		Rig/Rig\
+		Rig/Timeline\
 		World/Chunk\
 		Core/Resources/Shader\
 
