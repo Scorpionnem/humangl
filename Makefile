@@ -1,4 +1,4 @@
-NAME :=	humanGl
+NAME :=	humanGL
 
 
 CXX :=	c++
@@ -29,7 +29,6 @@ SRCS :=	main\
 		Rig/Part\
 		Rig/Rig\
 		Rig/Timeline\
-		World/Chunk\
 		Core/Resources/Shader\
 
 

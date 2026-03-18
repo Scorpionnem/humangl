@@ -25,7 +25,7 @@ class	Shader
 		void	link();
 		void	unlink()
 		{
-			if (_id == 0)
+			if (_id != 0)
 				glDeleteProgram(_id);
 			_id = 0;
 		}

@@ -1,6 +1,5 @@
 #include "App.hpp"
 #include "Shader.hpp"
-#include "Chunk.hpp"
 #include "Camera.hpp"
 #include "Rig.hpp"
 
@@ -51,7 +50,6 @@ void	App::_loop(const std::string &path)
 	Camera	cam;
 
 	Rig	rig;
-
 	rig.load(path);
 
 	while (_window.is_open())
@@ -72,12 +70,6 @@ void	App::_loop(const std::string &path)
 		rig.update(events.getDeltaTime());
 		rig.draw(shader);
 
-		// if (ImGui::Begin("App"))
-		// {
-		// 	ImGui::Text("%f", 1.0 / events.getDeltaTime());
-		// }
-		// ImGui::End();
-
 		_window.render();
 	}
 	rig.export_to("export.hgl");
@@ -85,7 +77,7 @@ void	App::_loop(const std::string &path)
 
 void	App::_init()
 {
-	_window.open("I Love Voxels", 512 * 2, 384 * 2);
+	_window.open("humanGL", 1024, 768);
 }
 
 void	App::run(const std::string &path)
