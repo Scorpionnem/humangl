@@ -14,6 +14,7 @@ INCLUDE_DIRS :=	inc/\
 				inc/Core\
 				inc/Core/Resources\
 				inc/Utils\
+				inc/Rig\
 				inc/Math\
 				inc/Math/Vec\
 				inc/Math/Mat\
@@ -24,6 +25,7 @@ SRCS :=	main\
 		App\
 		Core/Window\
 		Core/Camera\
+		Rig/Part\
 		World/Chunk\
 		Core/Resources/Shader\
 

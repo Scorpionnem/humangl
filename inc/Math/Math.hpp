@@ -15,6 +15,12 @@ inline float mix(float a, float b, float t)
 }
 
 template <typename T>
+inline Vec3<T> mix(Vec3<T> a, Vec3<T> b, float t)
+{
+	return Vec3<T>(mix(a.x, b.x, t), mix(a.y, b.y, t), mix(a.z, b.z, t));
+}
+
+template <typename T>
 inline float	length(const Vec3<T> &v)
 {
 	return (std::sqrt(v.x * v.x + v.y * v.y + v.z * v.z));
