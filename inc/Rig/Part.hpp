@@ -72,16 +72,21 @@ class	Part
 				if (ImGui::Begin(_id.c_str()))
 				{
 					ImGui::Text("%s", _id.c_str());
-					ImGui::ColorPicker3("color", &_color.x);
 					ImGui::DragFloat3("base_anchor", &_baseAnchor.x);
 					ImGui::DragFloat3("point_anchor", &_pointAnchor.x);
-					char	buf[64] = {0};
+					ImGui::Checkbox("show timeline", &show_timeline);
 
+					char	buf[64] = {0};					
 					if (ImGui::InputText("new children", buf, 63, ImGuiInputTextFlags_EnterReturnsTrue))
 						_children_request = buf;
+
+					ImGui::ColorPicker3("color", &_color.x);
 				}
 				ImGui::End();
 			}
+
+			if (show_timeline && tree_selected)
+				timeline.draw(("timeline_" + _id).c_str());
 		}
 		void	draw(Shader &shader)
 		{
@@ -181,6 +186,7 @@ class	Part
 		std::string		_children_request;
 
 		bool			tree_selected = false;
+		bool			show_timeline = false;
 
 		static uint				_VAO;
 		static uint				_VBO;

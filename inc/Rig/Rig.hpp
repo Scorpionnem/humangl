@@ -49,10 +49,8 @@ class	Rig
 
 		void	update(float delta)
 		{
-			if (ImGui::Begin("RIG"))
-			{
+			ImGui::Begin("RIG");
 				_root->update(delta, Mat4f(1.0));
-			}
 			ImGui::End();
 
 			for (auto p : _parts)

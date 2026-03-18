@@ -14,11 +14,66 @@ struct	Keyframe
 	}
 	float	time;
 	Vec3f	v;
+	bool	selected = false;
 };
+
+#include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_opengl3.h>
 
 class	Timeline
 {
 	public:
+		void	draw(const char *label)
+		{
+			if (ImGui::Begin(label))
+			{
+				if (ImGui::BeginListBox("Scale Keyframes"))
+				{
+					int i = 0;
+					for (auto &k : _scaleKeyframes)
+					{
+						ImGui::Checkbox(std::to_string(i++).c_str(), &k.selected);
+						if (k.selected)
+						{
+							ImGui::InputFloat("time", &k.time);
+							ImGui::DragFloat3("v", &k.v.x);
+						}
+					}
+					ImGui::EndListBox();
+				}
+				if (ImGui::BeginListBox("Translation Keyframes"))
+				{
+					int i = 0;
+					for (auto &k : _translationKeyframes)
+					{
+						ImGui::Checkbox(std::to_string(i++).c_str(), &k.selected);
+						if (k.selected)
+						{
+							ImGui::InputFloat("time", &k.time);
+							ImGui::DragFloat3("v", &k.v.x);
+						}
+					}
+					ImGui::EndListBox();
+				}
+				if (ImGui::BeginListBox("Rotation Keyframes"))
+				{
+					int i = 0;
+					for (auto &k : _rotationKeyframes)
+					{
+						ImGui::Checkbox(std::to_string(i++).c_str(), &k.selected);
+						if (k.selected)
+						{
+							ImGui::InputFloat("time", &k.time);
+							ImGui::DragFloat3("v", &k.v.x);
+						}
+					}
+					ImGui::EndListBox();
+				}
+
+			}
+			ImGui::End();
+		}
 		Vec3f	getTranslation()
 		{
 			return (_get(_translationKeyframes));
@@ -75,6 +130,18 @@ class	Timeline
 		}
 		void	update(float delta)
 		{
+			_sort(_translationKeyframes);
+			_sort(_scaleKeyframes);
+			_sort(_rotationKeyframes);
+			for (auto &k : _translationKeyframes)
+				if (k.time > _biggest_time)
+					_biggest_time = k.time;
+			for (auto &k : _scaleKeyframes)
+				if (k.time > _biggest_time)
+					_biggest_time = k.time;
+			for (auto &k : _rotationKeyframes)
+				if (k.time > _biggest_time)
+					_biggest_time = k.time;
 			_time += delta;
 			if (_time > _biggest_time)
 				_time = 0;
