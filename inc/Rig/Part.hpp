@@ -6,6 +6,11 @@
 #include <vector>
 #include <fstream>
 #include <memory>
+#include <iostream>
+
+#include <imgui.h>
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_opengl3.h>
 
 class	Part
 {
@@ -49,8 +54,34 @@ class	Part
 			_mat = _mat * translate((_baseAnchor * -1) * (tml_scale / 2.0f));
 			_mat = _mat * scale(tml_scale);
 
-			for (auto child : _children)
-				child->update(delta, _mat);
+			ImGuiTreeNodeFlags flag = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf;
+			if (tree_selected)
+				flag |= ImGuiTreeNodeFlags_Selected;
+
+			if (ImGui::TreeNodeEx(_id.c_str(), flag))
+			{
+				if (ImGui::IsItemClicked())
+					tree_selected = !tree_selected;
+
+				for (auto child : _children)
+					child->update(delta, _mat);
+				ImGui::TreePop();
+			}
+			if (tree_selected)
+			{
+				if (ImGui::Begin(_id.c_str()))
+				{
+					ImGui::Text("%s", _id.c_str());
+					ImGui::ColorPicker3("color", &_color.x);
+					ImGui::DragFloat3("base_anchor", &_baseAnchor.x);
+					ImGui::DragFloat3("point_anchor", &_pointAnchor.x);
+					char	buf[64] = {0};
+
+					if (ImGui::InputText("new children", buf, 63, ImGuiInputTextFlags_EnterReturnsTrue))
+						_children_request = buf;
+				}
+				ImGui::End();
+			}
 		}
 		void	draw(Shader &shader)
 		{
@@ -94,7 +125,7 @@ class	Part
 
 			file << "banchor " << _baseAnchor.x << " " << _baseAnchor.y << " " << _baseAnchor.z << '\n';
 			file << "panchor " << _pointAnchor.x << " " << _pointAnchor.y << " " << _pointAnchor.z << '\n';
-			file << "color " << _color.x * 255.f << " " << _color.y * 255.f << " " << _color.z * 255.f << '\n';
+			file << "color " << _color.x << " " << _color.y << " " << _color.z << '\n';
 
 			timeline.export_to(file);
 			file << '\n';
@@ -112,6 +143,12 @@ class	Part
 			for (auto &part : _children)
 				part->export_define(file);
 			file << "define " << _id << std::endl;
+		}
+		std::string	children_request()
+		{
+			std::string	tmp = _children_request;
+			_children_request.clear();
+			return (tmp);
 		}
 		Timeline			timeline;
 	private:
@@ -140,6 +177,10 @@ class	Part
 		Vec3f				_color;
 
 		std::string			_id;
+
+		std::string		_children_request;
+
+		bool			tree_selected = false;
 
 		static uint				_VAO;
 		static uint				_VBO;

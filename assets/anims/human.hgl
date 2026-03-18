@@ -1,16 +1,26 @@
 # 42 humangl project export file by mbatty & mbirou
 # keys used in the file
 #
-#	ORDER IS IMPORTANT
+#	Order is important, if you use a key that needs a used object, an error will be throwed!
 #
-#	define : string name | vec3 parentAnchor | vec3 selfAnchor | vec3 color
-#		-Defines an object to be used in the file, it's anchor and color info
-#	object : string name
-#		-Sets the object as used
+#	define : string name
+#		-Defines an object to be used in the file
 #	root : string name
 #		-Sets the root object
+#
+#	object : string name
+#		-Sets the object as used
+#
 #	children : string name
 #		-Sets the children of the used object
+#
+#	banchor : vec3
+#		-Sets the base anchor of the used object
+#	panchor : vec3
+#		-Sets the point anchor of the used object
+#	color : vec3
+#		-Sets the color of the used object
+#
 #	kft : float time : vec3 translation
 #		-Sets the translation values to the used object
 #	kfr : float time : vec3 rotation
@@ -31,7 +41,6 @@ define upperLeftLeg
 define lowerRightLeg
 define upperRightLeg
 define lowerTorso
-
 root lowerTorso
 
 object lowerTorso
@@ -40,7 +49,7 @@ children upperLeftLeg
 children upperRightLeg
 banchor 0 1 0
 panchor 0 -1 0
-color 6 99 6
+color 0.0235294 0.388235 0.0235294
 kfr 0 0 -20 1
 kfs 0 1 4 4.25
 
@@ -50,7 +59,7 @@ children upperLeftArm
 children upperRightArm
 banchor 0 -1 0
 panchor 0 1 0
-color 6 99 6
+color 0.0235294 0.388235 0.0235294
 kft 0 0 0 0
 kfr 0 0 40 0
 kfr 3 0 -320 0
@@ -62,7 +71,7 @@ children RightEye
 children LeftEye
 banchor 0 -1 0
 panchor 0 1 0
-color 224 171 148
+color 0.878431 0.670588 0.580392
 kfr 0 0 20 0
 kfr 1 0 -90 0
 kfr 20 0 -90 0
@@ -86,14 +95,14 @@ object upperLeftArm
 children lowerLeftArm
 banchor 0 1 1
 panchor 0 1 -1
-color 224 171 148
+color 0.878431 0.670588 0.580392
 kfr 0 0 -20 0
 kfs 0 1 5 1
 
 object lowerLeftArm
 banchor 1 1 0
 panchor 1 -1 0
-color 224 171 148
+color 0.878431 0.670588 0.580392
 kfr 0 0 0 0
 kfs 0 1 5 1
 
@@ -101,14 +110,14 @@ object upperRightArm
 children lowerRightArm
 banchor 0 1 -1
 panchor 0 1 1
-color 224 171 148
+color 0.878431 0.670588 0.580392
 kfr 0 0 50 7
 kfs 0 1 5 1
 
 object lowerRightArm
 banchor 1 1 0
 panchor 1 -1 0
-color 224 171 148
+color 0.878431 0.670588 0.580392
 kfr 0 0 0 0
 kfs 0 1 5 1
 
@@ -116,14 +125,14 @@ object upperLeftLeg
 children lowerLeftLeg
 banchor -1 1 -1
 panchor -1 -1 -1
-color 3 76 153
+color 0.0117647 0.298039 0.6
 kfr 0 0 0 0
 kfs 0 1 5 1
 
 object lowerLeftLeg
 banchor 1 1 0
 panchor 1 -1 0
-color 3 76 153
+color 0.0117647 0.298039 0.6
 kfr 0 0 0 0
 kfs 0 1 5 1
 
@@ -131,13 +140,14 @@ object upperRightLeg
 children lowerRightLeg
 banchor -1 1 1
 panchor -1 -1 1
-color 3 76 153
+color 0.0117647 0.298039 0.6
 kfr 0 0 0 0
 kfs 0 1 5 1
 
 object lowerRightLeg
 banchor 1 1 0
 panchor 1 -1 0
-color 3 76 153
+color 0.0117647 0.298039 0.6
 kfr 0 0 0 0
 kfs 0 1 5 1
+

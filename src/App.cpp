@@ -40,7 +40,7 @@ void	updateCamera(Camera &cam, const Window::Events &events)
 	cam.update(events.getDeltaTime(), events.getAspectRatio());
 }
 
-void	App::_loop()
+void	App::_loop(const std::string &path)
 {
 	Shader	shader;
 
@@ -52,7 +52,7 @@ void	App::_loop()
 
 	Rig	rig;
 
-	rig.load("assets/anims/human.hgl");
+	rig.load(path);
 	rig.export_to("lol.hgl");
 
 	while (_window.is_open())
@@ -73,8 +73,6 @@ void	App::_loop()
 		rig.update(events.getDeltaTime());
 		rig.draw(shader);
 
-		// part.draw(shader);
-
 		// if (ImGui::Begin("App"))
 		// {
 		// 	ImGui::Text("%f", 1.0 / events.getDeltaTime());
@@ -90,9 +88,9 @@ void	App::_init()
 	_window.open("I Love Voxels", 512 * 2, 384 * 2);
 }
 
-void	App::run(void)
+void	App::run(const std::string &path)
 {
 	_init();
 
-	_loop();
+	_loop(path);
 }

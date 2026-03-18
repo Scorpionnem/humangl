@@ -3,13 +3,15 @@
 #include <stdexcept>
 #include <iostream>
 
-int	main(void)
+int	main(int ac, char **av)
 {
+	if (ac != 2)
+		return (1);
 	try
 	{
 		App	app;
 
-		app.run();
+		app.run(av[1]);
 	}
 	catch (const std::exception &e)
 	{

@@ -49,7 +49,23 @@ class	Rig
 
 		void	update(float delta)
 		{
-			_root->update(delta, Mat4f(1.0));
+			if (ImGui::Begin("RIG"))
+			{
+				_root->update(delta, Mat4f(1.0));
+			}
+			ImGui::End();
+
+			for (auto p : _parts)
+			{
+				std::string	req = p.second->children_request();
+				if (_parts.find(req) != _parts.end())
+					std::cerr << "DUPLICATE ID" << std::endl;
+				else if (!req.empty())
+				{
+					add_part(std::make_shared<Part>(req));
+					p.second->addChild(_parts[req]);
+				}
+			}
 		}
 		void	draw(Shader &shader)
 		{
@@ -119,7 +135,7 @@ class	Rig
 
 					if (!(line >> x >> y >> z))
 						throw std::runtime_error("color: Failed to parse");
-					current->setColor(Vec3f(x, y, z) / 255.0f);
+					current->setColor(Vec3f(x, y, z));
 				}
 				else if (word == "banchor")
 				{
