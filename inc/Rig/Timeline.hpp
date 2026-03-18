@@ -81,6 +81,7 @@ class	Timeline
 		}
 		void	update(float delta)
 		{
+			_biggest_time = 0;
 			_sort(_translationKeyframes);
 			_sort(_scaleKeyframes);
 			_sort(_rotationKeyframes);
