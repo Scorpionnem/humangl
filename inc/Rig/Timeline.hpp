@@ -107,6 +107,12 @@ class	Timeline
 				file << "kfs " << keyframe.time << " " << keyframe.v.x << " " << keyframe.v.y << " " << keyframe.v.z << std::endl;
 			(void)file;
 		}
+		float	biggestTime(std::vector<Keyframe> &keyframes)
+		{
+			if (!keyframes.size())
+				return (0);
+			return (keyframes.back().time);
+		}
 	private:
 		void	_sort(std::vector<Keyframe> &keyframes)
 		{

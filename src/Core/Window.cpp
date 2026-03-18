@@ -37,7 +37,7 @@ void	Window::open(const char *title, uint32_t width, uint32_t height)
 	_window = SDL_CreateWindow(title,
 		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
 		_width, _height,
-		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+		SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
 	if (!_window)
 	{
 		SDL_Quit();
@@ -102,6 +102,7 @@ const Window::Events	&Window::pollEvents()
 				{
 					_width = event.window.data1;
 					_height = event.window.data2;
+					glViewport(0, 0, _width, _height);
 				}
 				break ;
 			case SDL_KEYDOWN:

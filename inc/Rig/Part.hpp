@@ -104,7 +104,7 @@ class	Part
 		std::string		_children_request;
 
 		bool			tree_selected = false;
-		bool			show_timeline = false;
+		bool			show_timeline = true;
 
 		static uint				_VAO;
 		static uint				_VBO;
