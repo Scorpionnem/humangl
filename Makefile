@@ -1,4 +1,4 @@
-NAME :=	voxel
+NAME :=	humanGl
 
 
 CXX :=	c++
@@ -27,6 +27,8 @@ SRCS :=	main\
 		Core/Window\
 		Core/Camera\
 		Rig/Part\
+		Rig/Rig\
+		Rig/Timeline\
 		World/Chunk\
 		Core/Resources/Shader\
 

@@ -11,7 +11,7 @@ class	Shader
 {
 	public:
 		Shader() {}
-		~Shader() {}
+		~Shader() {unlink();}
 
 		void	use();
 		void	load(GLenum type, const std::string &path);
@@ -25,7 +25,8 @@ class	Shader
 		void	link();
 		void	unlink()
 		{
-			glDeleteProgram(_id);
+			if (_id == 0)
+				glDeleteProgram(_id);
 			_id = 0;
 		}
 		void	setInt(const std::string &name, int val);

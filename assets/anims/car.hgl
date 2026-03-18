@@ -47,7 +47,7 @@ object plane
 children pivot
 banchor 0 0 0
 panchor 0 0 0
-color 54 54 54
+color 0.211764706 0.211764706 0.211764706
 kft 0 -150 -30 0
 kfs 0 150 1 350
 
@@ -82,7 +82,7 @@ children leftHeadlight
 children rightHeadlight
 banchor 0 1 0
 panchor 0 -1 0
-color 21 128 0
+color 0.082352941 0.501960784 0
 kft 0 -50 -10 0
 kfr 0 0 0 0
 kfs 0 10 4.5 25
@@ -92,14 +92,14 @@ children windShield
 children trunk
 banchor 0 -1 0
 panchor 0 1 -0.15
-color 26 158 0
+color 0.101960784 0.619607843 0
 kfr 0 0 0 0
 kfs 0 9 4 12
 
 object windShield
 banchor 0 0.5 -1
 panchor 0 0 1
-color 84 249 255
+color 0.329411765 0.976470588 1
 kft 0 0 0 -1.3
 kfr 0 -20 0 0
 kfs 0 8.9 5 2
@@ -107,7 +107,7 @@ kfs 0 8.9 5 2
 object trunk
 banchor 0 0.3 1
 panchor 0 0 -1
-color 45 137 140
+color 0.176470588 0.537254902 0.549019608
 kft 0 0 0 0.7
 kfr 0 10 0 0
 kfs 0 8.9 5 1
@@ -147,14 +147,14 @@ kfs 0 1 3.5 3.5
 object leftHeadlight
 banchor 0 0 -1
 panchor -0.65 0.4 1
-color 255 230 0
+color 1 0.901960784 0
 kfr 0 0 0 0
 kfs 0 2 1 0.1
 
 object rightHeadlight
 banchor 0 0 -1
 panchor 0.65 0.4 1
-color 255 230 0
+color 1 0.901960784 0
 kfr 0 0 0 0
 kfs 0 2 1 0.1
 
