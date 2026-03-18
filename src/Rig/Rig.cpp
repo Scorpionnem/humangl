@@ -150,6 +150,8 @@ void	Rig::load(const std::string &path)
 			current->timeline.addScale(Keyframe(time, Vec3f(x, y, z)));
 		}
 	}
+	if (!_root)
+		throw std::runtime_error("Invalid rig");
 	(void)path;
 	(void)_root;
 }
