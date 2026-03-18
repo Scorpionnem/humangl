@@ -53,7 +53,6 @@ void	App::_loop(const std::string &path)
 	Rig	rig;
 
 	rig.load(path);
-	rig.export_to("lol.hgl");
 
 	while (_window.is_open())
 	{
@@ -81,6 +80,7 @@ void	App::_loop(const std::string &path)
 
 		_window.render();
 	}
+	rig.export_to("export.hgl");
 }
 
 void	App::_init()
