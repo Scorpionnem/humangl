@@ -24,27 +24,54 @@ class	Part
 
 			timeline.update(delta);
 
-			// void	Part::updateAnchor(const glm::mat4 &parentMat)
-			// {
-			// 	glm::vec3 scale;
-			// 	glm::quat rotation;
-			// 	glm::vec3 translation;
-			// 	glm::vec3 skew;
-			// 	glm::vec4 perspective;
-			// 	glm::decompose(parentMat, scale, rotation, translation, skew, perspective);
+			{
+				_mat = parent;
+				Vec3f	Scale;
+				Vec3f	skew;
 
-			// 	_mat = glm::scale(_mat, 1.0f / scale);
-			// 	_mat = glm::translate(_mat, _pointAnchor * (scale / 2.0f));
-			// }
+				Mat4f	tpMat = parent; //used to extract the final scale of the parent
 
-			// _mat = parentMat;
-			// updateAnchor(parentMat);
+				// normalizing it
+				for(int i = 0; i < 4; ++i)
+					for(int ii = 0; ii < 4; ++ii)
+						tpMat(i, ii) /= tpMat(3, 3);
+
+				// getting scale and skew
+				Vec3f	rows[3];
+				for (int i = 0; i < 3; ++i)
+				{
+					rows[i].x = tpMat(i, 0);
+					rows[i].y = tpMat(i, 1);
+					rows[i].z = tpMat(i, 2);
+				}
+
+				Scale.x = rows[0].length();
+				rows[0] = (rows[0] * 1.f / Scale.x);
+				skew.z = dot(rows[0], rows[1]);
+				rows[1] = (rows[1] * 1) + (rows[0] * -skew.z);
+
+				Scale.y = rows[1].length();
+				rows[1] = (rows[1] * 1.f / Scale.y);
+				skew.z /= Scale.y;
+				skew.y = dot(rows[0], rows[2]);
+				rows[2] = (rows[2] * 1) + (rows[0] * -skew.y);
+				skew.x = dot(rows[1], rows[2]);
+				rows[2] = (rows[2] * 1) + (rows[1] * -skew.y);
+
+				Scale.z = length(rows[2]);
+				rows[2] = (rows[2] * 1.f / Scale.z);
+				skew.y /= Scale.z;
+				skew.x /= Scale.z;
+
+
+				_mat = _mat * scale(Vec3f(1.0f) / Scale);
+				_mat = _mat * translate(_pointAnchor * (Scale / 2.0f));
+			}
 
 			Vec3f	tml_translation = timeline.getTranslation();
 			Vec3f	tml_rotation = timeline.getRotation();
 			Vec3f	tml_scale = timeline.getScale();
 
-			_mat = Mat4f(1);
 
 			_mat = _mat * translate(tml_translation - _baseAnchor * (tml_scale / 2.0f));
 			_mat = _mat * translate((_baseAnchor / 2.0f) * (tml_scale));

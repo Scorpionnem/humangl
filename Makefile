@@ -19,6 +19,7 @@ INCLUDE_DIRS :=	inc/\
 				inc/Math/Vec\
 				inc/Math/Mat\
 				inc/World\
+				glad
 
 
 SRCS :=	main\
@@ -55,7 +56,7 @@ OBJS =	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 DEPS =	$(SRCS:%.cpp=$(OBJ_DIR)/%.d)
 
 
-compile: imgui
+compile: imgui glad
 	@make -j all --no-print-directory
 
 all: $(NAME)
@@ -70,6 +71,21 @@ imgui: $(EXTERNAL_DIR)
 		echo "\033[31;1mDownloading imgui config\033[0m";\
 		git clone https://github.com/ocornut/imgui.git $(IMGUI) -q;\
 		echo "\033[31;1mDownloaded imgui config\033[0m";\
+	fi
+
+glad: $(EXTERNAL_DIR)
+	@if ls external | grep -q "glad"; then\
+  		printf "";\
+  	else \
+		echo "\033[31;1mDownloading glad\033[0m";\
+		mkdir $(EXTERNAL_DIR)/glad;\
+		cd $(EXTERNAL_DIR)/glad;\
+		mkdir glad;\
+		cd glad;\
+		curl https://raw.githubusercontent.com/Manualouest/42_postCC/refs/heads/ft_scop/libs/glad/glad.h --output glad.h;\
+		cd ..;\
+		curl https://raw.githubusercontent.com/Manualouest/42_postCC/refs/heads/ft_scop/libs/glad/glad.c --output glad.cpp;\
+		echo "\033[31;1mDownloaded glad\033[0m";\
 	fi
 
 $(NAME): $(OBJS)
