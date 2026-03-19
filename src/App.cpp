@@ -71,6 +71,9 @@ void	App::_loop(const std::string &path)
 		rig.draw(shader);
 
 		_window.render();
+
+		if (events.getKey(SDLK_LCTRL) && events.getKeyPressed(SDLK_r))
+			shader.reload();
 	}
 	rig.export_to("export.hgl");
 }
