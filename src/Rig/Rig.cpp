@@ -78,6 +78,9 @@ void	Rig::load(const std::string &path)
 			if (!_parts[object])
 				throw std::runtime_error("object: Invalid");
 
+			if (current->hasChild(object))
+				throw std::runtime_error("object: please dont stack overflow my program.");
+
 			current->addChild(_parts[object]);
 		}
 		else if (word == "color")

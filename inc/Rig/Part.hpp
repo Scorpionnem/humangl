@@ -41,6 +41,13 @@ class	Part
 			return (_id);
 		}
 
+		bool	hasChild(std::string id)
+		{
+			for (auto &c : _children)
+				if (c->id() == id)
+					return (true);
+			return (false);
+		}
 		void	export_object(std::ofstream &file)
 		{
 			file << "object " << _id << std::endl;
