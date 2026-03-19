@@ -13,6 +13,6 @@ class	App
 	private:
 		Window	_window;
 	private:
-		void	_loop(const std::string &path);
+		void	_loop(std::string path);
 		void	_init();
 };

@@ -24,7 +24,7 @@ void	Window::open(const char *title, uint32_t width, uint32_t height)
 	_width = width;
 	_height = height;
 
-	if (SDL_Init(SDL_INIT_VIDEO) != 0)
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) != 0)
 		throw (std::runtime_error(SDL_GetError()));
 
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
