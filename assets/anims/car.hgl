@@ -48,7 +48,7 @@ children pivot
 banchor 0 0 0
 panchor 0 0 0
 color 0.211764706 0.211764706 0.211764706
-kft 0 -150 -30 0
+kft 0 150 -30 0
 kfs 0 150 1 350
 
 object pivot
