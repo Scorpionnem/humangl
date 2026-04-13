@@ -1,0 +1,272 @@
+# 42 humangl project export file by mbatty & mbirou
+# keys used in the file
+#
+#	Order is important, if you use a key that needs a used object, an error will be throwed!
+#
+#	define : string name
+#		-Defines an object to be used in the file
+#	root : string name
+#		-Sets the root object
+#
+#	object : string name
+#		-Sets the object as used
+#
+#	children : string name
+#		-Sets the children of the used object
+#
+#	banchor : vec3
+#		-Sets the base anchor of the used object
+#	panchor : vec3
+#		-Sets the point anchor of the used object
+#	color : vec3
+#		-Sets the color of the used object
+#
+#	kft : float time : vec3 translation
+#		-Sets the translation values to the used object
+#	kfr : float time : vec3 rotation
+#		-Sets the rotation values to the used object
+#	kfs : float time : vec3 scale
+#		-Sets the scale values to the used object
+
+define L_eye
+define R_eye
+define hair
+define mouth
+define head
+define neck
+define L_thumb
+define L_finger_index
+define L_hand
+define L_lower_arm
+define L_upper_arm
+define L_shoulder
+define R_thumb
+define R_finger_index
+define R_hand
+define R_lower_arm
+define R_upper_arm
+define R_shoulder
+define spine_upper
+define spine_lower
+define L_foot
+define L_calf
+define L_thigh
+define R_foot
+define R_calf
+define R_thigh
+define root_pelvis
+root root_pelvis
+
+object root_pelvis
+children spine_lower
+children L_thigh
+children R_thigh
+banchor 0 0 0
+panchor 0 0 0
+color 0.1 0.1 0.1
+kft 0 0 0 20
+kft 2 0 0 -20
+kfs 0 4 1.5 2
+
+object spine_lower
+children spine_upper
+banchor 0 -1 0
+panchor 0 1 0
+color 0.2 0.5 0.2
+kfs 0 3.5 2.5 2
+
+object spine_upper
+children neck
+children L_shoulder
+children R_shoulder
+banchor 0 -1 0
+panchor 0 1 0
+color 0.2 0.6 0.2
+kfs 0 5 3 2.5
+
+object neck
+children head
+banchor 0 -1 0
+panchor 0 1 0
+color 0.8 0.6 0.5
+kfs 0 0.8 1 0.8
+
+object head
+children L_eye
+children R_eye
+children hair
+children mouth
+banchor 0 -1 0
+panchor 0 1 0
+color 0.9 0.7 0.6
+kfs 0 2.5 3 2.5
+
+object L_eye
+banchor 3 -2 4.75
+panchor 0 0 0
+color 0.365672 0.226539 0.0327467
+kfs 1 0.5 0.5 0.5
+
+object R_eye
+banchor -3 -2 4.75
+panchor 0 0 0
+color 0.364706 0.227451 0.0313726
+kfs 1 0.5 0.5 0.5
+
+object hair
+banchor 0 -2.5 0
+panchor 0 0 0
+color 0.955752 0.920199 0.152244
+kfr 1 7 0 0
+kfs 1 3 1 3
+
+object mouth
+banchor 0 6 1.75
+panchor 0 0 0
+color 0.8 0.6 0.501961
+kfs 1 1 0.25 1
+
+object L_shoulder
+children L_upper_arm
+banchor -1 0 0
+panchor 1 0.8 0
+color 0.2 0.6 0.2
+kfr 0 0 0 -10
+kfr 0.5 -40 0 -10
+kfr 1 0 0 -10
+kfr 1.5 40 0 -10
+kfr 2 0 0 -10
+kfs 0 1 1 1
+
+object L_upper_arm
+children L_lower_arm
+banchor 0 1 0
+panchor 0 -1 0
+color 0.9 0.7 0.6
+kfs 0 1.2 4 1.2
+
+object L_lower_arm
+children L_hand
+banchor 0 1 0
+panchor 0 -1 0
+color 0.9 0.7 0.6
+kfr 1 25 0 5
+kfs 0 1 3.5 1
+
+object L_hand
+children L_thumb
+children L_finger_index
+banchor 0 1 0
+panchor 0 -1 0
+color 0.9 0.7 0.6
+kfr 0 0 90 0
+kfs 0 1.2 1.2 0.5
+
+object L_thumb
+banchor 0 0 0
+panchor 0 0 0
+color 0 0 0
+
+object L_finger_index
+banchor 0 0 0
+panchor 0 0 0
+color 0 0 0
+
+object R_shoulder
+children R_upper_arm
+banchor 1 0 0
+panchor -1 0.8 0
+color 0.2 0.6 0.2
+kfr 0 0 0 -10
+kfr 0.5 40 0 -10
+kfr 1 0 0 -10
+kfr 1.5 -40 0 -10
+kfr 2 0 0 -10
+kfs 0 1 1 1
+
+object R_upper_arm
+children R_lower_arm
+banchor 0 1 0
+panchor 0 -1 0
+color 0.9 0.7 0.6
+kfs 0 1.2 4 1.2
+
+object R_lower_arm
+children R_hand
+banchor 0 1 0
+panchor 0 -1 0
+color 0.9 0.7 0.6
+kfr 1 25 0 5
+kfs 0 1 3.5 1
+
+object R_hand
+children R_thumb
+children R_finger_index
+banchor 0 1 0
+panchor 0 -1 0
+color 0.9 0.7 0.6
+kfr 0 0 90 0
+kfs 0 1.2 1.2 0.5
+
+object R_thumb
+banchor 0 0 0
+panchor 0 0 0
+color 0 0 0
+
+object R_finger_index
+banchor 0 0 0
+panchor 0 0 0
+color 0 0 0
+
+object L_thigh
+children L_calf
+banchor 0 1 0
+panchor -1 -1 0
+color 0.1 0.2 0.5
+kfr 0 0 0 -10
+kfr 0.5 40 0 -10
+kfr 1 0 0 -10
+kfr 1.5 -40 0 -10
+kfr 2 0 0 -10
+kfs 0 1.5 5 1.5
+
+object L_calf
+children L_foot
+banchor 0 1 0
+panchor 0 -1 0
+color 0.1 0.2 0.6
+kfr 0 -10 0 0
+kfs 0 1.3 4.5 1.3
+
+object L_foot
+banchor 0 5 0.4
+panchor 0 0 0
+color 0.305699 0.218266 0.0142554
+kfs 1 1.5 1 2.75
+
+object R_thigh
+children R_calf
+banchor 0 1 0
+panchor 1 -1 0
+color 0.1 0.2 0.5
+kfr 0 0 0 -10
+kfr 0.5 -40 0 -10
+kfr 1 0 0 -10
+kfr 1.5 40 0 -10
+kfr 2 0 0 -10
+kfs 0 1.5 5 1.5
+
+object R_calf
+children R_foot
+banchor 0 1 0
+panchor 0 -1 0
+color 0.1 0.2 0.6
+kfr 0 -10 0 0
+kfs 0 1.3 4.5 1.3
+
+object R_foot
+banchor 0 5 0.4
+panchor 0 0 0
+color 0.305882 0.219608 0.0156863
+kfs 1 1.5 1 2.75
+
