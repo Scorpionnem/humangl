@@ -2,7 +2,7 @@ NAME :=	humanGL
 
 
 CXX :=	c++
-CXXFLAGS :=	-g -MP -MMD -Wall -Wextra -Werror -std=c++17 # -fsanitize=address -fno-omit-frame-pointer
+CXXFLAGS :=	-g -MP -MMD -Wall -Wextra -Werror -std=c++17 -O3 #-fsanitize=address -fno-omit-frame-pointer
 LFLAGS := -lSDL2 -lGL
 
 EXTERNAL_DIR := external
@@ -51,16 +51,47 @@ IMGUI_SRCS = $(addprefix $(IMGUI)/, $(IMGUI_SRCS_RAW))
 
 SRCS +=	$(IMGUI_SRCS)
 
-
 OBJ_DIR :=	obj
 OBJS =	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 DEPS =	$(SRCS:%.cpp=$(OBJ_DIR)/%.d)
 
+TPUT 					= tput -T xterm-256color
+_RESET 					:= $(shell $(TPUT) sgr0)
+_BOLD 					:= $(shell $(TPUT) bold)
+_ITALIC 				:= $(shell $(TPUT) sitm)
+_UNDER 					:= $(shell $(TPUT) smul)
+_GREEN 					:= $(shell $(TPUT) setaf 2)
+_YELLOW 				:= $(shell $(TPUT) setaf 3)
+_RED 					:= $(shell $(TPUT) setaf 1)
+_GRAY 					:= $(shell $(TPUT) setaf 8)
+_PURPLE 				:= $(shell $(TPUT) setaf 5)
 
-compile: imgui glad
-	@make -j all --no-print-directory
+all:
+	@/bin/time --format='$(_GREEN)(%es)$(_RESET) Done' make timed_all --no-print-directory
 
-all: $(NAME)
+build:
+	@/bin/time --format='$(_GREEN)(%es)$(_RESET) Done' make timed_build --no-print-directory
+
+timed_all:
+	@make -j clone_dependencies --no-print-directory --silent
+	@make -j compile --no-print-directory --silent
+
+clone_dependencies: imgui glad
+
+compile: $(NAME)
+
+BUILD_DIR := build/
+ASSETS_DIR := assets/
+PACK_NAME := ft_vox.tar.gz
+
+timed_build: timed_all
+	@mkdir -p $(BUILD_DIR)
+	@echo 'Copying $(_BOLD)$(NAME)$(_RESET) to $(_BOLD)$(BUILD_DIR)$(_RESET)'
+	@cp $(NAME) $(BUILD_DIR)
+	@echo 'Copying $(_BOLD)$(ASSETS_DIR)$(_RESET) to $(_BOLD)$(BUILD_DIR)$(_RESET)'
+	@cp -r $(ASSETS_DIR) $(BUILD_DIR)
+	@echo 'Packing $(_BOLD)$(PACK_NAME)$(_RESET)'
+	@/bin/time --format='$(_GREEN)(%es)$(_RESET) Finished packing $(_BOLD)$(PACK_NAME)$(_RESET)' tar --directory=$(BUILD_DIR) -czf $(BUILD_DIR)$(PACK_NAME) $(NAME) $(ASSETS_DIR)
 
 $(EXTERNAL_DIR):
 	@mkdir -p external
@@ -69,16 +100,16 @@ imgui: $(EXTERNAL_DIR)
 	@if ls external | grep -q "imgui"; then \
 		printf ""; \
 	else \
-		echo "\033[31;1mDownloading imgui config\033[0m";\
-		git clone https://github.com/ocornut/imgui.git $(IMGUI) -q;\
-		echo "\033[31;1mDownloaded imgui config\033[0m";\
+		echo "Downloading $(_BOLD)imgui$(_RESET)";\
+		git clone https://github.com/ocornut/imgui.git $(IMGUI);\
+		echo "Downloaded $(_BOLD)imgui$(_RESET)";\
 	fi
 
 glad: $(EXTERNAL_DIR)
 	@if ls external | grep -q "glad"; then\
-  		printf "";\
-  	else \
-		echo "\033[31;1mDownloading glad\033[0m";\
+		printf "";\
+	else \
+		echo "Downloading $(_BOLD)glad$(_RESET)";\
 		mkdir $(EXTERNAL_DIR)/glad;\
 		cd $(EXTERNAL_DIR)/glad;\
 		mkdir glad;\
@@ -86,28 +117,30 @@ glad: $(EXTERNAL_DIR)
 		curl https://raw.githubusercontent.com/Manualouest/42_postCC/refs/heads/ft_scop/libs/glad/glad.h --output glad.h;\
 		cd ..;\
 		curl https://raw.githubusercontent.com/Manualouest/42_postCC/refs/heads/ft_scop/libs/glad/glad.c --output glad.cpp;\
-		echo "\033[31;1mDownloaded glad\033[0m";\
+		echo "Downloaded $(_BOLD)glad$(_RESET)";\
 	fi
 
 $(NAME): $(OBJS)
-	@echo Compiling $(NAME)
-	@$(CXX) $(CXXFLAGS) $(LFLAGS) $(INCLUDE_DIRS) -o $@ $^
+	@echo 'Linking $(_BOLD)$(NAME)$(_RESET)'
+	@/bin/time --format='$(_GREEN)(%es)$(_RESET) Linked $(_BOLD)$(NAME)$(_RESET)' $(CXX) $(CXXFLAGS) $(LFLAGS) $(INCLUDE_DIRS) -o $@ $^
 
 $(OBJ_DIR)/%.o: %.cpp
 	@mkdir -p $(dir $@)
-	@echo Compiling $@
-	@$(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c $< -o $@
+	@echo 'Compiling $(_BOLD)$<$(_RESET)'
+	@/bin/time --format='$(_GREEN)(%es)$(_RESET) Compiled $(_BOLD)$@$(_RESET)' $(CXX) $(CXXFLAGS) $(INCLUDE_DIRS) -c $< -o $@
 
-re: fclean compile
+re: fclean all
 
 fclean: clean
-	@echo Removed $(NAME)
+	@echo 'Removed $(_BOLD)$(NAME)$(_RESET)'
 	@rm -rf $(NAME)
 
 clean:
-	@echo Removed $(OBJ_DIR)
+	@echo 'Removed $(_BOLD)$(OBJ_DIR)$(_RESET)'
+	@echo 'Removed $(_BOLD)$(BUILD_DIR)$(_RESET)'
 	@rm -rf $(OBJ_DIR)
+	@rm -rf $(BUILD_DIR)
 
-.PHONY: all clean fclean re compile
+.PHONY: all clean fclean re compile build external
 
 -include $(DEPS)

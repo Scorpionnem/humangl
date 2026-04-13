@@ -78,7 +78,7 @@ void	Rig::load(const std::string &path)
 			if (!_parts[object])
 				throw std::runtime_error("object: Invalid");
 
-			if (current->hasChild(object))
+			if (current->hasChild(object) || current->hasParent(object))
 				throw std::runtime_error("object: please dont stack overflow my program.");
 
 			current->addChild(_parts[object]);

@@ -35,17 +35,27 @@ class	Part
 		void	addChild(std::shared_ptr<Part> child)
 		{
 			_children.push_back(child);
+			child->set_parent(this);
 		}
 		std::string	id()
 		{
 			return (_id);
 		}
 
-		bool	hasChild(std::string id)
+		bool	hasChild(const std::string &id)
 		{
 			for (auto &c : _children)
-				if (c->id() == id)
+				if (c->id() == id || c->hasChild(id))
 					return (true);
+			return (false);
+		}
+		bool	hasParent(const std::string &id)
+		{
+			if (_parent)
+			{
+				if (_parent->id() == id)
+					return (true);
+			}
 			return (false);
 		}
 		void	export_object(std::ofstream &file)
@@ -81,6 +91,11 @@ class	Part
 			return (tmp);
 		}
 		Timeline			timeline;
+
+		void	set_parent(Part *p)
+		{
+			_parent = p;
+		}
 	private:
 		static void	_upload()
 		{
@@ -100,6 +115,7 @@ class	Part
 			glBindVertexArray(0);
 		}
 		std::vector<std::shared_ptr<Part>>	_children;
+		Part								*_parent = NULL;
 
 		Mat4f				_mat = Mat4f(1);
 		Vec3f				_pointAnchor;

@@ -68,10 +68,14 @@ void	App::_loop(std::string path)
 
 	std::string	msc = MUSICS[rand() % MUSICS_COUNT];
 
-	std::cout << "Playing: " << msc << std::endl;
+	std::cout << "Playing:\t" << msc << std::endl << std::endl;
 
 	wav.load(msc);
 	wav.play();
+
+	std::cout << "CTRL+R :\tReload shaders" << std::endl;
+	std::cout << "WASD :\t\tMove camera" << std::endl;
+	std::cout << "ARROWS :\tRotate camera" << std::endl;
 
 	while (_window.is_open())
 	{
